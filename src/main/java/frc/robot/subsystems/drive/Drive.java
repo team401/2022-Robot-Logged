@@ -20,6 +20,7 @@ public class Drive extends SubsystemBase {
 
   private ChassisSpeeds goalChassisSpeeds = new ChassisSpeeds();
   
+  //Why is this not DriveModuleIOComp since it is the object that implements the DriveModuleIO Interface? -Béla
   private final DriveModuleIO[] moduleIOs;
   
   public Drive(DriveModuleIO[] moduleIOs) {
