@@ -46,10 +46,9 @@ public class RobotContainer {
   private void configureButtonBindings() {
     
     new JoystickButton(gamepad, Button.kA.value)
-      .whenPressed(new InstantCommand(() -> drive.setChassisSpeeds(new ChassisSpeeds(0, -10, 0))));
-      .whenReleased()
+      .whenPressed(new InstantCommand(() -> drive.setChassisSpeeds(new ChassisSpeeds(50, -10, 0))));
     new JoystickButton(gamepad, Button.kB.value)
-      .whenPressed(new InstantCommand(() -> drive.setChassisSpeeds(new ChassisSpeeds(0, 10, 0))));
+      .whenPressed(new InstantCommand(() -> drive.setChassisSpeeds(new ChassisSpeeds(50, 10, 0))));
     
   }
 

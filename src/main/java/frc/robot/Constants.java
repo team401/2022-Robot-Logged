@@ -38,6 +38,8 @@ public final class Constants {
 
         public static final double driveWheelGearReduction = 6.75;
         public static final double rotationWheelGearReduction = 150.0 / 7.0;
+        public static final double maxSpeedMPerS = Units.feetToMeters(15.0);
+        public static final double maxAngularSpeedRadPerS = maxSpeedMPerS / (Math.hypot(trackWidth / 2, wheelBase / 2));
 
         public static final double frontLeftAngleOffset = Units.degreesToRadians(0);
         public static final double frontRightAngleOffset = Units.degreesToRadians(0);
@@ -50,8 +52,8 @@ public final class Constants {
         public static final TunableNumber drivekd = new TunableNumber("Drive/Drivekd");
 
         static {
-            rotationKp.setDefault(0);
-            rotationKd.setDefault(0);
+            rotationKp.setDefault(8.0);
+            rotationKd.setDefault(0.1);
 
             drivekd.setDefault(0);
             drivekd.setDefault(0);

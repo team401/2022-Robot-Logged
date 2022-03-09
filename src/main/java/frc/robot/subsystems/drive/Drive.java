@@ -10,6 +10,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.drive.DriveModuleIO.DriveIOInputs;
@@ -64,6 +65,7 @@ public class Drive extends SubsystemBase {
       double rotationSetpointRadians = moduleStates[i].angle.getRadians();
       Logger.getInstance().recordOutput("Drive" + i + "/RotationSetpointRad", rotationSetpointRadians);
       double rotationVoltage = rotationPIDs[i].calculate(rotationSetpointRadians, moduleRotation.getRadians());
+      Logger.getInstance().recordOutput("Drive" + i + "/RotationErrorDegrees", Units.radiansToDegrees(rotationPIDs[i].getPositionError()));
       moduleIOs[i].setRotationVoltage(rotationVoltage);
     }
       

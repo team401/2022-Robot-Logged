@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix.sensors.CANCoderStatusFrame;
 
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants.DriveConstants;
@@ -16,14 +17,22 @@ public class DriveModuleIOComp implements DriveModuleIO {
     private final CANCoder rotationEncoder;
     private final double initialOffsetRadians;
 
-    private static void setFramePeriods(TalonFX talon) {
-        talon.setStatusFramePeriod(StatusFrameEnhanced.Status_3_Quadrature, 10000, 1000);
-        talon.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 10000, 1000);
-        talon.setStatusFramePeriod(StatusFrameEnhanced.Status_8_PulseWidth, 10000, 1000);
-        talon.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 10000, 1000);
-        talon.setStatusFramePeriod(StatusFrameEnhanced.Status_12_Feedback1, 10000, 1000);
-        talon.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 10000, 1000);
-        talon.setStatusFramePeriod(StatusFrameEnhanced.Status_14_Turn_PIDF1, 10000, 1000);
+    private static void setFramePeriods(TalonFX talon, boolean needMotorSensor) {
+        talon.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 255, 1000);
+        //if (!needMotorSensor) {
+        //    talon.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 255, 1000);
+        //}
+        talon.setStatusFramePeriod(StatusFrameEnhanced.Status_3_Quadrature, 255, 1000);
+        talon.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 255, 1000);
+        talon.setStatusFramePeriod(StatusFrameEnhanced.Status_6_Misc, 255, 1000);
+        talon.setStatusFramePeriod(StatusFrameEnhanced.Status_7_CommStatus, 255, 1000);
+        talon.setStatusFramePeriod(StatusFrameEnhanced.Status_8_PulseWidth, 255, 1000);
+        talon.setStatusFramePeriod(StatusFrameEnhanced.Status_9_MotProfBuffer, 255, 1000);
+        talon.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 255, 1000);
+        talon.setStatusFramePeriod(StatusFrameEnhanced.Status_11_UartGadgeteer, 255, 1000);
+        talon.setStatusFramePeriod(StatusFrameEnhanced.Status_12_Feedback1, 255, 1000);
+        talon.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 255, 1000);
+        talon.setStatusFramePeriod(StatusFrameEnhanced.Status_14_Turn_PIDF1, 255, 1000);
     }
 
     public DriveModuleIOComp(        
@@ -40,8 +49,8 @@ public class DriveModuleIOComp implements DriveModuleIO {
 
         driveMotor.configFactoryDefault(1000);
         rotationMotor.configFactoryDefault(1000);
-        setFramePeriods(driveMotor);
-        setFramePeriods(rotationMotor);
+        setFramePeriods(driveMotor, true);
+        setFramePeriods(rotationMotor, false);
 
         driveMotor.setNeutralMode(NeutralMode.Brake);
         rotationMotor.setNeutralMode(NeutralMode.Brake);
@@ -55,6 +64,8 @@ public class DriveModuleIOComp implements DriveModuleIO {
         rotationMotor.configNeutralDeadband(0, 1000);
 
         rotationEncoder.configFactoryDefault(1000);
+        rotationEncoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 20, 1000);
+        rotationEncoder.setStatusFramePeriod(CANCoderStatusFrame.VbatAndFaults, 255, 1000);
 
         initialOffsetRadians = measuredOffsetsRadians;
     }
