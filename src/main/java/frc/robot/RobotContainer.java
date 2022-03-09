@@ -4,9 +4,14 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.drive.Drive;
@@ -15,6 +20,8 @@ import frc.robot.subsystems.drive.DriveModuleIOComp;
 
 public class RobotContainer {
   private final Drive drive;
+
+  private final XboxController gamepad = new XboxController(0);
 
   public RobotContainer() {
     drive = new Drive(new DriveModuleIO[] {
@@ -36,7 +43,15 @@ public class RobotContainer {
     
     configureButtonBindings();
   }
-  private void configureButtonBindings() {}
+  private void configureButtonBindings() {
+    
+    new JoystickButton(gamepad, Button.kA.value)
+      .whenPressed(new InstantCommand(() -> drive.setChassisSpeeds(new ChassisSpeeds(0, -10, 0))));
+      .whenReleased()
+    new JoystickButton(gamepad, Button.kB.value)
+      .whenPressed(new InstantCommand(() -> drive.setChassisSpeeds(new ChassisSpeeds(0, 10, 0))));
+    
+  }
 
   public Command getAutonomousCommand() {
     return null;

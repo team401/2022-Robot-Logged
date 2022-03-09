@@ -4,9 +4,16 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
+import frc.robot.util.TunableNumber;
 
 public final class Constants {
+    public static final boolean tuningMode = true;
+
+    public static final double trackWidth = Units.inchesToMeters(19.75);
+    public static final double wheelBase = Units.inchesToMeters(19.75);
 
     public static final class CANDevices {
         public static final int frontLeftDriveMotorID = 0;
@@ -36,6 +43,27 @@ public final class Constants {
         public static final double frontRightAngleOffset = Units.degreesToRadians(0);
         public static final double backLeftAngleOffset = Units.degreesToRadians(0);
         public static final double backRightAngleOffset = Units.degreesToRadians(0);
+
+        public static final TunableNumber rotationKp = new TunableNumber("Drive/RotationKp");
+        public static final TunableNumber rotationKd = new TunableNumber("Drive/RotationKd");
+        public static final TunableNumber drivekp = new TunableNumber("Drive/Drivekp");
+        public static final TunableNumber drivekd = new TunableNumber("Drive/Drivekd");
+
+        static {
+            rotationKp.setDefault(0);
+            rotationKd.setDefault(0);
+
+            drivekd.setDefault(0);
+            drivekd.setDefault(0);
+        }
+
+        public static final SwerveDriveKinematics kinematics = 
+            new SwerveDriveKinematics(
+                new Translation2d(trackWidth / 2.0, wheelBase / 2.0), //values for front left (+, +)
+                new Translation2d(trackWidth / 2.0, -wheelBase / 2.0), //values for front right (+, -)
+                new Translation2d(-trackWidth / 2.0, wheelBase / 2.0), //values for back left (-, +)
+                new Translation2d(-trackWidth / 2.0, -wheelBase / 2.0) //values for back right (-, -)
+            );
 
     }
 
