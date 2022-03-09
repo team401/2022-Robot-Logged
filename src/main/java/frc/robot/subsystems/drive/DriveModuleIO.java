@@ -4,7 +4,7 @@ import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 public interface DriveModuleIO {
-    public static class DriveIOInputs implements LoggableInputs {
+    public static class DriveModuleIOInputs implements LoggableInputs {
         public double driveVelocityRadPerS;
         public double drivePositionRad;
         public double rotationPositionRad;
@@ -28,11 +28,13 @@ public interface DriveModuleIO {
 
     }
 
-    void updateInputs(DriveIOInputs inputs);
+    void updateInputs(DriveModuleIOInputs inputs);
     
     void zeroEncoders();
     void setRotationVoltage(double volts);
     void setDriveVoltage(double volts);
-    void setDriveVelocity(double velocityRadPerS);
+    void setDriveVelocity(double velocityRadPerS, double ffVolts);
+
+    void setDrivePD(double p, double d);
         
 }

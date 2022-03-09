@@ -1,6 +1,7 @@
 package frc.robot.subsystems.drive;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
@@ -71,13 +72,13 @@ public class DriveModuleIOComp implements DriveModuleIO {
     }
 
     @Override
-    public void updateInputs(DriveIOInputs inputs) {
+    public void updateInputs(DriveModuleIOInputs inputs) {
         
         inputs.drivePositionRad = driveMotor.getSelectedSensorPosition() 
-            / 2048 * 2 * Math.PI / DriveConstants.driveWheelGearReduction;
+            / 2048.0 * 2.0 * Math.PI / DriveConstants.driveWheelGearReduction;
 
         inputs.driveVelocityRadPerS = driveMotor.getSelectedSensorVelocity() 
-            / 2048 * 10 * 2 * Math.PI / DriveConstants.driveWheelGearReduction;
+            / 2048.0 * 10.0 * 2.0 * Math.PI / DriveConstants.driveWheelGearReduction;
             
         //Using relative encoder in the CANCoder
         inputs.rotationPositionRad = Units.degreesToRadians(rotationEncoder.getPosition()) - initialOffsetRadians;
@@ -101,8 +102,17 @@ public class DriveModuleIOComp implements DriveModuleIO {
     }
 
     @Override
-    public void setDriveVelocity(double velocityRadPerS) {
+    public void setDriveVelocity(double velocityRadPerS, double ffVolts) {
+        // Convert rad/s to motor velocity
+        double velocityTicksPer100ms = velocityRadPerS * 2048.0 / 10.0 / 2.0 / Math.PI * DriveConstants.driveWheelGearReduction;
 
+        driveMotor.set(ControlMode.Velocity, velocityTicksPer100ms, DemandType.ArbitraryFeedForward, ffVolts / 12.0);
+    }
+
+    @Override
+    public void setDrivePD(double p, double d) {
+        driveMotor.config_kP(0, p);
+        driveMotor.config_kD(0, d);
     }
 
 }

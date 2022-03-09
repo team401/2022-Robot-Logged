@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
@@ -32,14 +33,17 @@ public final class Constants {
         public static final int frontRightRotationEncoderID = 11;
         public static final int backLeftRotationEncoderID = 12;
         public static final int backRightRotationEncoderID = 13;
+
+        public static final int pigeonIMU = 20;
     }
     
     public static final class DriveConstants {
-
         public static final double driveWheelGearReduction = 6.75;
         public static final double rotationWheelGearReduction = 150.0 / 7.0;
         public static final double maxSpeedMPerS = Units.feetToMeters(15.0);
         public static final double maxAngularSpeedRadPerS = maxSpeedMPerS / (Math.hypot(trackWidth / 2, wheelBase / 2));
+
+        public static final double wheelRadiusM = Units.inchesToMeters(2);
 
         public static final double frontLeftAngleOffset = Units.degreesToRadians(0);
         public static final double frontRightAngleOffset = Units.degreesToRadians(0);
@@ -48,15 +52,15 @@ public final class Constants {
 
         public static final TunableNumber rotationKp = new TunableNumber("Drive/RotationKp");
         public static final TunableNumber rotationKd = new TunableNumber("Drive/RotationKd");
-        public static final TunableNumber drivekp = new TunableNumber("Drive/Drivekp");
-        public static final TunableNumber drivekd = new TunableNumber("Drive/Drivekd");
+        public static final TunableNumber driveKp = new TunableNumber("Drive/DriveKp");
+        public static final TunableNumber driveKd = new TunableNumber("Drive/DriveKd");
 
         static {
             rotationKp.setDefault(8.0);
             rotationKd.setDefault(0.1);
 
-            drivekd.setDefault(0);
-            drivekd.setDefault(0);
+            driveKp.setDefault(0);
+            driveKd.setDefault(0);
         }
 
         public static final SwerveDriveKinematics kinematics = 
@@ -66,6 +70,8 @@ public final class Constants {
                 new Translation2d(-trackWidth / 2.0, wheelBase / 2.0), //values for back left (-, +)
                 new Translation2d(-trackWidth / 2.0, -wheelBase / 2.0) //values for back right (-, -)
             );
+
+        public static final SimpleMotorFeedforward driveModel = new SimpleMotorFeedforward(0, 0);
 
     }
 

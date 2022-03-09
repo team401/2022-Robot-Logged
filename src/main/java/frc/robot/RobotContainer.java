@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.DriveAngleIOComp;
 import frc.robot.subsystems.drive.DriveModuleIO;
 import frc.robot.subsystems.drive.DriveModuleIOComp;
 
@@ -38,7 +39,8 @@ public class RobotContainer {
       new DriveModuleIOComp(CANDevices.backRightDriveMotorID, CANDevices.backRightRotationMotorID,
                             CANDevices.backRightRotationEncoderID, DriveConstants.backRightAngleOffset)
       
-      }
+      },
+      new DriveAngleIOComp()
     );
     
     configureButtonBindings();
@@ -46,9 +48,9 @@ public class RobotContainer {
   private void configureButtonBindings() {
     
     new JoystickButton(gamepad, Button.kA.value)
-      .whenPressed(new InstantCommand(() -> drive.setChassisSpeeds(new ChassisSpeeds(50, -10, 0))));
+      .whenPressed(new InstantCommand(() -> drive.setGoalChassisSpeeds(new ChassisSpeeds(50, -10, 0))));
     new JoystickButton(gamepad, Button.kB.value)
-      .whenPressed(new InstantCommand(() -> drive.setChassisSpeeds(new ChassisSpeeds(50, 10, 0))));
+      .whenPressed(new InstantCommand(() -> drive.setGoalChassisSpeeds(new ChassisSpeeds(50, 10, 0))));
     
   }
 
