@@ -43,12 +43,15 @@ public final class Constants {
         public static final double maxSpeedMPerS = Units.feetToMeters(15.0);
         public static final double maxAngularSpeedRadPerS = maxSpeedMPerS / (Math.hypot(trackWidth / 2, wheelBase / 2));
 
+        // TODO measure
         public static final double wheelRadiusM = Units.inchesToMeters(2);
 
-        public static final double frontLeftAngleOffset = Units.degreesToRadians(0);
-        public static final double frontRightAngleOffset = Units.degreesToRadians(0);
-        public static final double backLeftAngleOffset = Units.degreesToRadians(0);
-        public static final double backRightAngleOffset = Units.degreesToRadians(0);
+        // Measured on 3/9/22 with machinist's square
+        // TODO verify these with 1x1 and clamping
+        public static final double frontLeftAngleOffset = 0.8605632220038447;
+        public static final double frontRightAngleOffset = 5.750893973783269;
+        public static final double backLeftAngleOffset = 1.2854759002481673;
+        public static final double backRightAngleOffset = 4.275204455837282;
 
         public static final TunableNumber rotationKp = new TunableNumber("Drive/RotationKp");
         public static final TunableNumber rotationKd = new TunableNumber("Drive/RotationKd");
@@ -56,6 +59,7 @@ public final class Constants {
         public static final TunableNumber driveKd = new TunableNumber("Drive/DriveKd");
 
         static {
+            // Tuned on 3/8/22
             rotationKp.setDefault(8.0);
             rotationKd.setDefault(0.1);
 

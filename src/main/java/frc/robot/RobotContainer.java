@@ -4,7 +4,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -46,11 +48,14 @@ public class RobotContainer {
     configureButtonBindings();
   }
   private void configureButtonBindings() {
+
+    SwerveModuleState zeroState = new SwerveModuleState(0, Rotation2d.fromDegrees(0));
+    SwerveModuleState ninetyState = new SwerveModuleState(0, Rotation2d.fromDegrees(90));
     
     new JoystickButton(gamepad, Button.kA.value)
-      .whenPressed(new InstantCommand(() -> drive.setGoalChassisSpeeds(new ChassisSpeeds(50, -10, 0))));
+      .whenPressed(new InstantCommand(() -> drive.setGoalModuleStates(new SwerveModuleState[]{zeroState, zeroState, zeroState, zeroState})));
     new JoystickButton(gamepad, Button.kB.value)
-      .whenPressed(new InstantCommand(() -> drive.setGoalChassisSpeeds(new ChassisSpeeds(50, 10, 0))));
+      .whenPressed(new InstantCommand(() -> drive.setGoalModuleStates(new SwerveModuleState[]{ninetyState, ninetyState, ninetyState, ninetyState})));
     
   }
 
