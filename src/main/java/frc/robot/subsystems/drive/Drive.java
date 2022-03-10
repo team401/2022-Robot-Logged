@@ -12,9 +12,11 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotState;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.drive.DriveAngleIO.DriveAngleIOInputs;
 import frc.robot.subsystems.drive.DriveModuleIO.DriveModuleIOInputs;
@@ -24,16 +26,19 @@ public class Drive extends SubsystemBase {
   private DriveAngleIOInputs angleInputs = new DriveAngleIOInputs();
   private PIDController[] rotationPIDs = new PIDController[4];
   private SwerveModuleState[] goalModuleStates = new SwerveModuleState[4];
-  
+  private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(DriveConstants.kinematics, new Rotation2d());
 
   // Why is this not DriveModuleIOComp since it is the object that implements the
   // DriveModuleIO Interface? -Béla
   private final DriveModuleIO[] moduleIOs;
   private final DriveAngleIO angleIO;
 
-  // If true, modules will run velocity control from the setpoint velocities in moduleStates
-  // If false, modules will not run velocity control from the setpoint velocities in moduleStates,
-  // and module drive motors will not be commanded to do anything.  This allows other setters,
+  // If true, modules will run velocity control from the setpoint velocities in
+  // moduleStates
+  // If false, modules will not run velocity control from the setpoint velocities
+  // in moduleStates,
+  // and module drive motors will not be commanded to do anything. This allows
+  // other setters,
   // such as the "setDriveVoltages" to have control of the modules.
   private boolean velocityControlEnabled = true;
 
@@ -65,6 +70,18 @@ public class Drive extends SubsystemBase {
     angleIO.updateInputs(angleInputs);
     Logger.getInstance().processInputs("DriveAngle", angleInputs);
 
+    // Update odometry and report to RobotState
+    Rotation2d headingRotation = new Rotation2d(MathUtil.angleModulus(angleInputs.headingRad));
+    SwerveModuleState[] measuredStates = new SwerveModuleState[4];
+    for (int i = 0; i < 4; i++) {
+      measuredStates[i] = new SwerveModuleState(inputs[i].driveVelocityRadPerS * DriveConstants.wheelRadiusM,
+          new Rotation2d(MathUtil.angleModulus(inputs[i].rotationPositionRad)));
+    }
+    Pose2d bootToVehicle = odometry.update(headingRotation, measuredStates);
+    ChassisSpeeds measuredChassis = DriveConstants.kinematics.toChassisSpeeds(measuredStates);
+    RobotState.getInstance().recordOdometryObservations(bootToVehicle, measuredChassis);
+
+
     // Check if our gain tunables have changed, and if they have, update accordingly
     if (DriveConstants.rotationKp.hasChanged() || DriveConstants.rotationKd.hasChanged()) {
       for (PIDController c : rotationPIDs) {
@@ -95,6 +112,7 @@ public class Drive extends SubsystemBase {
         double ffVolts = DriveConstants.driveModel.calculate(speedRadPerS);
 
         moduleIOs[i].setDriveVelocity(speedRadPerS, ffVolts);
+        Logger.getInstance().recordOutput("Drive" + i + "/SpeedSetpointRadPerS", speedRadPerS);
       }
 
       // Set module rotation
@@ -104,10 +122,14 @@ public class Drive extends SubsystemBase {
           Units.radiansToDegrees(rotationPIDs[i].getPositionError()));
       moduleIOs[i].setRotationVoltage(rotationVoltage);
     }
+
+    Logger.getInstance().recordOutput("Drive/AverageRadPerS", getAverageSpeedRadPerS());
   }
 
   /**
-   * Sets the target module states for each module.  This can be used to individually control each module.
+   * Sets the target module states for each module. This can be used to
+   * individually control each module.
+   * 
    * @param states The array of states for each module
    */
   public void setGoalModuleStates(SwerveModuleState[] states) {
@@ -116,11 +138,14 @@ public class Drive extends SubsystemBase {
   }
 
   /**
-   * Sets the raw voltages of the module drive motors.  Heading is still set from the angles set in
-   * setGoalModuleStates.  Note that this method disables velocity control until setModuleStates or
+   * Sets the raw voltages of the module drive motors. Heading is still set from
+   * the angles set in
+   * setGoalModuleStates. Note that this method disables velocity control until
+   * setModuleStates or
    * setGoalChassisSpeeds is called again.
    * 
    * The primary use of this is to characterize the drive.
+   * 
    * @param voltages The array of voltages to set in the modules
    */
   public void setDriveVoltages(double[] voltages) {
@@ -132,21 +157,20 @@ public class Drive extends SubsystemBase {
 
   /**
    * Sets the goal chassis speeds for the entire chassis.
+   * 
    * @param speeds The target speed for the chassis
    */
   public void setGoalChassisSpeeds(ChassisSpeeds speeds) {
     SwerveModuleState[] moduleStates = DriveConstants.kinematics.toSwerveModuleStates(speeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, DriveConstants.maxSpeedMPerS);
 
-    goalModuleStates = moduleStates;
-  }
-
-  public Pose2d getPose() {
-    return null; // TODO
+    setGoalModuleStates(moduleStates);
   }
 
   /**
-   * Returns the average angular speed of each wheel.  This is used to characterize the drive.
+   * Returns the average angular speed of each wheel. This is used to characterize
+   * the drive.
+   * 
    * @return The average speed of each module in rad/s
    */
   public double getAverageSpeedRadPerS() {

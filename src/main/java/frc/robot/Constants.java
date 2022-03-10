@@ -52,7 +52,7 @@ public final class Constants {
         public static final double driveWheelGearReduction = 6.75;
         public static final double rotationWheelGearReduction = 150.0 / 7.0;
         public static final double maxSpeedMPerS = Units.feetToMeters(15.0);
-        public static final double maxAngularSpeedRadPerS = maxSpeedMPerS / (Math.hypot(trackWidth / 2, wheelBase / 2));
+        public static final double maxAngularSpeedRadPerS = 2 * Math.PI;
 
         // TODO measure
         public static final double wheelRadiusM = Units.inchesToMeters(2);
@@ -69,13 +69,16 @@ public final class Constants {
         public static final TunableNumber driveKp = new TunableNumber("Drive/DriveKp");
         public static final TunableNumber driveKd = new TunableNumber("Drive/DriveKd");
 
+        public static final double driveJoystickDeadbandPercent = 0.08;
+        public static final double driveMaxJerk = 200.0;
+
         static {
             // Tuned on 3/8/22
             rotationKp.setDefault(8.0);
             rotationKd.setDefault(0.1);
 
-            driveKp.setDefault(0);
-            driveKd.setDefault(0);
+            driveKp.setDefault(0.2);
+            driveKd.setDefault(2.0);
         }
 
         public static final SwerveDriveKinematics kinematics = 
@@ -86,7 +89,7 @@ public final class Constants {
                 new Translation2d(-trackWidth / 2.0, -wheelBase / 2.0) //values for back right (-, -)
             );
 
-        public static final SimpleMotorFeedforward driveModel = new SimpleMotorFeedforward(0, 0);
+        public static final SimpleMotorFeedforward driveModel = new SimpleMotorFeedforward(0.184, 0.1163414634);
 
     }
 

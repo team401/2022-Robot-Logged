@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.rmi.ServerRuntimeException;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -13,9 +15,12 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.commands.DriveWithJoysticks;
+import frc.robot.commands.MeasureDriveKs;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveAngleIOComp;
 import frc.robot.subsystems.drive.DriveModuleIO;
@@ -26,40 +31,38 @@ public class RobotContainer {
 
   private final XboxController gamepad = new XboxController(0);
 
-  public RobotContainer() {
-    drive = new Drive(new DriveModuleIO[] {
+  private final DriveWithJoysticks driveWithJoysticks;
 
-      new DriveModuleIOComp(CANDevices.frontLeftDriveMotorID, CANDevices.frontLeftRotationMotorID, 
-                            CANDevices.frontLeftRotationEncoderID, DriveConstants.frontLeftAngleOffset),
-                            
-      new DriveModuleIOComp(CANDevices.frontRightDriveMotorID, CANDevices.frontRightRotationMotorID, 
-                            CANDevices.frontRightRotationEncoderID, DriveConstants.frontRightAngleOffset),
-                            
-      new DriveModuleIOComp(CANDevices.backLeftDriveMotorID, CANDevices.backLeftRotationMotorID, 
-                            CANDevices.backLeftRotationEncoderID, DriveConstants.backLeftAngleOffset),
-                            
-      new DriveModuleIOComp(CANDevices.backRightDriveMotorID, CANDevices.backRightRotationMotorID,
-                            CANDevices.backRightRotationEncoderID, DriveConstants.backRightAngleOffset)
-      
-      },
-      new DriveAngleIOComp()
-    );
-    
+  public RobotContainer() {
+    // Create subsystems
+    drive = new Drive(new DriveModuleIO[] {
+        new DriveModuleIOComp(CANDevices.frontLeftDriveMotorID, CANDevices.frontLeftRotationMotorID,
+            CANDevices.frontLeftRotationEncoderID, DriveConstants.frontLeftAngleOffset),
+        new DriveModuleIOComp(CANDevices.frontRightDriveMotorID, CANDevices.frontRightRotationMotorID,
+            CANDevices.frontRightRotationEncoderID, DriveConstants.frontRightAngleOffset),
+        new DriveModuleIOComp(CANDevices.backLeftDriveMotorID, CANDevices.backLeftRotationMotorID,
+            CANDevices.backLeftRotationEncoderID, DriveConstants.backLeftAngleOffset),
+        new DriveModuleIOComp(CANDevices.backRightDriveMotorID, CANDevices.backRightRotationMotorID,
+            CANDevices.backRightRotationEncoderID, DriveConstants.backRightAngleOffset)
+    }, new DriveAngleIOComp());
+
+    // Create commands
+    driveWithJoysticks = new DriveWithJoysticks(drive, () -> -gamepad.getLeftY(),
+        () -> -gamepad.getLeftX(), () -> -gamepad.getRightX());
+
+    // Bind default commands
+    drive.setDefaultCommand(driveWithJoysticks);
+
     configureButtonBindings();
   }
-  private void configureButtonBindings() {
 
-    SwerveModuleState zeroState = new SwerveModuleState(0, Rotation2d.fromDegrees(0));
-    SwerveModuleState ninetyState = new SwerveModuleState(0, Rotation2d.fromDegrees(90));
-    
-    new JoystickButton(gamepad, Button.kA.value)
-      .whenPressed(new InstantCommand(() -> drive.setGoalModuleStates(new SwerveModuleState[]{zeroState, zeroState, zeroState, zeroState})));
-    new JoystickButton(gamepad, Button.kB.value)
-      .whenPressed(new InstantCommand(() -> drive.setGoalModuleStates(new SwerveModuleState[]{ninetyState, ninetyState, ninetyState, ninetyState})));
-    
+  private void configureButtonBindings() {
   }
 
   public Command getAutonomousCommand() {
-    return null;
+    SwerveModuleState zero = new SwerveModuleState();
+    SwerveModuleState[] zeros = new SwerveModuleState[] { zero, zero, zero, zero };
+    return new InstantCommand(() -> drive.setGoalModuleStates(zeros), drive).andThen(new WaitCommand(2.0))
+        .andThen(new InstantCommand(() -> drive.setDriveVoltages(new double[] { 4, 4, 4, 4 }), drive)).andThen(new WaitCommand(10.0));
   }
 }

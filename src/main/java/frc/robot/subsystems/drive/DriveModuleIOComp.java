@@ -55,6 +55,8 @@ public class DriveModuleIOComp implements DriveModuleIO {
 
         driveMotor.setNeutralMode(NeutralMode.Brake);
         rotationMotor.setNeutralMode(NeutralMode.Brake);
+
+        driveMotor.setInverted(true);
         
         driveMotor.configVoltageCompSaturation(12, 1000);
         driveMotor.enableVoltageCompensation(true);
