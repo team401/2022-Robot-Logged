@@ -1,9 +1,8 @@
 package frc.robot.subsystems.rotationArms;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -12,8 +11,8 @@ import frc.robot.Constants.ClimberConstants;
 
 public class RotationArmsIOComp implements RotationArmsIO {
 
-    private final TalonSRX leftMotor;
-    private final TalonSRX rightMotor;
+    private final CANSparkMax leftMotor;
+    private final CANSparkMax rightMotor;
 
     private final DutyCycleEncoder leftEncoder;
     private final DutyCycleEncoder rightEncoder;
@@ -26,51 +25,29 @@ public class RotationArmsIOComp implements RotationArmsIO {
 
     private boolean killed = false;
 
-    private static void setFramePeriods(TalonSRX talon, boolean needMotorSensor) {
-        talon.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 255, 1000);
-        //if (!needMotorSensor) {
-        //    talon.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 255, 1000);
-        //}
-        talon.setStatusFramePeriod(StatusFrameEnhanced.Status_3_Quadrature, 255, 1000);
-        talon.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 255, 1000);
-        talon.setStatusFramePeriod(StatusFrameEnhanced.Status_6_Misc, 255, 1000);
-        talon.setStatusFramePeriod(StatusFrameEnhanced.Status_7_CommStatus, 255, 1000);
-        talon.setStatusFramePeriod(StatusFrameEnhanced.Status_8_PulseWidth, 255, 1000);
-        talon.setStatusFramePeriod(StatusFrameEnhanced.Status_9_MotProfBuffer, 255, 1000);
-        talon.setStatusFramePeriod(StatusFrameEnhanced.Status_10_MotionMagic, 255, 1000);
-        talon.setStatusFramePeriod(StatusFrameEnhanced.Status_11_UartGadgeteer, 255, 1000);
-        talon.setStatusFramePeriod(StatusFrameEnhanced.Status_12_Feedback1, 255, 1000);
-        talon.setStatusFramePeriod(StatusFrameEnhanced.Status_13_Base_PIDF0, 255, 1000);
-        talon.setStatusFramePeriod(StatusFrameEnhanced.Status_14_Turn_PIDF1, 255, 1000);
-    }
-
     public RotationArmsIOComp(int leftMotorID, int rightMotorID, int leftEncoderID, int rightEncoderID) {
         
-        leftMotor = new TalonSRX(leftMotorID);
-        rightMotor = new TalonSRX(rightMotorID);
+        leftMotor = new CANSparkMax(leftMotorID, MotorType.kBrushed);
+        rightMotor = new CANSparkMax(rightMotorID, MotorType.kBrushed);
 
         leftEncoder = new DutyCycleEncoder(leftEncoderID);
         rightEncoder = new DutyCycleEncoder(rightEncoderID);
 
-        setFramePeriods(leftMotor, false);
-        setFramePeriods(rightMotor, false);
+        leftMotor.restoreFactoryDefaults();
+        rightMotor.restoreFactoryDefaults();
 
-        leftMotor.configFactoryDefault();
-        rightMotor.configFactoryDefault();
-
-        leftMotor.setNeutralMode(NeutralMode.Brake);
-        rightMotor.setNeutralMode(NeutralMode.Brake);
+        leftMotor.setIdleMode(IdleMode.kBrake);
+        rightMotor.setIdleMode(IdleMode.kBrake);
 
         leftEncoder.setDistancePerRotation(2 * Math.PI);
         rightEncoder.setDistancePerRotation(2 * Math.PI);
 
-        leftMotor.configVoltageCompSaturation(12, 1000);
-        leftMotor.enableVoltageCompensation(true);
-        rightMotor.configVoltageCompSaturation(12, 1000);
-        rightMotor.enableVoltageCompensation(true);
+        leftMotor.enableVoltageCompensation(12.0);
+        rightMotor.enableVoltageCompensation(12.0);
 
-        leftMotor.configNeutralDeadband(0, 1000);
-        rightMotor.configNeutralDeadband(0, 1000);
+        //can't do this for Spark Maxes
+        //leftMotor.configNeutralDeadband(0, 1000);
+        //rightMotor.configNeutralDeadband(0, 1000);
 
         leftMotor.setInverted(false);
         rightMotor.setInverted(true);
@@ -103,12 +80,12 @@ public class RotationArmsIOComp implements RotationArmsIO {
 
     @Override
     public void setLeftVoltage(double volts) {
-        leftMotor.set(ControlMode.PercentOutput, volts/12);
+        leftMotor.set(volts/12);
     }
 
     @Override
     public void setRightVoltage(double volts) {
-        rightMotor.set(ControlMode.PercentOutput, volts/12);
+        rightMotor.set(volts/12);
     }
 
     @Override

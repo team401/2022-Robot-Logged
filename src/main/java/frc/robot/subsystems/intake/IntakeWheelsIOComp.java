@@ -8,9 +8,10 @@ import frc.robot.Constants.CANDevices;
 
 public class IntakeWheelsIOComp implements IntakeWheelsIO {
 
-    private final CANSparkMax intakeMotor = new CANSparkMax(CANDevices.intakeMotorID, MotorType.kBrushed);
+    private final CANSparkMax intakeMotor;
 
     public IntakeWheelsIOComp() {
+        intakeMotor = new CANSparkMax(CANDevices.intakeMotorID, MotorType.kBrushed);
         intakeMotor.setIdleMode(IdleMode.kCoast);
         intakeMotor.setInverted(true);
     }

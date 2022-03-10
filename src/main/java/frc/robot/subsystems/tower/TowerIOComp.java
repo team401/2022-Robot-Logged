@@ -10,13 +10,17 @@ import frc.robot.Constants.DIOChannels;
 
 public class TowerIOComp implements TowerIO {
 
-    private final CANSparkMax conveyorMotor = new CANSparkMax(CANDevices.conveyorMotorID, MotorType.kBrushed);
-    private final CANSparkMax indexMotor = new CANSparkMax(CANDevices.indexMotorID, MotorType.kBrushed);
+    private final CANSparkMax conveyorMotor;
+    private final CANSparkMax indexMotor;
 
-    private final DigitalInput bottomBanner = new DigitalInput(DIOChannels.topBannerPort);
-    private final DigitalInput topBanner = new DigitalInput(DIOChannels.bottomBannerPort);
+    private final DigitalInput bottomBanner;
+    private final DigitalInput topBanner;
 
     public TowerIOComp() {
+        conveyorMotor = new CANSparkMax(CANDevices.conveyorMotorID, MotorType.kBrushed);
+        indexMotor = new CANSparkMax(CANDevices.indexMotorID, MotorType.kBrushed);
+        bottomBanner = new DigitalInput(DIOChannels.topBannerPort);
+        topBanner = new DigitalInput(DIOChannels.bottomBannerPort);
 
         conveyorMotor.setIdleMode(IdleMode.kBrake);
         indexMotor.setIdleMode(IdleMode.kCoast);
@@ -42,5 +46,5 @@ public class TowerIOComp implements TowerIO {
     public void setIndexWheelsPercent(double percent) {
         indexMotor.set(percent);
     }
-    
+
 }
