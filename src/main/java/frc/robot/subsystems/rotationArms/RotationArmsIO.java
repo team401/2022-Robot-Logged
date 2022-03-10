@@ -26,8 +26,8 @@ public interface RotationArmsIO {
 
     void resetControllers();
 
-    void setLeftVoltage(double volts);
-    void setRightVoltage(double volts);
+    void setLeftPercent(double percent);
+    void setRightPercent(double percent);
 
     void setLeftDesiredPositionRad(double desiredRadians);
     void setRightDesiredPositionRad(double desiredRadians);

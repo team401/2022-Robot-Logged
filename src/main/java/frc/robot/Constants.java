@@ -105,14 +105,10 @@ public final class Constants {
         public static final double leftRotationOffset = -1.18;
         public static final double rightRotationOffset = 1.01;
 
-        // TODO: Update values
-        public static final double leftTelescopeMaxHeight = 35;
-        public static final double rightTelescopeMaxHeight = 35;
-
         //vertical conversion from rotations
         public static final double linearConversion = 0.625 * Math.PI;
 
-        public static final double maxHeight = 67.5 - 29.29;
+        public static final double maxHeightMeters = 0.971;
 
         public static final double climberSequencePauseSeconds = 2;
 
