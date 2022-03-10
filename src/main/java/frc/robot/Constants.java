@@ -34,7 +34,18 @@ public final class Constants {
         public static final int backLeftRotationEncoderID = 12;
         public static final int backRightRotationEncoderID = 13;
 
+        public static final int intakeMotorID = 22; 
+        public static final int conveyorMotorID = 23;
+        public static final int indexMotorID = 24; 
+
         public static final int pigeonIMU = 20;
+    }
+
+    public static final class DIOChannels {
+
+        public static final int topBannerPort = 0;
+        public static final int bottomBannerPort = 1;
+
     }
     
     public static final class DriveConstants {
