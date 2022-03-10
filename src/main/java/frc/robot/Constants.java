@@ -90,5 +90,33 @@ public final class Constants {
 
     }
 
+    public static final class ClimberConstants {
+
+        // TODO: Update value
+        public static final double rotationArmGearRation = 1;
+
+        public static final double rotationEncoderConversionFactor = (2 * Math.PI) * 4096 / rotationArmGearRation;
+
+        public static final double intakeArmPosition = 0.75;
+        public static final double climbArmPosition = 0.35;
+        public static final double defaultArmPosition = -0.1;
+
+        // measured offsets
+        public static final double leftRotationOffset = -1.18;
+        public static final double rightRotationOffset = 1.01;
+
+        // TODO: Update values
+        public static final double leftTelescopeMaxHeight = 35;
+        public static final double rightTelescopeMaxHeight = 35;
+
+        //vertical conversion from rotations
+        public static final double linearConversion = 0.625 * Math.PI;
+
+        public static final double maxHeight = 67.5 - 29.29;
+
+        public static final double climberSequencePauseSeconds = 2;
+
+    }
+
 }
 
