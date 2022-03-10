@@ -21,6 +21,6 @@ public interface IntakeWheelsIO {
     }
 
     void updateInputs(IntakeWheelsIOInput inputs);
-    void setIntakeWheelsPercent(double percent);
+    void setPercent(double percent);
     
 }

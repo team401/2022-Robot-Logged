@@ -1,4 +1,4 @@
-package frc.robot.subsystems.drive.Turret;
+package frc.robot.subsystems.turret;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
@@ -7,39 +7,34 @@ import com.ctre.phoenix.motorcontrol.RemoteFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.RemoteSensorSource;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoderStatusFrame;
 
 import edu.wpi.first.math.util.Units;
-import frc.robot.Constants.SuperStructureConstants;
+import frc.robot.Constants.TurretConstants;
+import frc.robot.Constants.CANDevices;
 
 public class TurretIOComp implements TurretIO {
 
-    private final TalonFX turretMotor;
-    private final CANCoder turretEncoder;
+    private final TalonFX turretMotor = new TalonFX(CANDevices.turretMotorID);
+    private final CANCoder turretEncoder = new CANCoder(CANDevices.turretEncoderID);
 
-    public TurretIOComp(int turretMotorID, int turretEncoderID) {
-
-       turretMotor = new TalonFX(turretMotorID);
-       turretEncoder = new CANCoder(turretEncoderID);
-
+    public TurretIOComp() {
        turretMotor.configFactoryDefault(1000);
-       turretMotor.configSelectedFeedbackSensor(RemoteFeedbackDevice.RemoteSensor0);
-       turretMotor.configRemoteFeedbackFilter(SuperStructureConstants.turretEncoderID, RemoteSensorSource.CANCoder, 0);
        turretMotor.setNeutralMode(NeutralMode.Brake);
        turretMotor.configVoltageCompSaturation(12, 1000);
        turretMotor.enableVoltageCompensation(true);
        turretMotor.configNeutralDeadband(0, 1000);
+       setFramePeriods(turretMotor);
 
        turretEncoder.configFactoryDefault(1000);
-       turretEncoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 20, 1000);
+       turretEncoder.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 10, 1000);
        turretEncoder.setStatusFramePeriod(CANCoderStatusFrame.VbatAndFaults, 255, 1000);
-       turretEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180, 1000);
+       turretEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360, 1000);
     }
 
-    private static void setFramePeriods(TalonFX talon, boolean needMotorSensor) {
+    private static void setFramePeriods(TalonFX talon) {
         talon.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 255, 1000);
         talon.setStatusFramePeriod(StatusFrameEnhanced.Status_3_Quadrature, 255, 1000);
         talon.setStatusFramePeriod(StatusFrameEnhanced.Status_4_AinTempVbat, 255, 1000);
@@ -57,45 +52,31 @@ public class TurretIOComp implements TurretIO {
 
     @Override
     public void updateInputs(TurretIOInputs inputs) {
-
-        inputs.PositionRad = Units.degreesToRadians(turretEncoder.getAbsolutePosition());
-        inputs.VelocityRadPerS = Units.degreesToRadians(turretEncoder.getVelocity());
-        
+        inputs.positionRad = Units.degreesToRadians(turretEncoder.getPosition());
+        inputs.velocityRadPerS = Units.degreesToRadians(turretEncoder.getVelocity());
+        inputs.current = turretMotor.getSupplyCurrent();
     }
 
     @Override
     public void resetEncoderAbsolute() {
-
         turretEncoder.setPositionToAbsolute();
-
     }
 
     @Override
     public void setVoltage(double voltage) {
-
         turretMotor.set(ControlMode.PercentOutput, voltage/12);
-        
     }
         
 
     @Override
-    public void setVelocity(double velocityRadPerS, double ffVolts) {
-
-        double velocityRadiansPer100ms = velocityRadPerS / 10;
-        turretMotor.set(ControlMode.Velocity, velocityRadiansPer100ms, DemandType.ArbitraryFeedForward, ffVolts / 12);
-        
+    public void setVelocitySetpoint(double velocityRadPerS, double ffVolts) {
+        double velocityTicksPer100ms = velocityRadPerS / 10.0 / 2.0 / Math.PI * TurretConstants.turretGearRatio;
+        turretMotor.set(ControlMode.Velocity, velocityTicksPer100ms, DemandType.ArbitraryFeedForward, ffVolts / 12);
     }
 
     @Override
-    public void setSoftLimits() {
-        turretMotor.configForwardSoftLimitEnable(true);
-        turretMotor.configReverseSoftLimitEnable(true);
-
-        turretMotor.configForwardSoftLimitThreshold(
-            Units.radiansToDegrees(SuperStructureConstants.rightTurretExtremaRadians));
-        turretMotor.configReverseSoftLimitThreshold(
-            Units.radiansToDegrees(SuperStructureConstants.leftTurretExtremaRadians));
-    
+    public void setVelocityPD(double p, double d) {
+        turretMotor.config_kP(0, p, 1000);
+        turretMotor.config_kD(0, d, 1000);
     }
-    
 }

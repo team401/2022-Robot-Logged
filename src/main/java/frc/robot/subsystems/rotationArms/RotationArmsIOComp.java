@@ -1,4 +1,4 @@
-package frc.robot.subsystems.rotationArms;
+package frc.robot.subsystems.rotationarms;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -10,20 +10,11 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import frc.robot.Constants.ClimberConstants;
 
 public class RotationArmsIOComp implements RotationArmsIO {
-
     private final CANSparkMax leftMotor;
     private final CANSparkMax rightMotor;
 
     private final DutyCycleEncoder leftEncoder;
     private final DutyCycleEncoder rightEncoder;
-
-    private final ProfiledPIDController leftController = new ProfiledPIDController(3.5, 0, 0.1, 
-        new TrapezoidProfile.Constraints(0, 0));
-
-    private final ProfiledPIDController rightController = new ProfiledPIDController(3.5, 0, 0.1, 
-        new TrapezoidProfile.Constraints(0, 0));
-
-    private boolean killed = false;
 
     public RotationArmsIOComp(int leftMotorID, int rightMotorID, int leftEncoderID, int rightEncoderID) {
         
@@ -39,83 +30,29 @@ public class RotationArmsIOComp implements RotationArmsIO {
         leftMotor.setIdleMode(IdleMode.kBrake);
         rightMotor.setIdleMode(IdleMode.kBrake);
 
-        leftEncoder.setDistancePerRotation(2 * Math.PI);
-        rightEncoder.setDistancePerRotation(2 * Math.PI);
-
-        leftMotor.enableVoltageCompensation(12.0);
-        rightMotor.enableVoltageCompensation(12.0);
-
-        //can't do this for Spark Maxes
-        //leftMotor.configNeutralDeadband(0, 1000);
-        //rightMotor.configNeutralDeadband(0, 1000);
+        leftEncoder.setDutyCycleRange(1.0 / 1025.0, 1024.0 / 1025.0);
+        rightEncoder.setDutyCycleRange(1.0 / 1025.0, 1024.0 / 1025.0);
 
         leftMotor.setInverted(false);
         rightMotor.setInverted(true);
 
     }
 
-    public double getLeftPositionRad() {
-        if(leftEncoder.getDistance() + ClimberConstants.leftRotationOffset > Math.PI)
-            return leftEncoder.getDistance() + ClimberConstants.leftRotationOffset - 2 * Math.PI;
-        return (leftEncoder.getDistance() + ClimberConstants.leftRotationOffset);
-    }
-
-    public double getRightPositionRad() {
-        if(rightEncoder.getDistance() + ClimberConstants.rightRotationOffset > Math.PI)
-            return rightEncoder.getDistance() + ClimberConstants.rightRotationOffset - 2 * Math.PI;
-        return (rightEncoder.getDistance() + ClimberConstants.rightRotationOffset);
-    }
-
     @Override
     public void updateInputs(RotationArmIOInputs inputs) {
-        inputs.leftPositionRad = getLeftPositionRad();
-        inputs.rightPositionRad = getRightPositionRad();
+        inputs.leftPositionRad = leftEncoder.getDistance() * 2.0 * Math.PI - ClimberConstants.leftRotationOffset;
+        inputs.rightPositionRad = rightEncoder.getDistance() * 2.0 * Math.PI - ClimberConstants.rightRotationOffset;
+        inputs.leftCurrent = leftMotor.getOutputCurrent();
+        inputs.rightCurrent = rightMotor.getOutputCurrent();
     }
 
     @Override
-    public void resetControllers() {
-        leftController.reset(getLeftPositionRad());
-        rightController.reset(getRightPositionRad());
+    public void setLeftVolts(double volts) {
+        leftMotor.setVoltage(volts);
     }
 
     @Override
-    public void setLeftPercent(double percent) {
-        leftMotor.set(percent);
+    public void setRightVolts(double volts) {
+        rightMotor.setVoltage(volts);
     }
-
-    @Override
-    public void setRightPercent(double percent) {
-        rightMotor.set(percent);
-    }
-
-    @Override
-    public void setLeftDesiredPositionRad(double desiredRadians) {
-        double output = leftController.calculate(getLeftPositionRad(), desiredRadians);
-        if (!killed)
-            setLeftPercent(output);
-    }
-
-    @Override
-    public void setRightDesiredPositionRad(double desiredRadians) {
-        double output = rightController.calculate(getRightPositionRad(), desiredRadians);
-        if (!killed)
-            setRightPercent(output);
-    }
-
-    @Override
-    public void kill() {
-        setLeftPercent(0);
-        setLeftPercent(0);
-        killed = true;
-    }
-
-    @Override
-    public void setPD(double p, double d) {
-        leftController.setP(p);
-        leftController.setP(d);
-
-        rightController.setP(p);
-        rightController.setP(d);
-    }
-
 }

@@ -7,33 +7,31 @@ public interface TelescopesIO {
     public static class TelescopesIOInputs implements LoggableInputs {
         public double leftPositionRad;
         public double rightPositionRad;
+        public double leftCurrent;
+        public double rightCurrent;
 
         @Override
         public void toLog(LogTable table) {
-            table.put("Telescope Left Position Rad", leftPositionRad);
-            table.put("Telescope Right Position Rad", rightPositionRad);
+            table.put("LeftPositionRad", leftPositionRad);
+            table.put("RightPositionRad", rightPositionRad);
+            table.put("LeftCurrent", leftCurrent);
+            table.put("RightCurrent", rightCurrent);
         }
 
         @Override
         public void fromLog(LogTable table) {
-            leftPositionRad = table.getDouble("Telescope Left Position Rad", leftPositionRad);
-            rightPositionRad = table.getDouble("Telescope Right Position Rad", rightPositionRad);
+            leftPositionRad = table.getDouble("LeftPositionRad", leftPositionRad);
+            rightPositionRad = table.getDouble("RightPositionRad", rightPositionRad);
+            leftCurrent = table.getDouble("LeftCurrent", leftCurrent);
+            rightCurrent = table.getDouble("RightCurrent", rightCurrent);
         }
 
     }
 
     void updateInputs(TelescopesIOInputs inputs);
 
-    void resetLeftEncoder();
-    void resetRightEncoder();
+    void resetEncoders();
 
-    void resetControllers();
-
-    void setLeftPercent(double volts);
-    void setRightPercent(double volts);
-
-    void setLeftDesiredPositionRad(double desiredPosition);
-    void setRightDesiredPositionRad(double desiredPosition);
-
-    void setPD(double p, double d);
+    void setLeftVolts(double volts);
+    void setRightVolts(double volts);
 }

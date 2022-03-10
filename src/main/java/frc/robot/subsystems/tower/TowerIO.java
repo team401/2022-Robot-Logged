@@ -5,20 +5,27 @@ import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 public interface TowerIO {
     public static class TowerIOInputs implements LoggableInputs {
-        public boolean topState;
-        public boolean bottomState;
+        public boolean topSensor;
+        public boolean bottomSensor;
+
+        public double conveyorCurrent;
+        public double indexCurrent;
 
         //How the logger gets data
         @Override
         public void toLog(LogTable table) {
-            table.put("Top State", topState);
-            table.put("Bottom State", bottomState);
+            table.put("TopSensor", topSensor);
+            table.put("BottomSensor", bottomSensor);
+            table.put("ConveyorCurrent", conveyorCurrent);
+            table.put("IndexCurrent", indexCurrent);
         }
 
         @Override
         public void fromLog(LogTable table) {
-            topState = table.getBoolean("Top State", topState);
-            bottomState = table.getBoolean("Bottom State", bottomState);
+            topSensor = table.getBoolean("TopSensor", topSensor);
+            bottomSensor = table.getBoolean("BottomSensor", bottomSensor);
+            conveyorCurrent = table.getDouble("ConveyorCurrent", conveyorCurrent);
+            indexCurrent = table.getDouble("IndexCurrent", indexCurrent);
         }
 
     }

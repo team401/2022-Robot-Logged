@@ -22,7 +22,7 @@ public class IntakeWheelsIOComp implements IntakeWheelsIO {
     }
 
     @Override
-    public void setIntakeWheelsPercent(double percent) {
+    public void setPercent(double percent) {
         intakeMotor.set(percent);        
     }
     

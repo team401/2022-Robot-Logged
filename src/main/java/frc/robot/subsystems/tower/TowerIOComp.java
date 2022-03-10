@@ -23,18 +23,27 @@ public class TowerIOComp implements TowerIO {
         topBanner = new DigitalInput(DIOChannels.bottomBannerPort);
 
         conveyorMotor.setIdleMode(IdleMode.kBrake);
-        indexMotor.setIdleMode(IdleMode.kCoast);
+        indexMotor.setIdleMode(IdleMode.kBrake);
+
+        conveyorMotor.enableVoltageCompensation(12);
+        indexMotor.enableVoltageCompensation(12);
+
+        conveyorMotor.setSmartCurrentLimit(20);
+        indexMotor.setSmartCurrentLimit(20);
 
         conveyorMotor.setInverted(true);
 
+        // Uncomment to burn settings into sparks
+        indexMotor.burnFlash();
+        conveyorMotor.burnFlash();
     }
 
     @Override
     public void updateInputs(TowerIOInputs inputs) {
-
-        inputs.bottomState = !bottomBanner.get();
-        inputs.topState = !topBanner.get();
-        
+        inputs.bottomSensor = !bottomBanner.get();
+        inputs.topSensor = !topBanner.get();
+        inputs.conveyorCurrent = conveyorMotor.getOutputCurrent();
+        inputs.indexCurrent = indexMotor.getOutputCurrent();
     }
 
     @Override

@@ -1,4 +1,4 @@
-package frc.robot.subsystems.rotationArms;
+package frc.robot.subsystems.rotationarms;
 
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
@@ -7,33 +7,28 @@ public interface RotationArmsIO {
     public static class RotationArmIOInputs implements LoggableInputs {
         public double leftPositionRad;
         public double rightPositionRad;
+        public double leftCurrent;
+        public double rightCurrent;
 
         @Override
         public void toLog(LogTable table) {
-            table.put("RotationArmLeftPositionRad", leftPositionRad);
-            table.put("RotationArmRightPositionRad", rightPositionRad);
+            table.put("LeftPositionRad", leftPositionRad);
+            table.put("RightPositionRad", rightPositionRad);
+            table.put("LeftCurrent", leftCurrent);
+            table.put("RightCurrent", rightCurrent);
         }
 
         @Override
         public void fromLog(LogTable table) {
-            leftPositionRad = table.getDouble("RotationArmLeftPositionRad", leftPositionRad);
-            rightPositionRad = table.getDouble("RotationArmRightPositionRad", rightPositionRad);
+            leftPositionRad = table.getDouble("LeftPositionRad", leftPositionRad);
+            rightPositionRad = table.getDouble("RightPositionRad", rightPositionRad);
+            leftCurrent = table.getDouble("LeftCurrent", leftCurrent);
+            rightCurrent = table.getDouble("RightCurrent", rightCurrent);
         }
-
     }
 
     void updateInputs(RotationArmIOInputs inputs);
 
-    void resetControllers();
-
-    void setLeftPercent(double percent);
-    void setRightPercent(double percent);
-
-    void setLeftDesiredPositionRad(double desiredRadians);
-    void setRightDesiredPositionRad(double desiredRadians);
-
-    void kill();
-
-    void setPD(double p, double d);
-        
+    void setLeftVolts(double volts);
+    void setRightVolts(double volts);
 }

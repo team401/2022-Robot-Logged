@@ -39,6 +39,9 @@ public final class Constants {
         public static final int indexMotorID = 24; 
 
         public static final int pigeonIMU = 20;
+
+        public static final int turretMotorID = 0;
+        public static final int turretEncoderID = 0;
     }
 
     public static final class DIOChannels {
@@ -115,6 +118,29 @@ public final class Constants {
 
         public static final double climberSequencePauseSeconds = 2;
 
+    }
+
+    public static final class ShooterConstants {
+        public static final double hoodRackRatio = 1.0;
+        public static final double hoodOffsetRad = 0.0;
+    }
+
+    public static final class TurretConstants {
+        public static final double turretGearRatio = 1.0;
+
+        public static final TunableNumber velocityKp = new TunableNumber("Turret/VelKp");
+        public static final TunableNumber velocityKd = new TunableNumber("Turret/VelKd");
+        public static final TunableNumber positionKp = new TunableNumber("Turret/PosKp");
+        public static final TunableNumber positionKd = new TunableNumber("Turret/PosKd");
+
+        static {
+            velocityKp.setDefault(0);
+            velocityKd.setDefault(0);
+            positionKp.setDefault(0);
+            positionKd.setDefault(0);
+        }
+
+        public static final SimpleMotorFeedforward turretModel = new SimpleMotorFeedforward(0, 0);
     }
 
 }

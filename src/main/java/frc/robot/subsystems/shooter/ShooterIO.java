@@ -5,40 +5,36 @@ import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 public interface ShooterIO {
     public static class ShooterIOInputs implements LoggableInputs {
-
-        public double shooterRPM;
-        public double hoodPosition;
-        public double hoodVelocity;
+        public double flywheelSpeedRadPerS;
+        public double hoodPositionRad;
+        public double[] flywheelCurrent = new double[2];
+        public double hoodCurrent;
 
         @Override
         public void toLog(LogTable table) {
-            table.put("Shooter Speed (RPM)", shooterRPM);
-            table.put("Hood Position (rotations)", hoodPosition);          
-            table.put("Hood Velocity (rad/s)", hoodVelocity);            
-  
+            table.put("FlywheelSpeedRadPerS", flywheelSpeedRadPerS);
+            table.put("HoodPositionRad", hoodPositionRad);          
+            table.put("FlywheelCurrent", flywheelCurrent);         
+            table.put("HoodCurrent", hoodCurrent);
         }
 
         @Override
         public void fromLog(LogTable table) {
-            shooterRPM = table.getDouble("Shooter Speed (RPM)", shooterRPM);
-            hoodPosition = table.getDouble("Hood Position (rotations)", hoodPosition); 
-            hoodVelocity = table.getDouble("Hood Velocity (rad/s)", hoodVelocity);            
+            flywheelSpeedRadPerS = table.getDouble("FlywheelSpeedRadPerS", flywheelSpeedRadPerS);
+            hoodPositionRad = table.getDouble("HoodPositionRad", hoodPositionRad);          
+            flywheelCurrent = table.getDoubleArray("FlywheelCurrent", flywheelCurrent);         
+            hoodCurrent = table.getDouble("HoodCurrent", hoodCurrent);          
         }
-
     }
 
     void updateInputs(ShooterIOInputs inputs);
 
     void zeroHoodEncoder();
-    void hoodSetPosition(double position);
-    void hoodSetPercent(double percent);
-    void setHoodSoftLimits(float forward, float reverse);
-    void setShooterPercent(double percent);
-    void setShooterSpeed(double desiredRPM);
-
-    void setShooterPD(double p, double d);
+    void setHoodPositionSetpoint(double angleRad);
+    void setHoodVoltage(double volts);
     void setHoodPD(double p, double d);
-    void setTrapezoidalConstraints(double velocity, double acceleration);
 
-
+    void setFlywheelVelocity(double velocityRadPerS, double ffVolts);
+    void setFlywheelVoltage(double volts);
+    void setFlywheelPD(double p, double d);
 }
