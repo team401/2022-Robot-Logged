@@ -21,8 +21,8 @@ public interface DriveModuleIO {
         @Override
         public void fromLog(LogTable table) {
             driveVelocityRadPerS = table.getDouble("DriveVelocityRadPerS", driveVelocityRadPerS);
-            driveVelocityRadPerS = table.getDouble("DrivePositionRad", drivePositionRad);
-            driveVelocityRadPerS = table.getDouble("RotationPositionRad", rotationPositionRad);
+            drivePositionRad = table.getDouble("DrivePositionRad", drivePositionRad);
+            rotationPositionRad = table.getDouble("RotationPositionRad", rotationPositionRad);
             
         }
 
