@@ -1,4 +1,4 @@
-package frc.robot.subsystems.rotationarms;
+package frc.robot.subsystems.rotationArms;
 
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;

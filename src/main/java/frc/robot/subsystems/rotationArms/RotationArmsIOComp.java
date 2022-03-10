@@ -1,4 +1,4 @@
-package frc.robot.subsystems.rotationarms;
+package frc.robot.subsystems.rotationArms;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
