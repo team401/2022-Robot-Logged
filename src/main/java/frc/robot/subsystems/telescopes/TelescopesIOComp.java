@@ -1,17 +1,20 @@
 package frc.robot.subsystems.telescopes;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import frc.robot.Constants.ClimberConstants;
 
 public class TelescopesIOComp implements TelescopesIO {
 
-    CANSparkMax leftMotor;
-    CANSparkMax rightMotor;
+    private final CANSparkMax leftMotor;
+    private final CANSparkMax rightMotor;
+
+    private final RelativeEncoder leftEncoder;
+    private final RelativeEncoder rightEncoder;
 
     private final ProfiledPIDController leftController = new ProfiledPIDController(1.5, 0.0, 0.0,
             new TrapezoidProfile.Constraints(5, 5));
@@ -23,28 +26,32 @@ public class TelescopesIOComp implements TelescopesIO {
         leftMotor = new CANSparkMax(leftMotorID, MotorType.kBrushed);
         rightMotor = new CANSparkMax(rightMotorID, MotorType.kBrushed);
 
+        leftEncoder = leftMotor.getEncoder();
+        rightEncoder = rightMotor.getEncoder();
+
         leftMotor.setIdleMode(IdleMode.kBrake);
         rightMotor.setIdleMode(IdleMode.kBrake);
+
+        leftEncoder.setPositionConversionFactor(1.0/4096*2*Math.PI);
+        rightEncoder.setPositionConversionFactor(1.0/4096*2*Math.PI);
 
         leftMotor.setInverted(true);
         rightMotor.setInverted(false);
 
     }
 
-    public double getLeftPositionMeters() {
-        // pls help me D:
-        // this is a disaster
-        return leftMotor.getEncoder().getPosition();
+    public double getLeftPositionRad() {
+        return leftEncoder.getPosition();
     }
 
-    public double getRightPositionMeters() {
-        return rightMotor.getEncoder().getPosition();
+    public double getRightPositionRad() {
+        return rightEncoder.getPosition();
     }
 
     @Override
     public void updateInputs(TelescopesIOInputs inputs) {
-        inputs.leftPositionMeters = getLeftPositionMeters();
-        inputs.rightPositionMeters = getRightPositionMeters();
+        inputs.leftPositionRad = getLeftPositionRad();
+        inputs.rightPositionRad = getRightPositionRad();
     }
 
     @Override
@@ -59,30 +66,30 @@ public class TelescopesIOComp implements TelescopesIO {
 
     @Override
     public void resetControllers() {
-        leftController.reset(getLeftPositionMeters());
-        rightController.reset(getRightPositionMeters());
+        leftController.reset(getLeftPositionRad());
+        rightController.reset(getRightPositionRad());
 
     }
 
     @Override
     public void setLeftPercent(double percent) {
-        leftMotor.set(percent/12);
+        leftMotor.set(percent);
     }
 
     @Override
     public void setRightPercent(double percent) {
-        rightMotor.set(percent/12);
+        rightMotor.set(percent);
     }
 
     @Override
-    public void setLeftDesiredPositionMeters(double desiredPosition) {
-        double output = leftController.calculate(getLeftPositionMeters(), desiredPosition);
+    public void setLeftDesiredPositionRad(double desiredPosition) {
+        double output = leftController.calculate(getLeftPositionRad(), desiredPosition);
         setLeftPercent(output);
     }
 
     @Override
-    public void setRightDesiredPositionMeters(double desiredPosition) {
-        double output = rightController.calculate(getRightPositionMeters(), desiredPosition);
+    public void setRightDesiredPositionRad(double desiredPosition) {
+        double output = rightController.calculate(getRightPositionRad(), desiredPosition);
         setRightPercent(output);
     }
 

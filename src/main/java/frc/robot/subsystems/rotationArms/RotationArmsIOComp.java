@@ -80,12 +80,12 @@ public class RotationArmsIOComp implements RotationArmsIO {
 
     @Override
     public void setLeftPercent(double percent) {
-        leftMotor.set(percent/12);
+        leftMotor.set(percent);
     }
 
     @Override
     public void setRightPercent(double percent) {
-        rightMotor.set(percent/12);
+        rightMotor.set(percent);
     }
 
     @Override

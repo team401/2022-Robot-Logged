@@ -37,6 +37,7 @@ public interface ShooterIO {
     void setShooterSpeed(double desiredRPM);
 
     void setShooterPD(double p, double d);
+    void setHoodPD(double p, double d);
     void setTrapezoidalConstraints(double velocity, double acceleration);
 
 
