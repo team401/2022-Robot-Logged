@@ -54,13 +54,13 @@ public class RotationArmsIOComp implements RotationArmsIO {
 
     }
 
-    private double getLeftPositionRad() {
+    public double getLeftPositionRad() {
         if(leftEncoder.getDistance() + ClimberConstants.leftRotationOffset > Math.PI)
             return leftEncoder.getDistance() + ClimberConstants.leftRotationOffset - 2 * Math.PI;
         return (leftEncoder.getDistance() + ClimberConstants.leftRotationOffset);
     }
 
-    private double getRightPositionRad() {
+    public double getRightPositionRad() {
         if(rightEncoder.getDistance() + ClimberConstants.rightRotationOffset > Math.PI)
             return rightEncoder.getDistance() + ClimberConstants.rightRotationOffset - 2 * Math.PI;
         return (rightEncoder.getDistance() + ClimberConstants.rightRotationOffset);
