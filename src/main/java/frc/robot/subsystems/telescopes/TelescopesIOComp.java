@@ -65,25 +65,25 @@ public class TelescopesIOComp implements TelescopesIO {
     }
 
     @Override
-    public void setLeftVoltage(double volts) {
-        leftMotor.set(volts/12);
+    public void setLeftPercent(double percent) {
+        leftMotor.set(percent/12);
     }
 
     @Override
-    public void setRightVoltage(double volts) {
-        rightMotor.set(volts/12);
+    public void setRightPercent(double percent) {
+        rightMotor.set(percent/12);
     }
 
     @Override
     public void setLeftDesiredPositionMeters(double desiredPosition) {
         double output = leftController.calculate(getLeftPositionMeters(), desiredPosition);
-        setLeftVoltage(output);
+        setLeftPercent(output);
     }
 
     @Override
     public void setRightDesiredPositionMeters(double desiredPosition) {
         double output = rightController.calculate(getRightPositionMeters(), desiredPosition);
-        setRightVoltage(output);
+        setRightPercent(output);
     }
 
     @Override

@@ -29,8 +29,8 @@ public interface TelescopesIO {
 
     void resetControllers();
 
-    void setLeftVoltage(double volts);
-    void setRightVoltage(double volts);
+    void setLeftPercent(double volts);
+    void setRightPercent(double volts);
 
     void setLeftDesiredPositionMeters(double desiredPosition);
     void setRightDesiredPositionMeters(double desiredPosition);

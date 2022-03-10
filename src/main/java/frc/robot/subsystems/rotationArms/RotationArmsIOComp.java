@@ -79,33 +79,33 @@ public class RotationArmsIOComp implements RotationArmsIO {
     }
 
     @Override
-    public void setLeftVoltage(double volts) {
-        leftMotor.set(volts/12);
+    public void setLeftPercent(double percent) {
+        leftMotor.set(percent/12);
     }
 
     @Override
-    public void setRightVoltage(double volts) {
-        rightMotor.set(volts/12);
+    public void setRightPercent(double percent) {
+        rightMotor.set(percent/12);
     }
 
     @Override
     public void setLeftDesiredPositionRad(double desiredRadians) {
         double output = leftController.calculate(getLeftPositionRad(), desiredRadians);
         if (!killed)
-            setLeftVoltage(output);
+            setLeftPercent(output);
     }
 
     @Override
     public void setRightDesiredPositionRad(double desiredRadians) {
         double output = rightController.calculate(getRightPositionRad(), desiredRadians);
         if (!killed)
-            setRightVoltage(output);
+            setRightPercent(output);
     }
 
     @Override
     public void kill() {
-        setLeftVoltage(0);
-        setLeftVoltage(0);
+        setLeftPercent(0);
+        setLeftPercent(0);
         killed = true;
     }
 
