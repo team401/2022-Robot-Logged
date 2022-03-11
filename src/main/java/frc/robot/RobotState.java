@@ -50,11 +50,10 @@ public class RobotState {
      * @param fieldToTarget  The position of the target in the field frame to start
      *                       with. Vision will update this over time.
      */
-    public void forceRobotPose(Pose2d fieldToVehicle, Pose2d fieldToTarget) {
+    public void forceRobotPose(Pose2d fieldToVehicle) {
         Pose2d bootToVehicle = this.bootToVehicle.getLatest().orElseThrow().getPose();
         Pose2d vehicleToBoot = GeomUtil.poseInverse(bootToVehicle);
         fieldToBoot = fieldToVehicle.transformBy(GeomUtil.poseToTransform(vehicleToBoot));
-        latestMeasuredFieldToTarget = fieldToTarget;
     }
 
     public void recordOdometryObservations(Pose2d bootToVehicle, ChassisSpeeds velocity) {

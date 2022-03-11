@@ -10,6 +10,7 @@ import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.ShooterConstants;
 
 public class ShooterIOComp implements ShooterIO {
@@ -21,10 +22,10 @@ public class ShooterIOComp implements ShooterIO {
     private final SparkMaxPIDController hoodController;
 
     public ShooterIOComp(int leftShooterID, int rightShooterID, int hoodID) {
-        leftShooterMotor = new TalonFX(leftShooterID);
-        rightShooterMotor = new TalonFX(rightShooterID);
+        leftShooterMotor = new TalonFX(CANDevices.leftShooterMotorID);
+        rightShooterMotor = new TalonFX(CANDevices.rightShooterMotorID);
 
-        hoodMotor = new CANSparkMax(hoodID, MotorType.kBrushless);
+        hoodMotor = new CANSparkMax(CANDevices.hoodMotorID, MotorType.kBrushless);
 
         rightShooterMotor.configFactoryDefault();
         leftShooterMotor.configFactoryDefault();

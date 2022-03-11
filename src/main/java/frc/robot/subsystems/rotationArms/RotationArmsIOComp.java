@@ -7,7 +7,9 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.ClimberConstants;
+import frc.robot.Constants.DIOChannels;
 
 public class RotationArmsIOComp implements RotationArmsIO {
     private final CANSparkMax leftMotor;
@@ -16,13 +18,13 @@ public class RotationArmsIOComp implements RotationArmsIO {
     private final DutyCycleEncoder leftEncoder;
     private final DutyCycleEncoder rightEncoder;
 
-    public RotationArmsIOComp(int leftMotorID, int rightMotorID, int leftEncoderID, int rightEncoderID) {
+    public RotationArmsIOComp() {
         
-        leftMotor = new CANSparkMax(leftMotorID, MotorType.kBrushed);
-        rightMotor = new CANSparkMax(rightMotorID, MotorType.kBrushed);
+        leftMotor = new CANSparkMax(CANDevices.leftRotationMotorID, MotorType.kBrushed);
+        rightMotor = new CANSparkMax(CANDevices.rightRotationMotorID, MotorType.kBrushed);
 
-        leftEncoder = new DutyCycleEncoder(leftEncoderID);
-        rightEncoder = new DutyCycleEncoder(rightEncoderID);
+        leftEncoder = new DutyCycleEncoder(DIOChannels.leftRotationArmEncoder);
+        rightEncoder = new DutyCycleEncoder(DIOChannels.rightRotationArmEncoder);
 
         leftMotor.restoreFactoryDefaults();
         rightMotor.restoreFactoryDefaults();
@@ -39,7 +41,7 @@ public class RotationArmsIOComp implements RotationArmsIO {
     }
 
     @Override
-    public void updateInputs(RotationArmIOInputs inputs) {
+    public void updateInputs(RotationArmsIOInputs inputs) {
         inputs.leftPositionRad = leftEncoder.getDistance() * 2.0 * Math.PI - ClimberConstants.leftRotationOffset;
         inputs.rightPositionRad = rightEncoder.getDistance() * 2.0 * Math.PI - ClimberConstants.rightRotationOffset;
         inputs.leftCurrent = leftMotor.getOutputCurrent();
@@ -55,4 +57,5 @@ public class RotationArmsIOComp implements RotationArmsIO {
     public void setRightVolts(double volts) {
         rightMotor.setVoltage(volts);
     }
+
 }

@@ -5,6 +5,9 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxRelativeEncoder.Type;
+
+import frc.robot.Constants.CANDevices;
+
 public class TelescopesIOComp implements TelescopesIO {
 
     private final CANSparkMax leftMotor;
@@ -13,9 +16,9 @@ public class TelescopesIOComp implements TelescopesIO {
     private final RelativeEncoder leftEncoder;
     private final RelativeEncoder rightEncoder;
 
-    public TelescopesIOComp(int leftMotorID, int rightMotorID) {
-        leftMotor = new CANSparkMax(leftMotorID, MotorType.kBrushed);
-        rightMotor = new CANSparkMax(rightMotorID, MotorType.kBrushed);
+    public TelescopesIOComp() {
+        leftMotor = new CANSparkMax(CANDevices.leftTelescopingMotorID, MotorType.kBrushed);
+        rightMotor = new CANSparkMax(CANDevices.leftTelescopingMotorID, MotorType.kBrushed);
 
         leftMotor.setInverted(true);
         rightMotor.setInverted(false);

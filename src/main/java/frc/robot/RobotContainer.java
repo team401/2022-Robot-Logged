@@ -25,9 +25,12 @@ import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveAngleIOComp;
 import frc.robot.subsystems.drive.DriveModuleIO;
 import frc.robot.subsystems.drive.DriveModuleIOComp;
+import frc.robot.subsystems.rotationArms.RotationArmsIOComp;
+import frc.robot.subsystems.rotationArms.RotationArmsSubsystem;
 
 public class RobotContainer {
   private final Drive drive;
+  private final RotationArmsSubsystem rotationArmsSubsystem;
 
   private final XboxController gamepad = new XboxController(0);
 
@@ -45,6 +48,8 @@ public class RobotContainer {
         new DriveModuleIOComp(CANDevices.backRightDriveMotorID, CANDevices.backRightRotationMotorID,
             CANDevices.backRightRotationEncoderID, DriveConstants.backRightAngleOffset)
     }, new DriveAngleIOComp());
+
+    rotationArmsSubsystem = new RotationArmsSubsystem(new RotationArmsIOComp());
 
     // Create commands
     driveWithJoysticks = new DriveWithJoysticks(drive, () -> -gamepad.getLeftY(),

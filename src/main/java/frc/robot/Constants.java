@@ -29,25 +29,37 @@ public final class Constants {
         public static final int backRightDriveMotorID = 6;
         public static final int backRightRotationMotorID = 7;
 
+        public static final int leftShooterMotorID = 8;
+        public static final int rightShooterMotorID = 9;
+
         public static final int frontLeftRotationEncoderID = 10;
         public static final int frontRightRotationEncoderID = 11;
         public static final int backLeftRotationEncoderID = 12;
         public static final int backRightRotationEncoderID = 13;
+
+        public static final int leftRotationMotorID = 14;
+        public static final int rightRotationMotorID = 15;
+        public static final int leftTelescopingMotorID = 16;
+        public static final int rightTelescopingMotorID = 17;
+
+        public static final int turretMotorID = 18;
+        public static final int hoodMotorID = 19;
+        public static final int turretEncoderID = 30;
 
         public static final int intakeMotorID = 22; 
         public static final int conveyorMotorID = 23;
         public static final int indexMotorID = 24; 
 
         public static final int pigeonIMU = 20;
-
-        public static final int turretMotorID = 0;
-        public static final int turretEncoderID = 0;
     }
 
     public static final class DIOChannels {
 
         public static final int topBannerPort = 0;
         public static final int bottomBannerPort = 1;
+
+        public static final int leftRotationArmEncoder = 2;
+        public static final int rightRotationArmEncoder = 3;
 
     }
     
@@ -58,7 +70,7 @@ public final class Constants {
         public static final double maxAngularSpeedRadPerS = 2 * Math.PI;
 
         // TODO measure
-        public static final double wheelRadiusM = Units.inchesToMeters(2);
+        public static final double wheelRadiusM = Units.inchesToMeters(3.9028) / 2.0;
 
         // Measured on 3/9/22 with machinist's square
         // TODO verify these with 1x1 and clamping
@@ -141,6 +153,11 @@ public final class Constants {
         }
 
         public static final SimpleMotorFeedforward turretModel = new SimpleMotorFeedforward(0, 0);
+    }
+
+    public static final class AutoConstants {
+        public static final double kMaxSpeedMetersPerSecond = 0.0;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 0.0;
     }
 
 }

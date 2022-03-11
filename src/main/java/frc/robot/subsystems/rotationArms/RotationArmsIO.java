@@ -4,7 +4,7 @@ import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 public interface RotationArmsIO {
-    public static class RotationArmIOInputs implements LoggableInputs {
+    public static class RotationArmsIOInputs implements LoggableInputs {
         public double leftPositionRad;
         public double rightPositionRad;
         public double leftCurrent;
@@ -27,7 +27,7 @@ public interface RotationArmsIO {
         }
     }
 
-    void updateInputs(RotationArmIOInputs inputs);
+    void updateInputs(RotationArmsIOInputs inputs);
 
     void setLeftVolts(double volts);
     void setRightVolts(double volts);
