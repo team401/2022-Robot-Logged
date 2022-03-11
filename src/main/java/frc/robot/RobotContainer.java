@@ -74,11 +74,13 @@ public class RobotContainer {
         Command moveUp = new InstantCommand(telescopes::jogUp);
         Command moveDown = new InstantCommand(telescopes::jogDown);
 
-        Command climbSequence = telescopes.moveToStow.alongWith(rotationArms.moveToStow)
-                .andThen(telescopes.waitForMove)
-                .andThen(rotationArms.moveToClimbGrab)
-                .andThen(rotationArms.waitForMove)
-                .andThen(telescopes.moveToPop);
+        Command climbSequence = telescopes.moveToStow.alongWith(rotationArms.moveToStow) // Start moving hooks down and make sure rotation arms are out of the way
+                .andThen(telescopes.waitForMove) // Wait for the telescopes to finish retracting all the way
+                .andThen(rotationArms.moveToClimbGrab) // Move the rotation arms into the position above the rung
+                .andThen(rotationArms.waitForMove) // Wait for the rotation arms to finish moving
+                .andThen(telescopes.moveToPop) // Move the telescopes up a bit to clear them off the rung
+                .andThen(telescopes.waitForMove);
+                // TODO: swing rotation arms + retract telescopes?
 
         JoystickButton b = new JoystickButton(gamepad, Button.kB.value);
         b.whileHeld(moveUp);
