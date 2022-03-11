@@ -46,14 +46,14 @@ public class DriveWithJoysticks extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double xMPerS = xProcessor.process(xPercent.getAsDouble()) * DriveConstants.maxSpeedMPerS;
-    double yMPerS = yProcessor.process(yPercent.getAsDouble()) * DriveConstants.maxSpeedMPerS;
-    double omegaRadPerS = omegaProcessor.process(omegaPercent.getAsDouble()) * DriveConstants.maxAngularSpeedRadPerS;
+    double xMPerS = xProcessor.processJoystickInputs(xPercent.getAsDouble()) * DriveConstants.maxSpeedMPerS;
+    double yMPerS = yProcessor.processJoystickInputs(yPercent.getAsDouble()) * DriveConstants.maxSpeedMPerS;
+    double omegaRadPerS = omegaProcessor.processJoystickInputs(omegaPercent.getAsDouble()) * DriveConstants.maxAngularSpeedRadPerS;
 
     Logger.getInstance().recordOutput("DriveWithJoysticks/SpeedMPerS", new double[]{xMPerS, yMPerS});
     Logger.getInstance().recordOutput("DriveWithJoysticks/OmegaRadPerS", omegaRadPerS);
 
-    // Convert to field relative speeds
+    //Convert to field relative speeds
     ChassisSpeeds targetSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xMPerS, yMPerS, omegaRadPerS, RobotState.getInstance().getLatestFieldToVehicle().getRotation());
     //ChassisSpeeds targetSpeeds = new ChassisSpeeds(xMPerS, yMPerS, omegaRadPerS);
 
@@ -79,16 +79,20 @@ public class DriveWithJoysticks extends CommandBase {
       state = new TrapezoidProfile.State(value, 0.0);
     }
 
-    public double process(double value) {
+    //If joystick input exceeds deadbands, 
+    public double processJoystickInputs(double value) {
       double scaledValue = 0.0;
       if (Math.abs(value) > deadband) {
+        //Joystick input that starts after deadband as ratio of total possible joystick inputs
         scaledValue = (Math.abs(value) - deadband) / (1 - deadband);
+        //scaled value is squared 
         scaledValue = Math.copySign(scaledValue * scaledValue, value);
       }
       TrapezoidProfile profile = new TrapezoidProfile(
           new TrapezoidProfile.Constraints(99999,
               DriveConstants.driveMaxJerk),
           new TrapezoidProfile.State(scaledValue, 0.0), state);
+      //calculate velocity and position 0.02 seconds in the future
       state = profile.calculate(0.02);
       return state.position;
     }

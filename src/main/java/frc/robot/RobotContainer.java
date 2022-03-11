@@ -52,8 +52,14 @@ public class RobotContainer {
     rotationArmsSubsystem = new RotationArmsSubsystem(new RotationArmsIOComp());
 
     // Create commands
-    driveWithJoysticks = new DriveWithJoysticks(drive, () -> -gamepad.getLeftY(),
-        () -> -gamepad.getLeftX(), () -> -gamepad.getRightX());
+    driveWithJoysticks = new DriveWithJoysticks(
+
+        drive, 
+        () -> -gamepad.getLeftY(),
+        () -> -gamepad.getLeftX(), 
+        () -> -gamepad.getRightX()
+        
+    );
 
     // Bind default commands
     drive.setDefaultCommand(driveWithJoysticks);
