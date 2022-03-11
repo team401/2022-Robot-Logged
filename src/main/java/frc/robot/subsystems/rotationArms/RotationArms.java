@@ -18,13 +18,19 @@ public class RotationArms extends SubsystemBase {
     private final RotationArmsIO io;
     private final RotationArmsIOInputs ioInputs = new RotationArmsIOInputs();
 
+    // Speed and acceleration for regular moves
+    private final TrapezoidProfile.Constraints normalConstraints = new TrapezoidProfile.Constraints(2 * Math.PI / 2, 10);
+
+    // Speed and acceleration for slower climb moves
+    private final TrapezoidProfile.Constraints climbConstraints = new TrapezoidProfile.Constraints(0.5 * Math.PI / 2, 3);
+
     private final ProfiledPIDController leftController = new ProfiledPIDController(
         ClimberConstants.rotationArmKp.get(), 0, ClimberConstants.rotationArmKd.get(), 
-        new TrapezoidProfile.Constraints(2 * Math.PI / 2, 10));
+        normalConstraints);
 
     private final ProfiledPIDController rightController = new ProfiledPIDController(
         ClimberConstants.rotationArmKp.get(), 0, ClimberConstants.rotationArmKd.get(),
-        new TrapezoidProfile.Constraints(2 * Math.PI / 2, 10));
+        normalConstraints);
 
     public RotationArms(RotationArmsIO io) {
         this.io = io;
@@ -80,6 +86,15 @@ public class RotationArms extends SubsystemBase {
     }
 
     public void setDesiredPosition(double positionRad) {
+        leftController.setConstraints(normalConstraints);
+        rightController.setConstraints(normalConstraints);
+        leftController.setGoal(positionRad);
+        rightController.setGoal(positionRad);
+    }
+
+    public void setDesiredPositionSlow(double positionRad) {
+        leftController.setConstraints(climbConstraints);
+        rightController.setConstraints(climbConstraints);
         leftController.setGoal(positionRad);
         rightController.setGoal(positionRad);
     }
@@ -94,7 +109,7 @@ public class RotationArms extends SubsystemBase {
     public final Command moveToStow = new InstantCommand(() -> setDesiredPosition(ClimberConstants.stowPositionRad), this);
     public final Command moveToClimbGrab = new InstantCommand(() -> setDesiredPosition(ClimberConstants.climbGrabPositionRad), this);
     public final Command moveToIntake = new InstantCommand(() -> setDesiredPosition(ClimberConstants.intakePositionRad), this);
-    public final Command moveToClimbSwing = new InstantCommand(() -> setDesiredPosition(ClimberConstants.climbSwingPositionRad), this);
-
+    public final Command moveToClimbSwing = new InstantCommand(() -> setDesiredPositionSlow(ClimberConstants.climbSwingPositionRad), this);
+    // Maybe add another command for after swinging out to move them slightly back while telescoping down?
     
 }
