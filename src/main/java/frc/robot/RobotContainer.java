@@ -47,8 +47,14 @@ public class RobotContainer {
     }, new DriveAngleIOComp());
 
     // Create commands
-    driveWithJoysticks = new DriveWithJoysticks(drive, () -> -gamepad.getLeftY(),
-        () -> -gamepad.getLeftX(), () -> -gamepad.getRightX());
+    driveWithJoysticks = new DriveWithJoysticks(
+
+        drive, 
+        () -> -gamepad.getLeftY(),
+        () -> -gamepad.getLeftX(), 
+        () -> -gamepad.getRightX()
+        
+    );
 
     // Bind default commands
     drive.setDefaultCommand(driveWithJoysticks);
