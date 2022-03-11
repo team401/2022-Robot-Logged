@@ -1,8 +1,9 @@
-package frc.robot.subsystems.rotationArms;
+package frc.robot.subsystems.rotationarms;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -35,9 +36,22 @@ public class RotationArmsIOComp implements RotationArmsIO {
         leftEncoder.setDutyCycleRange(1.0 / 1025.0, 1024.0 / 1025.0);
         rightEncoder.setDutyCycleRange(1.0 / 1025.0, 1024.0 / 1025.0);
 
+        leftMotor.setSmartCurrentLimit(20);
+        rightMotor.setSmartCurrentLimit(20);
+
+        setStatusFrames(leftMotor);
+        setStatusFrames(rightMotor);
+
         leftMotor.setInverted(false);
         rightMotor.setInverted(true);
 
+    }
+
+    private static void setStatusFrames(CANSparkMax spark) {
+        spark.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 500);
+        spark.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
+        spark.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
+        spark.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 500);
     }
 
     @Override

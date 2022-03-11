@@ -1,13 +1,15 @@
-package frc.robot.subsystems.rotationArms;
+package frc.robot.subsystems.rotationarms;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimberConstants;
-import frc.robot.subsystems.rotationArms.RotationArmsIO.RotationArmsIOInputs;
+import frc.robot.subsystems.rotationarms.RotationArmsIO.RotationArmsIOInputs;
 
 public class RotationArmsSubsystem extends SubsystemBase {
 
@@ -16,11 +18,11 @@ public class RotationArmsSubsystem extends SubsystemBase {
 
     private final ProfiledPIDController leftController = new ProfiledPIDController(
         ClimberConstants.rotationArmKp.get(), 0, ClimberConstants.rotationArmKd.get(), 
-        new TrapezoidProfile.Constraints(5, 5));
+        new TrapezoidProfile.Constraints(Math.PI / 2, 10));
 
     private final ProfiledPIDController rightController = new ProfiledPIDController(
         ClimberConstants.rotationArmKp.get(), 0, ClimberConstants.rotationArmKd.get(),
-        new TrapezoidProfile.Constraints(5, 5));
+        new TrapezoidProfile.Constraints(Math.PI / 2, 10));
 
     private double tolerance = Units.degreesToRadians(1.5);
 
@@ -28,35 +30,51 @@ public class RotationArmsSubsystem extends SubsystemBase {
     private double backBoundary = Units.degreesToRadians(-15.0);
 
     public RotationArmsSubsystem(RotationArmsIO io) {
-
         this.io = io;
+
+        leftController.setGoal(0);
+        rightController.setGoal(0);
 
     }
 
     @Override
     public void periodic() {
-
         io.updateInputs(ioInputs);
         Logger.getInstance().processInputs("RotationArms", ioInputs);
 
-        double leftOutput = leftController.calculate(ioInputs.leftPositionRad);
+        if (ClimberConstants.rotationArmKp.hasChanged() || ClimberConstants.rotationArmKd.hasChanged()) {
+            leftController.setPID(ClimberConstants.rotationArmKp.get(), 0, ClimberConstants.rotationArmKd.get());
+            rightController.setPID(ClimberConstants.rotationArmKp.get(), 0, ClimberConstants.rotationArmKd.get());
+        }
+
+        // Reset PID controllers if the robot is not enabled
+        if (DriverStation.isDisabled()) {
+            leftController.reset(ioInputs.leftPositionRad);
+            rightController.reset(ioInputs.rightPositionRad);
+        }
+
+        double leftMod = MathUtil.angleModulus(ioInputs.leftPositionRad);
+        double rightMod = MathUtil.angleModulus(ioInputs.rightPositionRad);
+
+        Logger.getInstance().recordOutput("RotationArms/LeftAngleModDeg", Units.radiansToDegrees(leftMod));
+        Logger.getInstance().recordOutput("RotationArms/RightAngleModDeg", Units.radiansToDegrees(rightMod));
+
+        double leftOutput = leftController.calculate(leftMod);
         io.setLeftVolts(leftOutput);
 
-        double rightOutput = leftController.calculate(ioInputs.rightPositionRad);
+        double rightOutput = rightController.calculate(rightMod);
         io.setRightVolts(rightOutput);
 
+        Logger.getInstance().recordOutput("RotationArms/LeftSetpointDeg", Units.radiansToDegrees(leftController.getSetpoint().position));
+        Logger.getInstance().recordOutput("RotationArms/RightSetpointDeg", Units.radiansToDegrees(rightController.getSetpoint().position));
     }
 
     public void setLeftPercent(double percent) {
-
         io.setLeftVolts(percent * 12);
-
     }
 
     public void setRightPercent(double percent) {
-
         io.setRightVolts(percent * 12);
-        
     }
 
     public void setDesiredPosition(double positionRad) {

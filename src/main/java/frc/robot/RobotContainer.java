@@ -23,7 +23,7 @@ import frc.robot.commands.drive.DriveWithJoysticks;
 import frc.robot.commands.drive.MeasureDriveKs;
 import frc.robot.subsystems.drive.*;
 import frc.robot.subsystems.intake.*;
-import frc.robot.subsystems.rotationArms.*;
+import frc.robot.subsystems.rotationarms.*;
 import frc.robot.subsystems.shooter.*;
 import frc.robot.subsystems.telescopes.*;
 import frc.robot.subsystems.tower.*;
@@ -31,12 +31,12 @@ import frc.robot.subsystems.turret.*;
 
 public class RobotContainer {
   private final Drive drive;
-  private final IntakeSubsystem intakeSubsystem;
+  //private final IntakeSubsystem intakeSubsystem;
   private final RotationArmsSubsystem rotationArmsSubsystem;
-  private final ShooterSubsystem shooterSubsystem;
-  private final TelescopesSubsystem telescopesSubsystem;
-  private final TowerSubsystem towerSubsystem;
-  private final TurretSubsystem turretSubsystem;
+  //private final ShooterSubsystem shooterSubsystem;
+  //private final TelescopesSubsystem telescopesSubsystem;
+  //private final TowerSubsystem towerSubsystem;
+  //private final TurretSubsystem turretSubsystem;
 
   private final XboxController gamepad = new XboxController(0);
 
@@ -55,12 +55,12 @@ public class RobotContainer {
             CANDevices.backRightRotationEncoderID, DriveConstants.backRightAngleOffset)
     }, new DriveAngleIOComp());
     
-    intakeSubsystem = new IntakeSubsystem(new IntakeWheelsIOComp());
+    //intakeSubsystem = new IntakeSubsystem(new IntakeWheelsIOComp());
     rotationArmsSubsystem = new RotationArmsSubsystem(new RotationArmsIOComp());
-    shooterSubsystem = new ShooterSubsystem(new ShooterIOComp());
-    telescopesSubsystem = new TelescopesSubsystem(new TelescopesIOComp());
-    towerSubsystem = new TowerSubsystem(new TowerIOComp());
-    turretSubsystem = new TurretSubsystem(new TurretIOComp());
+    //shooterSubsystem = new ShooterSubsystem(new ShooterIOComp());
+    //telescopesSubsystem = new TelescopesSubsystem(new TelescopesIOComp());
+    //towerSubsystem = new TowerSubsystem(new TowerIOComp());
+    //turretSubsystem = new TurretSubsystem(new TurretIOComp());
 
     // Create commands
     driveWithJoysticks = new DriveWithJoysticks(

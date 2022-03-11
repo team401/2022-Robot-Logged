@@ -126,8 +126,8 @@ public final class Constants {
         public static final double defaultArmPosition = -0.1;
 
         // measured offsets
-        public static final double leftRotationOffset = -1.18;
-        public static final double rightRotationOffset = 1.01;
+        public static final double leftRotationOffset = 0.43593915408829126;
+        public static final double rightRotationOffset = -0.7086562088848057;
 
         //vertical conversion from rotations
         public static final double linearConversion = 0.625 * Math.PI;
@@ -137,10 +137,15 @@ public final class Constants {
         public static final double climberSequencePauseSeconds = 2;
 
         //Tunable PD Numbers
-        public static TunableNumber rotationArmKp = new TunableNumber("rotationArmKp");
-        public static TunableNumber rotationArmKd = new TunableNumber("rotationArmKd");
-        public static TunableNumber telescopeArmKp = new TunableNumber("telescopeArmKp");
-        public static TunableNumber telescopeArmKd = new TunableNumber("telescopeArmKd");
+        public static TunableNumber rotationArmKp = new TunableNumber("RotationArm/Kp");
+        public static TunableNumber rotationArmKd = new TunableNumber("RotationArm/Kd");
+        public static TunableNumber telescopeArmKp = new TunableNumber("TelescopeArm/Kp");
+        public static TunableNumber telescopeArmKd = new TunableNumber("TelescopeArm/Kd");
+
+        static {
+            rotationArmKp.setDefault(50.0);
+            rotationArmKd.setDefault(0);
+        }
 
     }
 
