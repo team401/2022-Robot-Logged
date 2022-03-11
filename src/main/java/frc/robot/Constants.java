@@ -154,6 +154,11 @@ public final class Constants {
         public static final double hoodOffsetRad = 0.0;
     }
 
+    public static final class BallConstants {
+        public static final double intakePower = 0.5;
+        public static final double towerPower = 0.5;
+    }
+
     public static final class TurretConstants {
         public static final double turretGearRatio = 1.0;
 
