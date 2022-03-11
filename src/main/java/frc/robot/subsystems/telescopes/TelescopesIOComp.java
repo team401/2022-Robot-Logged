@@ -1,6 +1,7 @@
 package frc.robot.subsystems.telescopes;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
@@ -19,23 +20,33 @@ public class TelescopesIOComp implements TelescopesIO {
 
     public TelescopesIOComp() {
         leftMotor = new CANSparkMax(CANDevices.leftTelescopingMotorID, MotorType.kBrushed);
-        rightMotor = new CANSparkMax(CANDevices.leftTelescopingMotorID, MotorType.kBrushed);
+        rightMotor = new CANSparkMax(CANDevices.rightTelescopingMotorID, MotorType.kBrushed);
 
-        leftMotor.setInverted(true);
+        leftMotor.setInverted(false);
         rightMotor.setInverted(false);
 
         leftEncoder = leftMotor.getEncoder(Type.kQuadrature, 4096);
         rightEncoder = rightMotor.getEncoder(Type.kQuadrature, 4096);
 
+        leftEncoder.setInverted(true);
+
+        leftMotor.setSmartCurrentLimit(40);
+        rightMotor.setSmartCurrentLimit(40);
+
         leftMotor.setIdleMode(IdleMode.kBrake);
         rightMotor.setIdleMode(IdleMode.kBrake);
+
+        //leftMotor.burnFlash();
+        //rightMotor.burnFlash();
 
     }
 
     @Override
     public void updateInputs(TelescopesIOInputs inputs) {
-        inputs.leftPositionIn = leftEncoder.getPosition() * ClimberConstants.linearConversion;
-        inputs.rightPositionIn = rightEncoder.getPosition() * ClimberConstants.linearConversion;
+        inputs.leftPositionRad = leftEncoder.getPosition() * 2.0 * Math.PI;
+        inputs.rightPositionRad = rightEncoder.getPosition() * 2.0 * Math.PI;
+        inputs.leftVelocityRadPerS = leftEncoder.getVelocity() * 2.0 * Math.PI / 60.0;
+        inputs.rightVelocityRadPerS = rightEncoder.getVelocity() * 2.0 * Math.PI / 60.0;
         inputs.leftCurrent = leftMotor.getOutputCurrent();
         inputs.rightCurrent = rightMotor.getOutputCurrent();
     }

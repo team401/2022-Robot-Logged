@@ -5,23 +5,29 @@ import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 public interface TelescopesIO {
     public static class TelescopesIOInputs implements LoggableInputs {
-        public double leftPositionIn;
-        public double rightPositionIn;
+        public double leftPositionRad;
+        public double rightPositionRad;
+        public double leftVelocityRadPerS;
+        public double rightVelocityRadPerS;
         public double leftCurrent;
         public double rightCurrent;
 
         @Override
         public void toLog(LogTable table) {
-            table.put("LeftPositionIn", leftPositionIn);
-            table.put("RightPositionIn", rightPositionIn);
+            table.put("LeftPositionRad", leftPositionRad);
+            table.put("RightPositionRad", rightPositionRad);
+            table.put("LeftVelocityRadPerS", leftVelocityRadPerS);
+            table.put("RightVelocityRadPerS", rightVelocityRadPerS);
             table.put("LeftCurrent", leftCurrent);
             table.put("RightCurrent", rightCurrent);
         }
 
         @Override
         public void fromLog(LogTable table) {
-            leftPositionIn = table.getDouble("LeftPositionIn", leftPositionIn);
-            rightPositionIn = table.getDouble("RightPositionIn", rightPositionIn);
+            leftPositionRad = table.getDouble("LeftPositionRad", leftPositionRad);
+            rightPositionRad = table.getDouble("RightPositionRad", rightPositionRad);
+            leftVelocityRadPerS = table.getDouble("LeftVelocityRadPerS", leftVelocityRadPerS);
+            rightVelocityRadPerS = table.getDouble("RightVelocityRadPerS", rightVelocityRadPerS);
             leftCurrent = table.getDouble("LeftCurrent", leftCurrent);
             rightCurrent = table.getDouble("RightCurrent", rightCurrent);
         }

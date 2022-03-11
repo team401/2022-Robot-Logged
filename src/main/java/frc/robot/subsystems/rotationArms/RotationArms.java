@@ -1,5 +1,8 @@
 package frc.robot.subsystems.rotationarms;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
@@ -11,29 +14,23 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.subsystems.rotationarms.RotationArmsIO.RotationArmsIOInputs;
 
-public class RotationArmsSubsystem extends SubsystemBase {
-
+public class RotationArms extends SubsystemBase {
     private final RotationArmsIO io;
     private final RotationArmsIOInputs ioInputs = new RotationArmsIOInputs();
 
     private final ProfiledPIDController leftController = new ProfiledPIDController(
         ClimberConstants.rotationArmKp.get(), 0, ClimberConstants.rotationArmKd.get(), 
-        new TrapezoidProfile.Constraints(Math.PI / 2, 10));
+        new TrapezoidProfile.Constraints(2 * Math.PI / 2, 10));
 
     private final ProfiledPIDController rightController = new ProfiledPIDController(
         ClimberConstants.rotationArmKp.get(), 0, ClimberConstants.rotationArmKd.get(),
-        new TrapezoidProfile.Constraints(Math.PI / 2, 10));
+        new TrapezoidProfile.Constraints(2 * Math.PI / 2, 10));
 
-    private double tolerance = Units.degreesToRadians(1.5);
-
-    private double frontBoundary = Units.degreesToRadians(58.0);
-    private double backBoundary = Units.degreesToRadians(-15.0);
-
-    public RotationArmsSubsystem(RotationArmsIO io) {
+    public RotationArms(RotationArmsIO io) {
         this.io = io;
 
-        leftController.setGoal(0);
-        rightController.setGoal(0);
+        leftController.setTolerance(ClimberConstants.rotationPositionToleranceRad);
+        rightController.setTolerance(ClimberConstants.rotationPositionToleranceRad);
 
     }
 
@@ -47,14 +44,19 @@ public class RotationArmsSubsystem extends SubsystemBase {
             rightController.setPID(ClimberConstants.rotationArmKp.get(), 0, ClimberConstants.rotationArmKd.get());
         }
 
-        // Reset PID controllers if the robot is not enabled
-        if (DriverStation.isDisabled()) {
-            leftController.reset(ioInputs.leftPositionRad);
-            rightController.reset(ioInputs.rightPositionRad);
-        }
-
+        // Positions with modulus to be between -pi, pi.  It is important to use these in the controllers
+        // to prevent the arms from trying to go through their hard stops!
         double leftMod = MathUtil.angleModulus(ioInputs.leftPositionRad);
         double rightMod = MathUtil.angleModulus(ioInputs.rightPositionRad);
+
+        // Reset PID controllers if the robot is not enabled
+        if (DriverStation.isDisabled()) {
+            leftController.reset(leftMod);
+            rightController.reset(rightMod);
+
+            leftController.setGoal(ClimberConstants.stowPositionRad);
+            rightController.setGoal(ClimberConstants.stowPositionRad);
+        }
 
         Logger.getInstance().recordOutput("RotationArms/LeftAngleModDeg", Units.radiansToDegrees(leftMod));
         Logger.getInstance().recordOutput("RotationArms/RightAngleModDeg", Units.radiansToDegrees(rightMod));
@@ -83,15 +85,16 @@ public class RotationArmsSubsystem extends SubsystemBase {
     }
 
     public boolean atGoal() {
-        return Math.abs(ioInputs.leftPositionRad - leftController.getGoal().position) <= tolerance && 
-                Math.abs(ioInputs.rightPositionRad - rightController.getGoal().position) <= tolerance;
+        return leftController.atGoal() && rightController.atGoal();
     }
 
-    public boolean withinBoundaries() {
-        return (ioInputs.leftPositionRad >= backBoundary && 
-                ioInputs.rightPositionRad >= backBoundary && 
-                ioInputs.leftPositionRad <= frontBoundary && 
-                ioInputs.rightPositionRad <= frontBoundary);
-    }
+
+    // Commands
+    public final Command waitForMove = new WaitUntilCommand(this::atGoal);
+    public final Command moveToStow = new InstantCommand(() -> setDesiredPosition(ClimberConstants.stowPositionRad), this);
+    public final Command moveToClimbGrab = new InstantCommand(() -> setDesiredPosition(ClimberConstants.climbGrabPositionRad), this);
+    public final Command moveToIntake = new InstantCommand(() -> setDesiredPosition(ClimberConstants.intakePositionRad), this);
+    public final Command moveToClimbSwing = new InstantCommand(() -> setDesiredPosition(ClimberConstants.climbSwingPositionRad), this);
+
     
 }

@@ -36,14 +36,17 @@ public class RotationArmsIOComp implements RotationArmsIO {
         leftEncoder.setDutyCycleRange(1.0 / 1025.0, 1024.0 / 1025.0);
         rightEncoder.setDutyCycleRange(1.0 / 1025.0, 1024.0 / 1025.0);
 
-        leftMotor.setSmartCurrentLimit(20);
-        rightMotor.setSmartCurrentLimit(20);
+        leftMotor.setSmartCurrentLimit(30);
+        rightMotor.setSmartCurrentLimit(30);
 
         setStatusFrames(leftMotor);
         setStatusFrames(rightMotor);
 
         leftMotor.setInverted(false);
         rightMotor.setInverted(true);
+
+        //leftMotor.burnFlash();
+        //rightMotor.burnFlash();
 
     }
 

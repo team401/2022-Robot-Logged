@@ -4,12 +4,7 @@
 
 package frc.robot;
 
-import java.rmi.ServerRuntimeException;
-
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
@@ -20,71 +15,83 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.drive.DriveWithJoysticks;
-import frc.robot.commands.drive.MeasureDriveKs;
 import frc.robot.subsystems.drive.*;
-import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.rotationarms.*;
-import frc.robot.subsystems.shooter.*;
-import frc.robot.subsystems.telescopes.*;
-import frc.robot.subsystems.tower.*;
-import frc.robot.subsystems.turret.*;
+import frc.robot.subsystems.telescopes.TelescopesIOComp;
+import frc.robot.subsystems.telescopes.TelescopesSubsystem;
 
 public class RobotContainer {
-  private final Drive drive;
-  //private final IntakeSubsystem intakeSubsystem;
-  private final RotationArmsSubsystem rotationArmsSubsystem;
-  //private final ShooterSubsystem shooterSubsystem;
-  //private final TelescopesSubsystem telescopesSubsystem;
-  //private final TowerSubsystem towerSubsystem;
-  //private final TurretSubsystem turretSubsystem;
+    private final Drive drive;
+    //private final IntakeSubsystem intakeSubsystem;
+    private final RotationArms rotationArms;
+    //private final ShooterSubsystem shooterSubsystem;
+    private final TelescopesSubsystem telescopes;
+    //private final TowerSubsystem towerSubsystem;
+    //private final TurretSubsystem turretSubsystem;
 
-  private final XboxController gamepad = new XboxController(0);
 
-  private final DriveWithJoysticks driveWithJoysticks;
+    private final Joystick leftStick = new Joystick(0);
+    private final Joystick rightStick = new Joystick(1);
+    private final XboxController gamepad = new XboxController(2);
 
-  public RobotContainer() {
-    // Create subsystems
-    drive = new Drive(new DriveModuleIO[] {
-        new DriveModuleIOComp(CANDevices.frontLeftDriveMotorID, CANDevices.frontLeftRotationMotorID,
-            CANDevices.frontLeftRotationEncoderID, DriveConstants.frontLeftAngleOffset),
-        new DriveModuleIOComp(CANDevices.frontRightDriveMotorID, CANDevices.frontRightRotationMotorID,
-            CANDevices.frontRightRotationEncoderID, DriveConstants.frontRightAngleOffset),
-        new DriveModuleIOComp(CANDevices.backLeftDriveMotorID, CANDevices.backLeftRotationMotorID,
-            CANDevices.backLeftRotationEncoderID, DriveConstants.backLeftAngleOffset),
-        new DriveModuleIOComp(CANDevices.backRightDriveMotorID, CANDevices.backRightRotationMotorID,
-            CANDevices.backRightRotationEncoderID, DriveConstants.backRightAngleOffset)
-    }, new DriveAngleIOComp());
-    
-    //intakeSubsystem = new IntakeSubsystem(new IntakeWheelsIOComp());
-    rotationArmsSubsystem = new RotationArmsSubsystem(new RotationArmsIOComp());
-    //shooterSubsystem = new ShooterSubsystem(new ShooterIOComp());
-    //telescopesSubsystem = new TelescopesSubsystem(new TelescopesIOComp());
-    //towerSubsystem = new TowerSubsystem(new TowerIOComp());
-    //turretSubsystem = new TurretSubsystem(new TurretIOComp());
+    private final DriveWithJoysticks driveWithJoysticks;
 
-    // Create commands
-    driveWithJoysticks = new DriveWithJoysticks(
+    public RobotContainer() {
+        // Create subsystems
+        drive = new Drive(new DriveModuleIO[]{
+                new DriveModuleIOComp(CANDevices.frontLeftDriveMotorID, CANDevices.frontLeftRotationMotorID,
+                        CANDevices.frontLeftRotationEncoderID, DriveConstants.frontLeftAngleOffset),
+                new DriveModuleIOComp(CANDevices.frontRightDriveMotorID, CANDevices.frontRightRotationMotorID,
+                        CANDevices.frontRightRotationEncoderID, DriveConstants.frontRightAngleOffset),
+                new DriveModuleIOComp(CANDevices.backLeftDriveMotorID, CANDevices.backLeftRotationMotorID,
+                        CANDevices.backLeftRotationEncoderID, DriveConstants.backLeftAngleOffset),
+                new DriveModuleIOComp(CANDevices.backRightDriveMotorID, CANDevices.backRightRotationMotorID,
+                        CANDevices.backRightRotationEncoderID, DriveConstants.backRightAngleOffset)
+        }, new DriveAngleIOComp());
 
-        drive, 
-        () -> -gamepad.getLeftY(),
-        () -> -gamepad.getLeftX(), 
-        () -> -gamepad.getRightX()
-        
-    );
+        //intakeSubsystem = new IntakeSubsystem(new IntakeWheelsIOComp());
+        rotationArms = new RotationArms(new RotationArmsIOComp());
+        //shooterSubsystem = new ShooterSubsystem(new ShooterIOComp());
+        telescopes = new TelescopesSubsystem(new TelescopesIOComp());
+        //towerSubsystem = new TowerSubsystem(new TowerIOComp());
+        //turretSubsystem = new TurretSubsystem(new TurretIOComp());
 
-    // Bind default commands
-    drive.setDefaultCommand(driveWithJoysticks);
+        // Create commands
+        driveWithJoysticks = new DriveWithJoysticks(
+                drive,
+                () -> -leftStick.getRawAxis(1),
+                () -> -leftStick.getRawAxis(0),
+                () -> -rightStick.getRawAxis(0)
+        );
 
-    configureButtonBindings();
-  }
+        // Bind default commands
+        drive.setDefaultCommand(driveWithJoysticks);
 
-  private void configureButtonBindings() {
-  }
+        configureButtonBindings();
+    }
 
-  public Command getAutonomousCommand() {
-    SwerveModuleState zero = new SwerveModuleState();
-    SwerveModuleState[] zeros = new SwerveModuleState[] { zero, zero, zero, zero };
-    return new InstantCommand(() -> drive.setGoalModuleStates(zeros), drive).andThen(new WaitCommand(2.0))
-        .andThen(new InstantCommand(() -> drive.setDriveVoltages(new double[] { 4, 4, 4, 4 }), drive)).andThen(new WaitCommand(10.0));
-  }
+    private void configureButtonBindings() {
+        Command moveUp = new InstantCommand(telescopes::jogUp);
+        Command moveDown = new InstantCommand(telescopes::jogDown);
+
+        Command climbSequence = telescopes.moveToStow.alongWith(rotationArms.moveToStow)
+                .andThen(telescopes.waitForMove)
+                .andThen(rotationArms.moveToClimbGrab)
+                .andThen(rotationArms.waitForMove)
+                .andThen(telescopes.moveToPop);
+
+        JoystickButton b = new JoystickButton(gamepad, Button.kB.value);
+        b.whileHeld(moveUp);
+        JoystickButton a = new JoystickButton(gamepad, Button.kA.value);
+        a.whileHeld(moveDown);
+        JoystickButton x = new JoystickButton(gamepad, Button.kX.value);
+        x.whenHeld(climbSequence);
+    }
+
+    public Command getAutonomousCommand() {
+        SwerveModuleState zero = new SwerveModuleState();
+        SwerveModuleState[] zeros = new SwerveModuleState[]{zero, zero, zero, zero};
+        return new InstantCommand(() -> drive.setGoalModuleStates(zeros), drive).andThen(new WaitCommand(2.0))
+                .andThen(new InstantCommand(() -> drive.setDriveVoltages(new double[]{4, 4, 4, 4}), drive)).andThen(new WaitCommand(10.0));
+    }
 }

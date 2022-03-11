@@ -91,7 +91,7 @@ public final class Constants {
         public static TunableNumber followTrajectoryOmegaControllerKp = new TunableNumber("followTrajectoryOmegaControllerKp");
         public static TunableNumber followTrajectoryOmegaControllerKd = new TunableNumber("followTrajectoryOmegaControllerKp");
 
-        public static final double driveJoystickDeadbandPercent = 0.08;
+        public static final double driveJoystickDeadbandPercent = 0.05;
         public static final double driveMaxJerk = 200.0;
 
         static {
@@ -116,14 +116,25 @@ public final class Constants {
     }
 
     public static final class ClimberConstants {
+        public static final double rotationPositionToleranceRad = Units.degreesToRadians(5.0);
 
-        public static final double rotationArmGearRation = 1;
+        public static final double stowPositionRad = Units.degreesToRadians(-5);
+        public static final double climbGrabPositionRad = Units.degreesToRadians(2);
+        public static final double intakePositionRad = Units.degreesToRadians(30);
+        public static final double climbSwingPositionRad = Units.degreesToRadians(30);
 
-        public static final double rotationEncoderConversionFactor = (2 * Math.PI) * 4096 / rotationArmGearRation;
+        public static final double telescopeHomePositionRad = Units.degreesToRadians(100);
+        public static final double telescopeMaxPositionRad = Units.rotationsToRadians(14);
+        public static final double telescopePopAboveRungRad = Units.degreesToRadians(700);
 
-        public static final double intakeArmPosition = 0.75;
-        public static final double climbArmPosition = 0.35;
-        public static final double defaultArmPosition = -0.1;
+
+        // Multipliers applied to encoders to account for inconsistent spooling
+        public static final double leftTelescopeMultiplier = 0.95;
+        public static final double rightTelescopeMultiplier = 1.0;
+
+
+        public static final double telescopeCruiseVelocity = 4 * 2 * Math.PI;
+        public static final double telescopeAcceleration = telescopeCruiseVelocity * 4;
 
         // measured offsets
         public static final double leftRotationOffset = 0.43593915408829126;
@@ -142,9 +153,15 @@ public final class Constants {
         public static TunableNumber telescopeArmKp = new TunableNumber("TelescopeArm/Kp");
         public static TunableNumber telescopeArmKd = new TunableNumber("TelescopeArm/Kd");
 
+        public static final double telescopeHomingThresholdRadPerS = Units.degreesToRadians(10);
+        public static final double telescopeHomingTimeS = 0.5;
+        public static final double telescopeHomingVolts = -4;
+
         static {
-            rotationArmKp.setDefault(50.0);
-            rotationArmKd.setDefault(0);
+            rotationArmKp.setDefault(30.0);
+            rotationArmKd.setDefault(0.5);
+            telescopeArmKp.setDefault(5.0);
+            telescopeArmKd.setDefault(0.0);
         }
 
     }
