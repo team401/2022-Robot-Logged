@@ -7,6 +7,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxRelativeEncoder.Type;
 
 import frc.robot.Constants.CANDevices;
+import frc.robot.Constants.ClimberConstants;
 
 public class TelescopesIOComp implements TelescopesIO {
 
@@ -33,8 +34,8 @@ public class TelescopesIOComp implements TelescopesIO {
 
     @Override
     public void updateInputs(TelescopesIOInputs inputs) {
-        inputs.leftPositionRad = leftEncoder.getPosition() * 2 * Math.PI;
-        inputs.rightPositionRad = rightEncoder.getPosition() * 2 * Math.PI;
+        inputs.leftPositionIn = leftEncoder.getPosition() * ClimberConstants.linearConversion;
+        inputs.rightPositionIn = rightEncoder.getPosition() * ClimberConstants.linearConversion;
         inputs.leftCurrent = leftMotor.getOutputCurrent();
         inputs.rightCurrent = rightMotor.getOutputCurrent();
     }

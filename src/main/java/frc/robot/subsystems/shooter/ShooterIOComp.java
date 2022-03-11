@@ -21,7 +21,7 @@ public class ShooterIOComp implements ShooterIO {
     private final RelativeEncoder hoodEncoder;
     private final SparkMaxPIDController hoodController;
 
-    public ShooterIOComp(int leftShooterID, int rightShooterID, int hoodID) {
+    public ShooterIOComp() {
         leftShooterMotor = new TalonFX(CANDevices.leftShooterMotorID);
         rightShooterMotor = new TalonFX(CANDevices.rightShooterMotorID);
 
@@ -62,6 +62,7 @@ public class ShooterIOComp implements ShooterIO {
         inputs.flywheelCurrent = new double[] { leftShooterMotor.getSupplyCurrent(),
                 rightShooterMotor.getSupplyCurrent() };
         inputs.hoodCurrent = hoodMotor.getOutputCurrent();
+        inputs.hoodVelocity = hoodEncoder.getVelocity();
     }
 
     @Override

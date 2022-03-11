@@ -69,7 +69,6 @@ public final class Constants {
         public static final double maxSpeedMPerS = Units.feetToMeters(15.0);
         public static final double maxAngularSpeedRadPerS = 2 * Math.PI;
 
-        // TODO measure
         public static final double wheelRadiusM = Units.inchesToMeters(3.9028) / 2.0;
 
         // Measured on 3/9/22 with machinist's square
@@ -83,6 +82,14 @@ public final class Constants {
         public static final TunableNumber rotationKd = new TunableNumber("Drive/RotationKd");
         public static final TunableNumber driveKp = new TunableNumber("Drive/DriveKp");
         public static final TunableNumber driveKd = new TunableNumber("Drive/DriveKd");
+
+        public static TunableNumber followTrajectoryXControllerKp = new TunableNumber("followTrajectoryXControllerKp");
+        public static TunableNumber followTrajectoryXControllerKd = new TunableNumber("followTrajectoryXControllerKd");
+        public static TunableNumber followTrajectoryYControllerKp = new TunableNumber("followTrajectoryYControllerKp");
+        public static TunableNumber followTrajectoryYControllerKd = new TunableNumber("followTrajectoryYControllerKd");
+
+        public static TunableNumber followTrajectoryOmegaControllerKp = new TunableNumber("followTrajectoryOmegaControllerKp");
+        public static TunableNumber followTrajectoryOmegaControllerKd = new TunableNumber("followTrajectoryOmegaControllerKp");
 
         public static final double driveJoystickDeadbandPercent = 0.08;
         public static final double driveMaxJerk = 200.0;
@@ -110,7 +117,6 @@ public final class Constants {
 
     public static final class ClimberConstants {
 
-        // TODO: Update value
         public static final double rotationArmGearRation = 1;
 
         public static final double rotationEncoderConversionFactor = (2 * Math.PI) * 4096 / rotationArmGearRation;
@@ -129,6 +135,12 @@ public final class Constants {
         public static final double maxHeightMeters = 0.971;
 
         public static final double climberSequencePauseSeconds = 2;
+
+        //Tunable PD Numbers
+        public static TunableNumber rotationArmKp = new TunableNumber("rotationArmKp");
+        public static TunableNumber rotationArmKd = new TunableNumber("rotationArmKd");
+        public static TunableNumber telescopeArmKp = new TunableNumber("telescopeArmKp");
+        public static TunableNumber telescopeArmKd = new TunableNumber("telescopeArmKd");
 
     }
 
@@ -156,7 +168,7 @@ public final class Constants {
     }
 
     public static final class AutoConstants {
-        public static final double kMaxSpeedMetersPerSecond = 0.0;
+        public static final double kMaxVelocityMetersPerSecond = 0.0;
         public static final double kMaxAccelerationMetersPerSecondSquared = 0.0;
     }
 

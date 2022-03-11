@@ -24,11 +24,11 @@ public class TowerSubsystem extends SubsystemBase {
 
     }
 
-    void setConveyorPercent(double percent) {
+    public void setConveyorPercent(double percent) {
         io.setConveyorPercent(percent);
     }
 
-    void setIndexWheelsPercent(double percent) {
+    public void setIndexWheelsPercent(double percent) {
         io.setIndexWheelsPercent(percent);
     }   
     

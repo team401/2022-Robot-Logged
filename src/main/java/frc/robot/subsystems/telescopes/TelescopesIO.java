@@ -5,23 +5,23 @@ import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 public interface TelescopesIO {
     public static class TelescopesIOInputs implements LoggableInputs {
-        public double leftPositionRad;
-        public double rightPositionRad;
+        public double leftPositionIn;
+        public double rightPositionIn;
         public double leftCurrent;
         public double rightCurrent;
 
         @Override
         public void toLog(LogTable table) {
-            table.put("LeftPositionRad", leftPositionRad);
-            table.put("RightPositionRad", rightPositionRad);
+            table.put("LeftPositionIn", leftPositionIn);
+            table.put("RightPositionIn", rightPositionIn);
             table.put("LeftCurrent", leftCurrent);
             table.put("RightCurrent", rightCurrent);
         }
 
         @Override
         public void fromLog(LogTable table) {
-            leftPositionRad = table.getDouble("LeftPositionRad", leftPositionRad);
-            rightPositionRad = table.getDouble("RightPositionRad", rightPositionRad);
+            leftPositionIn = table.getDouble("LeftPositionIn", leftPositionIn);
+            rightPositionIn = table.getDouble("RightPositionIn", rightPositionIn);
             leftCurrent = table.getDouble("LeftCurrent", leftCurrent);
             rightCurrent = table.getDouble("RightCurrent", rightCurrent);
         }

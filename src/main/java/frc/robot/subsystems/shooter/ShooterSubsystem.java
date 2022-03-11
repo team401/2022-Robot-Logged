@@ -24,31 +24,31 @@ public class ShooterSubsystem extends SubsystemBase {
 
     }
 
-    void zeroHoodEncoder() {
+    public void zeroHoodEncoder() {
         io.zeroHoodEncoder();
     }
 
-    void setHoodPositionSetpoint(double angleRad) {
+    public void setHoodPositionSetpoint(double angleRad) {
         io.setHoodPositionSetpoint(angleRad);
     }
 
-    void setHoodPercent(double percent) {
+    public void setHoodPercent(double percent) {
         io.setHoodVoltage(percent * 12);
     }
 
-    void setHoodPD(double p, double d) {
+    public void setHoodPD(double p, double d) {
         io.setHoodPD(p, d);
     }
 
-    void setFlywheelVelocity(double velocityRadPerS, double ffVolts) {
+    public void setFlywheelVelocity(double velocityRadPerS, double ffVolts) {
         io.setFlywheelVelocity(velocityRadPerS, ffVolts);
     }
 
-    void setFlywheelPercent(double percent) {
+    public void setFlywheelPercent(double percent) {
         io.setFlywheelVoltage(percent * 12);
     }
 
-    void setFlywheelPD(double p, double d) {
+    public void setFlywheelPD(double p, double d) {
         io.setFlywheelPD(p, d);
     }
     

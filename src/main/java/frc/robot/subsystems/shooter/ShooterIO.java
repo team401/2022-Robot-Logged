@@ -9,6 +9,7 @@ public interface ShooterIO {
         public double hoodPositionRad;
         public double[] flywheelCurrent = new double[2];
         public double hoodCurrent;
+        public double hoodVelocity;
 
         @Override
         public void toLog(LogTable table) {
@@ -16,6 +17,7 @@ public interface ShooterIO {
             table.put("HoodPositionRad", hoodPositionRad);          
             table.put("FlywheelCurrent", flywheelCurrent);         
             table.put("HoodCurrent", hoodCurrent);
+            table.put("HoodVelocity", hoodVelocity);
         }
 
         @Override
@@ -23,7 +25,8 @@ public interface ShooterIO {
             flywheelSpeedRadPerS = table.getDouble("FlywheelSpeedRadPerS", flywheelSpeedRadPerS);
             hoodPositionRad = table.getDouble("HoodPositionRad", hoodPositionRad);          
             flywheelCurrent = table.getDoubleArray("FlywheelCurrent", flywheelCurrent);         
-            hoodCurrent = table.getDouble("HoodCurrent", hoodCurrent);          
+            hoodCurrent = table.getDouble("HoodCurrent", hoodCurrent); 
+            hoodVelocity = table.getDouble("HoodVelocity", hoodVelocity);         
         }
     }
 
