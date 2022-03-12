@@ -24,8 +24,8 @@ public class PrepareToShoot extends CommandBase {
         double calculatedFlywheelVelocity = 0;
         double calculatedHoodPosition = 0;
 
-        shooter.setFlywheelVelocity(calculatedFlywheelVelocity, 0);
-        shooter.setHoodPositionSetpoint(calculatedHoodPosition);
+        //shooter.setFlywheelVelocity(calculatedFlywheelVelocity, 0);
+        //shooter.setHoodPositionSetpoint(calculatedHoodPosition);
 
     }
     

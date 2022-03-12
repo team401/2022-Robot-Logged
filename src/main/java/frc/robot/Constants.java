@@ -58,8 +58,7 @@ public final class Constants {
 
     public static final class DIOChannels {
 
-        public static final int topBannerPort = 0;
-        public static final int bottomBannerPort = 1;
+        public static final int topBannerPort = 1;
 
         public static final int leftRotationArmEncoder = 2;
         public static final int rightRotationArmEncoder = 3;
@@ -178,8 +177,28 @@ public final class Constants {
     }
 
     public static final class ShooterConstants {
-        public static final double hoodRackRatio = 1.0;
-        public static final double hoodOffsetRad = 0.0;
+        public static final double hoodRackRatio = 5.23 * (458.0 / 30.0);
+        public static final double hoodOffsetRad = Math.atan(2.336 / 9.800); // From CAD
+
+        public static final double hoodHomingThresholdRadPerS = Units.degreesToRadians(10);
+        public static final double hoodHomingTimeS = 0.5;
+        public static final double hoodHomingVolts = -4;
+
+        public static final TunableNumber hoodKp = new TunableNumber("Shooter/HoodKp");
+        public static final TunableNumber hoodKd = new TunableNumber("Shooter/HoodKd");
+        public static final TunableNumber flywheelKp = new TunableNumber("Shooter/FlywheelKp");
+        public static final TunableNumber flywheelKd = new TunableNumber("Shooter/FlywheelKd");
+
+        public static final SimpleMotorFeedforward flywheelModel = new SimpleMotorFeedforward(0, 0);
+
+        static {
+            hoodKp.setDefault(0);
+            hoodKd.setDefault(0);
+            flywheelKp.setDefault(0);
+            flywheelKd.setDefault(0);
+        }
+
+
     }
 
     public static final class BallConstants {
