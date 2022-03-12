@@ -83,13 +83,13 @@ public final class Constants {
         public static final TunableNumber driveKp = new TunableNumber("Drive/DriveKp");
         public static final TunableNumber driveKd = new TunableNumber("Drive/DriveKd");
 
-        public static TunableNumber followTrajectoryXControllerKp = new TunableNumber("followTrajectoryXControllerKp");
-        public static TunableNumber followTrajectoryXControllerKd = new TunableNumber("followTrajectoryXControllerKd");
-        public static TunableNumber followTrajectoryYControllerKp = new TunableNumber("followTrajectoryYControllerKp");
-        public static TunableNumber followTrajectoryYControllerKd = new TunableNumber("followTrajectoryYControllerKd");
+        public static final TunableNumber followTrajectoryXControllerKp = new TunableNumber("followTrajectoryXControllerKp");
+        public static final TunableNumber followTrajectoryXControllerKd = new TunableNumber("followTrajectoryXControllerKd");
+        public static final TunableNumber followTrajectoryYControllerKp = new TunableNumber("followTrajectoryYControllerKp");
+        public static final TunableNumber followTrajectoryYControllerKd = new TunableNumber("followTrajectoryYControllerKd");
 
-        public static TunableNumber followTrajectoryOmegaControllerKp = new TunableNumber("followTrajectoryOmegaControllerKp");
-        public static TunableNumber followTrajectoryOmegaControllerKd = new TunableNumber("followTrajectoryOmegaControllerKp");
+        public static final TunableNumber followTrajectoryOmegaControllerKp = new TunableNumber("followTrajectoryOmegaControllerKp");
+        public static final TunableNumber followTrajectoryOmegaControllerKd = new TunableNumber("followTrajectoryOmegaControllerKp");
 
         public static final double driveJoystickDeadbandPercent = 0.05;
         public static final double driveMaxJerk = 200.0;
@@ -113,6 +113,9 @@ public final class Constants {
 
         public static final SimpleMotorFeedforward driveModel = new SimpleMotorFeedforward(0.184, 0.1163414634);
 
+        public static final TunableNumber intakeVisionKP = new TunableNumber("intakeVisionKp");
+        public static final TunableNumber intakeVisionKD = new TunableNumber("intakeVisionKd");
+
     }
 
     public static final class ClimberConstants {
@@ -122,10 +125,13 @@ public final class Constants {
         public static final double climbGrabPositionRad = Units.degreesToRadians(2);
         public static final double intakePositionRad = Units.degreesToRadians(30);
         public static final double climbSwingPositionRad = Units.degreesToRadians(30);
+        public static final double rotationLatchRad = Units.degreesToRadians(25);
 
-        public static final double telescopeHomePositionRad = Units.degreesToRadians(100);
+        public static final double telescopeHomePositionRad = Units.degreesToRadians(200);
+        public static final double telescopePullPositionRad = Units.degreesToRadians(50);
         public static final double telescopeMaxPositionRad = Units.rotationsToRadians(14);
         public static final double telescopePopAboveRungRad = Units.degreesToRadians(700);
+        public static final double telescopeLatchRad = Units.degreesToRadians(4750);
 
 
         // Multipliers applied to encoders to account for inconsistent spooling

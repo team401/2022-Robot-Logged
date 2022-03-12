@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -11,6 +13,7 @@ import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.DriveConstants;
@@ -25,7 +28,7 @@ public class RobotContainer {
     //private final IntakeSubsystem intakeSubsystem;
     private final RotationArms rotationArms;
     //private final ShooterSubsystem shooterSubsystem;
-    private final TelescopesSubsystem telescopes;
+    private final TelescopesSubsystem telescopesSubsystem;
     //private final TowerSubsystem towerSubsystem;
     //private final TurretSubsystem turretSubsystem;
 
@@ -52,7 +55,7 @@ public class RobotContainer {
         //intakeSubsystem = new IntakeSubsystem(new IntakeWheelsIOComp());
         rotationArms = new RotationArms(new RotationArmsIOComp());
         //shooterSubsystem = new ShooterSubsystem(new ShooterIOComp());
-        telescopes = new TelescopesSubsystem(new TelescopesIOComp());
+        telescopesSubsystem = new TelescopesSubsystem(new TelescopesIOComp());
         //towerSubsystem = new TowerSubsystem(new TowerIOComp());
         //turretSubsystem = new TurretSubsystem(new TurretIOComp());
 
@@ -71,23 +74,56 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-        Command moveUp = new InstantCommand(telescopes::jogUp);
-        Command moveDown = new InstantCommand(telescopes::jogDown);
 
-        Command climbSequence = telescopes.moveToStow.alongWith(rotationArms.moveToStow) // Start moving hooks down and make sure rotation arms are out of the way
-                .andThen(telescopes.waitForMove) // Wait for the telescopes to finish retracting all the way
-                .andThen(rotationArms.moveToClimbGrab) // Move the rotation arms into the position above the rung
-                .andThen(rotationArms.waitForMove) // Wait for the rotation arms to finish moving
-                .andThen(telescopes.moveToPop) // Move the telescopes up a bit to clear them off the rung
-                .andThen(telescopes.waitForMove);
-                // TODO: swing rotation arms + retract telescopes?
+        Command climbSequence = 
+            //mid bar
+            telescopesSubsystem.moveToPull().alongWith(rotationArms.moveToStow()) // Start moving hooks down and make sure rotation arms are out of the way
+            .andThen(telescopesSubsystem.waitForMove()) // Wait for the telescopes to finish retracting all the way
+            .andThen(rotationArms.moveToClimbGrab()) // Move the rotation arms into the position above the rung
+            .andThen(rotationArms.waitForMove()) // Wait for the rotation arms to finish moving
+            //high bar
+            .andThen(telescopesSubsystem.moveToPop()) // Move the telescopes up a bit to clear them off the rung
+            .andThen(telescopesSubsystem.waitForMove())
+            .andThen(rotationArms.moveToClimbSwing()) //swings rotation arms
+            .andThen(rotationArms.waitForMove())
+            .andThen(telescopesSubsystem.moveToFull())
+            .andThen(telescopesSubsystem.waitForMove()) //end of tested
+            .andThen(rotationArms.latchRotation()) //moves rotation so that telescope is aligned to grab
+            .andThen(rotationArms.waitForMove())
+            .andThen(telescopesSubsystem.moveToPop()) //puls telescope down to pop, robot does pullup onto 3rd
+            .andThen(telescopesSubsystem.waitForMove()) 
+            .andThen(rotationArms.moveToStow()) //move rotation arms to stow to prepare for going down all the way
+            .andThen(rotationArms.waitForMove())
+            .andThen(telescopesSubsystem.moveToPull()) //pulls telescope down all the way, robot does pullup onto 3rd
+            .andThen(telescopesSubsystem.waitForMove()) //
+            .andThen(rotationArms.moveToClimbGrab()) // Move the rotation arms into the position above the rung
+            .andThen(rotationArms.waitForMove())
+            .andThen(new WaitUntilCommand(() -> gamepad.getLeftBumperPressed())) //pressing left bumper starts the next sequence
+            //traverse bar
+            .andThen(telescopesSubsystem.moveToPop()) // Move the telescopes up a bit to clear them off the rung
+            .andThen(telescopesSubsystem.waitForMove())
+            .andThen(rotationArms.moveToClimbSwing()) //swings rotation arms
+            .andThen(rotationArms.waitForMove())
+            .andThen(telescopesSubsystem.moveToFull())
+            .andThen(telescopesSubsystem.waitForMove()) //end of tested
+            .andThen(rotationArms.latchRotation()) //moves rotation so that telescope is aligned to grab
+            .andThen(rotationArms.waitForMove())
+            .andThen(telescopesSubsystem.moveToPop()) //puls telescope down to pop, robot does pullup onto 3rd
+            .andThen(telescopesSubsystem.waitForMove()) 
+            .andThen(rotationArms.moveToStow()) //move rotation arms to stow to prepare for going down all the way
+            .andThen(rotationArms.waitForMove())
+            .andThen(telescopesSubsystem.moveToPull()) //pulls telescope down all the way, robot does pullup onto 3rd
+            .andThen(telescopesSubsystem.waitForMove()) //
+            .andThen(rotationArms.moveToClimbGrab()) // Move the rotation arms into the position above the rung
+            .andThen(rotationArms.waitForMove());
 
-        JoystickButton b = new JoystickButton(gamepad, Button.kB.value);
-        b.whileHeld(moveUp);
-        JoystickButton a = new JoystickButton(gamepad, Button.kA.value);
-        a.whileHeld(moveDown);
-        JoystickButton x = new JoystickButton(gamepad, Button.kX.value);
-        x.whenHeld(climbSequence);
+
+        new JoystickButton(gamepad, Button.kB.value)
+            .whileHeld(new InstantCommand(telescopesSubsystem::jogUp));
+        new JoystickButton(gamepad, Button.kA.value)
+            .whileHeld(new InstantCommand(telescopesSubsystem::jogDown));
+        new JoystickButton(gamepad, Button.kX.value)
+            .whenHeld(climbSequence);
     }
 
     public Command getAutonomousCommand() {

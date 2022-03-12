@@ -20,9 +20,8 @@ public class RotationArms extends SubsystemBase {
 
     // Speed and acceleration for regular moves
     private final TrapezoidProfile.Constraints normalConstraints = new TrapezoidProfile.Constraints(2 * Math.PI / 2, 10);
-
     // Speed and acceleration for slower climb moves
-    private final TrapezoidProfile.Constraints climbConstraints = new TrapezoidProfile.Constraints(0.5 * Math.PI / 2, 3);
+    private final TrapezoidProfile.Constraints climbConstraints = new TrapezoidProfile.Constraints(0.2 * Math.PI / 2, 1);
 
     private final ProfiledPIDController leftController = new ProfiledPIDController(
         ClimberConstants.rotationArmKp.get(), 0, ClimberConstants.rotationArmKd.get(), 
@@ -105,11 +104,12 @@ public class RotationArms extends SubsystemBase {
 
 
     // Commands
-    public final Command waitForMove = new WaitUntilCommand(this::atGoal);
-    public final Command moveToStow = new InstantCommand(() -> setDesiredPosition(ClimberConstants.stowPositionRad), this);
-    public final Command moveToClimbGrab = new InstantCommand(() -> setDesiredPosition(ClimberConstants.climbGrabPositionRad), this);
-    public final Command moveToIntake = new InstantCommand(() -> setDesiredPosition(ClimberConstants.intakePositionRad), this);
-    public final Command moveToClimbSwing = new InstantCommand(() -> setDesiredPositionSlow(ClimberConstants.climbSwingPositionRad), this);
+    public final Command waitForMove() { return new WaitUntilCommand(this::atGoal); }
+    public final Command moveToStow () { return new InstantCommand(() -> setDesiredPosition(ClimberConstants.stowPositionRad), this); }
+    public final Command moveToClimbGrab() { return new InstantCommand(() -> setDesiredPosition(ClimberConstants.climbGrabPositionRad), this); }
+    public final Command moveToIntake() { return new InstantCommand(() -> setDesiredPosition(ClimberConstants.intakePositionRad), this); }
+    public final Command moveToClimbSwing() { return new InstantCommand(() -> setDesiredPositionSlow(ClimberConstants.climbSwingPositionRad), this); }
+    public final Command latchRotation() { return new InstantCommand(() -> setDesiredPositionSlow(ClimberConstants.rotationLatchRad), this); }
     // Maybe add another command for after swinging out to move them slightly back while telescoping down?
     
 }

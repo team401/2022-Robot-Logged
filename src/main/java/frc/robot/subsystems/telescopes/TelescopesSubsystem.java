@@ -124,9 +124,12 @@ public class TelescopesSubsystem extends SubsystemBase {
     }
 
     // Commands
-    public final Command waitForMove = new WaitUntilCommand(this::atGoal);
-    public final Command moveToStow = new InstantCommand(() -> setDesiredPosition(ClimberConstants.telescopeHomePositionRad), this);
-    public final Command moveToPop = new InstantCommand(() -> setDesiredPosition(ClimberConstants.telescopePopAboveRungRad), this);
-    public final Command moveToFull = new InstantCommand(() -> setDesiredPosition(ClimberConstants.telescopeMaxPositionRad), this);
+    public final Command waitForMove() { return new WaitUntilCommand(this::atGoal); }
+    //public final Command moveToStow() { return new InstantCommand(() -> setDesiredPosition(ClimberConstants.telescopeHomePositionRad), this); }
+    public final Command moveToPop() { return new InstantCommand(() -> setDesiredPosition(ClimberConstants.telescopePopAboveRungRad), this); }
+    public final Command moveToFull() { return new InstantCommand(() -> setDesiredPosition(ClimberConstants.telescopeMaxPositionRad), this); }
+    public final Command moveToLatch() { return new InstantCommand(() -> setDesiredPosition(ClimberConstants.telescopeLatchRad), this); }
+    public final Command moveToPull() { return new InstantCommand(() -> setDesiredPosition(ClimberConstants.telescopePullPositionRad), this); }
+
 
 }
