@@ -1,4 +1,4 @@
-package frc.robot.commands.turret;
+package frc.robot.commands.Turret;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.math.filter.LinearFilter;

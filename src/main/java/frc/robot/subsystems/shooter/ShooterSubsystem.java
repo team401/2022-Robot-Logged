@@ -35,6 +35,11 @@ public class ShooterSubsystem extends SubsystemBase {
     public void setHoodPercent(double percent) {
         io.setHoodVoltage(percent * 12);
     }
+    
+    public double getHoodVelocity() {
+        return ioInputs.hoodVelocity;
+
+    }
 
     public void setHoodPD(double p, double d) {
         io.setHoodPD(p, d);

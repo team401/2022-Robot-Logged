@@ -8,14 +8,12 @@ import frc.robot.subsystems.shooter.ShooterIO.ShooterIOInputs;
 public class CalibrateHood extends CommandBase {
 
     private final ShooterSubsystem shooterSubsystem;
-    private final ShooterIOInputs shooterIOInputs;
-
+  
     private Timer hoodTimer = new Timer();
 
-    public CalibrateHood(ShooterSubsystem shooter, ShooterIOInputs ioInputs) {
+    public CalibrateHood(ShooterSubsystem shooter) {
 
         shooterSubsystem = shooter;
-        shooterIOInputs = ioInputs;
 
         addRequirements(shooterSubsystem);
 
@@ -34,7 +32,7 @@ public class CalibrateHood extends CommandBase {
     @Override
     public void execute() {
 
-        if (Math.abs(shooterIOInputs.hoodVelocity) > 0.01) {
+        if (Math.abs(shooterSubsystem.getHoodVelocity()) > 0.01) {
 
             hoodTimer.reset();
 

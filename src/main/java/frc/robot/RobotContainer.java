@@ -17,11 +17,13 @@ import frc.robot.commands.ClimbSequence;
 import frc.robot.commands.MeasureKs;
 import frc.robot.commands.drive.DriveWithJoysticks;
 import frc.robot.commands.intake.Intake;
-import frc.robot.commands.turret.Tracking;
+import frc.robot.commands.shooter.CalibrateHood;
+import frc.robot.commands.Turret.Tracking;
 import frc.robot.subsystems.drive.*;
 import frc.robot.subsystems.intake.IntakeWheelsIOComp;
 import frc.robot.subsystems.intake.IntakeWheelsSubsystem;
 import frc.robot.subsystems.rotationarms.*;
+import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.telescopes.TelescopesIOComp;
 import frc.robot.subsystems.telescopes.TelescopesSubsystem;
 import frc.robot.subsystems.tower.TowerIOComp;
@@ -40,6 +42,8 @@ public class RobotContainer {
     private final TelescopesSubsystem telescopes;
     private final TowerSubsystem towerSubsystem;
     private final Turret turret;
+
+    private final ShooterSubsystem shooter;
 
     private final IntakeWheelsSubsystem intakeWheels;
 
@@ -120,6 +124,11 @@ public class RobotContainer {
                         .alongWith(new InstantCommand(() -> intakeWheels.setPercent(0))
                         .alongWith(new InstantCommand(() -> towerSubsystem.setConveyorPercent(0))
                         .alongWith(new InstantCommand(() -> towerSubsystem.setIndexWheelsPercent(0))))));
+
+        new JoystickButton(gamepad, Button.kStart.value)
+                .whenPressed(new CalibrateHood(shooter))
+                .alongWith(telescopes.);
+
 
 
         JoystickButton two = new JoystickButton(rightStick, 2);
