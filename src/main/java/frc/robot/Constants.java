@@ -121,7 +121,8 @@ public final class Constants {
     public static final class ClimberConstants {
         public static final double rotationPositionToleranceRad = Units.degreesToRadians(5.0);
 
-        public static final double stowPositionRad = Units.degreesToRadians(-5);
+        public static final double climbStowPositionRad = Units.degreesToRadians(-10);
+        public static final double intakeStowPositionRad = Units.degreesToRadians(-5);
         public static final double climbGrabPositionRad = Units.degreesToRadians(2);
         public static final double intakePositionRad = Units.degreesToRadians(30);
         public static final double climbSwingPositionRad = Units.degreesToRadians(30);
@@ -129,9 +130,10 @@ public final class Constants {
 
         public static final double telescopeHomePositionRad = Units.degreesToRadians(200);
         public static final double telescopePullPositionRad = Units.degreesToRadians(50);
-        public static final double telescopeMaxPositionRad = Units.rotationsToRadians(14);
+        public static final double telescopeMaxPositionRad = Units.rotationsToRadians(12);
         public static final double telescopePopAboveRungRad = Units.degreesToRadians(700);
         public static final double telescopeLatchRad = Units.degreesToRadians(4750);
+        public static final double telescopeRotationSafePositionRad = Units.degreesToRadians(2500);
 
 
         // Multipliers applied to encoders to account for inconsistent spooling
@@ -143,8 +145,8 @@ public final class Constants {
         public static final double telescopeAcceleration = telescopeCruiseVelocity * 4;
 
         // measured offsets
-        public static final double leftRotationOffset = 0.43593915408829126;
-        public static final double rightRotationOffset = -0.7086562088848057;
+        public static final double leftRotationOffset = 0.41786360261458094;
+        public static final double rightRotationOffset = -0.7620011828295176;
 
         //vertical conversion from rotations
         public static final double linearConversion = 0.625 * Math.PI;

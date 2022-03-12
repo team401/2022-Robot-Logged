@@ -123,8 +123,14 @@ public class TelescopesSubsystem extends SubsystemBase {
         return leftController.atGoal() && rightController.atGoal();
     }
 
+    public boolean passedRotationSafePosition() {
+        return ioInputs.leftPositionRad <= ClimberConstants.telescopeRotationSafePositionRad &&
+                ioInputs.leftPositionRad <= ClimberConstants.telescopeRotationSafePositionRad;
+    }
+
     // Commands
     public final Command waitForMove() { return new WaitUntilCommand(this::atGoal); }
+    public final Command waitForRotationSafePosition() { return new WaitUntilCommand(this::passedRotationSafePosition); }
     //public final Command moveToStow() { return new InstantCommand(() -> setDesiredPosition(ClimberConstants.telescopeHomePositionRad), this); }
     public final Command moveToPop() { return new InstantCommand(() -> setDesiredPosition(ClimberConstants.telescopePopAboveRungRad), this); }
     public final Command moveToFull() { return new InstantCommand(() -> setDesiredPosition(ClimberConstants.telescopeMaxPositionRad), this); }

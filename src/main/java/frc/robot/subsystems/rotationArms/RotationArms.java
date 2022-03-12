@@ -21,7 +21,7 @@ public class RotationArms extends SubsystemBase {
     // Speed and acceleration for regular moves
     private final TrapezoidProfile.Constraints normalConstraints = new TrapezoidProfile.Constraints(2 * Math.PI / 2, 10);
     // Speed and acceleration for slower climb moves
-    private final TrapezoidProfile.Constraints climbConstraints = new TrapezoidProfile.Constraints(0.2 * Math.PI / 2, 1);
+    private final TrapezoidProfile.Constraints climbConstraints = new TrapezoidProfile.Constraints(0.15 * Math.PI / 2, 0.75);
 
     private final ProfiledPIDController leftController = new ProfiledPIDController(
         ClimberConstants.rotationArmKp.get(), 0, ClimberConstants.rotationArmKd.get(), 
@@ -59,8 +59,8 @@ public class RotationArms extends SubsystemBase {
             leftController.reset(leftMod);
             rightController.reset(rightMod);
 
-            leftController.setGoal(ClimberConstants.stowPositionRad);
-            rightController.setGoal(ClimberConstants.stowPositionRad);
+            leftController.setGoal(ClimberConstants.intakeStowPositionRad);
+            rightController.setGoal(ClimberConstants.intakeStowPositionRad);
         }
 
         Logger.getInstance().recordOutput("RotationArms/LeftAngleModDeg", Units.radiansToDegrees(leftMod));
@@ -105,7 +105,7 @@ public class RotationArms extends SubsystemBase {
 
     // Commands
     public final Command waitForMove() { return new WaitUntilCommand(this::atGoal); }
-    public final Command moveToStow () { return new InstantCommand(() -> setDesiredPosition(ClimberConstants.stowPositionRad), this); }
+    public final Command moveToStow () { return new InstantCommand(() -> setDesiredPosition(ClimberConstants.climbStowPositionRad), this); }
     public final Command moveToClimbGrab() { return new InstantCommand(() -> setDesiredPosition(ClimberConstants.climbGrabPositionRad), this); }
     public final Command moveToIntake() { return new InstantCommand(() -> setDesiredPosition(ClimberConstants.intakePositionRad), this); }
     public final Command moveToClimbSwing() { return new InstantCommand(() -> setDesiredPositionSlow(ClimberConstants.climbSwingPositionRad), this); }
