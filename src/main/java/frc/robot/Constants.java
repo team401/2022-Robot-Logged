@@ -124,7 +124,7 @@ public final class Constants {
         public static final double rotationPositionToleranceRad = Units.degreesToRadians(5.0);
 
         public static final double climbStowPositionRad = Units.degreesToRadians(-10);
-        public static final double intakeStowPositionRad = Units.degreesToRadians(-5);
+        public static final double intakeStowPositionRad = Units.degreesToRadians(-1);
         public static final double climbGrabPositionRad = Units.degreesToRadians(2);
         public static final double intakePositionRad = Units.degreesToRadians(25);
         public static final double climbSwingPositionRad = Units.degreesToRadians(30);
@@ -189,10 +189,10 @@ public final class Constants {
         public static final TunableNumber flywheelKp = new TunableNumber("Shooter/FlywheelKp");
         public static final TunableNumber flywheelKd = new TunableNumber("Shooter/FlywheelKd");
 
-        public static final SimpleMotorFeedforward flywheelModel = new SimpleMotorFeedforward(0, 0);
+        public static final SimpleMotorFeedforward flywheelModel = new SimpleMotorFeedforward(0.0539, 0.0190538);
 
         static {
-            hoodKp.setDefault(0);
+            hoodKp.setDefault(0.7);
             hoodKd.setDefault(0);
             flywheelKp.setDefault(0);
             flywheelKd.setDefault(0);

@@ -73,7 +73,7 @@ public class ShooterSubsystem extends SubsystemBase {
             if (flywheelEnable) {
                 io.setFlywheelVelocity(flywheelGoalRadPerS, ShooterConstants.flywheelModel.calculate(flywheelGoalRadPerS));
             } else {
-                io.setFlywheelVoltage(0);
+               io.setFlywheelVoltage(0);
             }
         }
 

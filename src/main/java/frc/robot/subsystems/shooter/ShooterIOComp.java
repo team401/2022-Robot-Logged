@@ -46,7 +46,7 @@ public class ShooterIOComp implements ShooterIO {
         leftShooterMotor.enableVoltageCompensation(true);
 
         // Current Limits
-        hoodMotor.setSmartCurrentLimit(20);
+        hoodMotor.setSmartCurrentLimit(30);
 
         // sets up hood PID Controller
         hoodController = hoodMotor.getPIDController();

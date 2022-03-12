@@ -26,7 +26,7 @@ public class TowerIOComp implements TowerIO {
         conveyorMotor.enableVoltageCompensation(12);
         indexMotor.enableVoltageCompensation(12);
 
-        conveyorMotor.setSmartCurrentLimit(20);
+        conveyorMotor.setSmartCurrentLimit(30);
         indexMotor.setSmartCurrentLimit(20);
 
         conveyorMotor.setInverted(false);

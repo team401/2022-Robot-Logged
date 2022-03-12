@@ -5,14 +5,17 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.commands.MeasureKs;
 import frc.robot.commands.drive.DriveWithJoysticks;
 import frc.robot.commands.intake.Intake;
 import frc.robot.commands.turret.Tracking;
@@ -30,6 +33,7 @@ import frc.robot.subsystems.turret.Turret;
 import frc.robot.subsystems.turret.TurretIOComp;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOLimelight;
+import frc.robot.util.TunableNumber;
 
 public class RobotContainer {
     private final Drive drive;
@@ -122,6 +126,22 @@ public class RobotContainer {
                         .alongWith(new InstantCommand(() -> towerSubsystem.setConveyorPercent(0))
                         .alongWith(new InstantCommand(() -> towerSubsystem.setIndexWheelsPercent(0))))));
 
+        TunableNumber hoodTuningPositionRad = new TunableNumber("hoodTuningPositionRad");
+        TunableNumber shooterTuningSpeedRPM = new TunableNumber("shooterTuningSpeedRPM");
+        hoodTuningPositionRad.setDefault(0);
+        shooterTuningSpeedRPM.setDefault(0);
+
+        new JoystickButton(gamepad, Button.kStart.value)
+                .whenPressed(new InstantCommand(() -> shooterSubsystem.setSetpoint(
+                        hoodTuningPositionRad.get(), 
+                        Units.rotationsPerMinuteToRadiansPerSecond(shooterTuningSpeedRPM.get()))))
+                .whenReleased(shooterSubsystem::stopShooter);
+
+        new JoystickButton(gamepad, Button.kRightBumper.value)
+                .whenHeld(new InstantCommand(() -> towerSubsystem.setConveyorPercent(1.0))
+                        .alongWith(new InstantCommand(() -> towerSubsystem.setIndexWheelsPercent(1.0))))
+                .whenReleased(new InstantCommand(() -> towerSubsystem.setConveyorPercent(0))
+                        .alongWith(new InstantCommand(() -> towerSubsystem.setIndexWheelsPercent(0))));
 
 
         JoystickButton two = new JoystickButton(rightStick, 2);
@@ -129,6 +149,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return new InstantCommand(() -> turret.setVoltage(4)); 
-    }
+        return null;
+}
 }
