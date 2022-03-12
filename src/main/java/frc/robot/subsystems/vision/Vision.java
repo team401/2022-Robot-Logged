@@ -26,6 +26,7 @@ public class Vision extends SubsystemBase {
 
     private static final int minTargetCount = 2; // Minimum number of tape targets to fit a circle
     private static final double circleFitPrecision = 0.01;
+    private static final double constantLatency = 0.06;
 
     public Vision(VisionIO io) {
         this.io = io;
@@ -83,7 +84,7 @@ public class Vision extends SubsystemBase {
         Logger.getInstance().recordOutput("Vision/CameraToTargetIn", new double[] {Units.metersToInches(cameraToTargetTranslation.getX()), Units.metersToInches(cameraToTargetTranslation.getY()), 0});
 
         // Inform RobotState of our observations
-        RobotState.getInstance().recordVisionObservations(lastCaptureTimestamp, cameraToTargetTranslation);
+        RobotState.getInstance().recordVisionObservations(lastCaptureTimestamp - constantLatency, cameraToTargetTranslation);
     }
 
     private List<VisionPoint> sortCorners(List<VisionPoint> corners,

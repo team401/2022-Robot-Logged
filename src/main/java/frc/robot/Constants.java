@@ -203,11 +203,11 @@ public final class Constants {
         static {
             velocityKp.setDefault(0);
             velocityKd.setDefault(0);
-            positionKp.setDefault(0);
-            positionKd.setDefault(0);
+            positionKp.setDefault(45);
+            positionKd.setDefault(0.2);
         }
 
-        public static final SimpleMotorFeedforward turretModel = new SimpleMotorFeedforward(0.204, 0);
+        public static final SimpleMotorFeedforward turretModel = new SimpleMotorFeedforward(0.204, 2.20697674);
     }
 
     public static final class VisionConstants {

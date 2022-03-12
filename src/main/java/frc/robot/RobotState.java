@@ -91,4 +91,55 @@ public class RobotState {
         return getLatestFieldToVehicle().transformBy(GeomUtil.poseToTransform(Constants.TurretConstants.vehicleToTurretFixed)).transformBy(GeomUtil.poseToTransform(turretFixedToTurret.getLatest().orElseThrow().getPose()));
     }
 
+    public AimingParameters getAimingParameters() {
+        Pose2d fieldToVehicle = getLatestFieldToVehicle();
+        Pose2d fieldToTurretFixed = fieldToVehicle
+            .transformBy(GeomUtil.poseToTransform(Constants.TurretConstants.vehicleToTurretFixed));
+            
+        Translation2d turretFixedToTargetTranslation = GeomUtil.poseInverse(fieldToTurretFixed)
+            .transformBy(GeomUtil.transformFromTranslation(latestMeasuredFieldToTarget)).getTranslation();
+
+        Translation2d vehicleToTargetTranslation = GeomUtil.poseInverse(fieldToVehicle)
+            .transformBy(GeomUtil.transformFromTranslation(latestMeasuredFieldToTarget)).getTranslation();
+
+        Rotation2d vehicleToGoalDirection = GeomUtil.direction(vehicleToTargetTranslation);
+
+        Rotation2d turretDirection = GeomUtil.direction(turretFixedToTargetTranslation);
+        double targetDistance = turretFixedToTargetTranslation.getNorm();
+
+        
+        double feedVelocity = vehicleVelocity.vxMetersPerSecond * vehicleToGoalDirection.getSin() / targetDistance - vehicleVelocity.vyMetersPerSecond * vehicleToGoalDirection.getCos() / targetDistance - vehicleVelocity.omegaRadiansPerSecond;
+
+        return new AimingParameters(turretDirection, targetDistance, feedVelocity);
+    }
+
+    public final class AimingParameters {
+        
+        //Angle of turret on robot
+        private final Rotation2d turretAngle;
+        //Distance in meters from target
+        private final double distanceM;
+        private final double velocityRadiansPerSec;
+
+        public AimingParameters(Rotation2d turretAngle, double distanceM, double velocity) {
+            this.turretAngle = turretAngle;
+            this.distanceM = distanceM;
+            this.velocityRadiansPerSec = velocity;
+        }
+
+        public Rotation2d getTurretAngle() {
+            return turretAngle;
+        }
+        
+        public double getDistanceM() {
+            return distanceM;            
+        }
+
+        public double getVelocityRadPerSec() {
+            return velocityRadiansPerSec;            
+        }
+
+
+    }
+
 }

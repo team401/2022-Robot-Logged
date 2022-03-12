@@ -22,11 +22,12 @@ public class TurretIOComp implements TurretIO {
 
     public TurretIOComp() {
        turretMotor.configFactoryDefault(1000);
-       turretMotor.setNeutralMode(NeutralMode.Coast);
+       turretMotor.setNeutralMode(NeutralMode.Brake);
        turretMotor.setInverted(true);
        turretMotor.configVoltageCompSaturation(12, 1000);
        turretMotor.enableVoltageCompensation(true);
        turretMotor.configNeutralDeadband(0, 1000);
+
        setFramePeriods(turretMotor);
 
        turretEncoder.configFactoryDefault(1000);

@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
@@ -12,8 +13,10 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.commands.ClimbSequence;
 import frc.robot.commands.MeasureKs;
 import frc.robot.commands.drive.DriveWithJoysticks;
+import frc.robot.commands.turret.Tracking;
 import frc.robot.subsystems.drive.*;
 import frc.robot.subsystems.rotationarms.*;
 import frc.robot.subsystems.telescopes.TelescopesIOComp;
@@ -73,6 +76,7 @@ public class RobotContainer {
 
         // Bind default commands
         drive.setDefaultCommand(driveWithJoysticks);
+        turret.setDefaultCommand(new Tracking(vision, turret));
 
         configureButtonBindings();
     }
@@ -94,10 +98,13 @@ public class RobotContainer {
         JoystickButton a = new JoystickButton(gamepad, Button.kA.value);
         a.whileHeld(moveDown);
         JoystickButton x = new JoystickButton(gamepad, Button.kX.value);
-        //x.whenHeld(climbSequence);
+        //x.whenHeld(new ClimbSequence(telescopes, rotationArms, gamepad));
+
+        JoystickButton two = new JoystickButton(rightStick, 2);
+        two.whenPressed(new InstantCommand(() -> RobotState.getInstance().forceRobotPose(new Pose2d())));
     }
 
     public Command getAutonomousCommand() {
-        return new MeasureKs(turret, turret::getVelocityRadPerS, turret::setVoltage);
+        return new InstantCommand(() -> turret.setVoltage(4)); 
     }
 }
