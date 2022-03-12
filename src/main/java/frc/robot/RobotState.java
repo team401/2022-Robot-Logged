@@ -92,14 +92,14 @@ public class RobotState {
     }
 
     public AimingParameters getAimingParameters() {
-        Pose2d fieldToVehicle = getLatestFieldToVehicle();
-        Pose2d fieldToTurretFixed = fieldToVehicle
+        Pose2d fieldToPredictedVehicle = getPredictedFieldToVehicle(Constants.VisionConstants.targetingLookaheadS.get());
+        Pose2d fieldToPredictedTurretFixed = fieldToPredictedVehicle
             .transformBy(GeomUtil.poseToTransform(Constants.TurretConstants.vehicleToTurretFixed));
             
-        Translation2d turretFixedToTargetTranslation = GeomUtil.poseInverse(fieldToTurretFixed)
+        Translation2d turretFixedToTargetTranslation = GeomUtil.poseInverse(fieldToPredictedTurretFixed)
             .transformBy(GeomUtil.transformFromTranslation(latestMeasuredFieldToTarget)).getTranslation();
 
-        Translation2d vehicleToTargetTranslation = GeomUtil.poseInverse(fieldToVehicle)
+        Translation2d vehicleToTargetTranslation = GeomUtil.poseInverse(fieldToPredictedVehicle)
             .transformBy(GeomUtil.transformFromTranslation(latestMeasuredFieldToTarget)).getTranslation();
 
         Rotation2d vehicleToGoalDirection = GeomUtil.direction(vehicleToTargetTranslation);

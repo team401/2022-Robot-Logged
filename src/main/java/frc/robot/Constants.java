@@ -194,6 +194,9 @@ public final class Constants {
 
         public static final double turretEncoderOffsetRad = 2.3669323557075446;
 
+        public static final double turretLimitLower = -Math.PI / 2.0;
+        public static final double turretLimitUpper = Math.PI / 2.0;
+
 
         public static final TunableNumber velocityKp = new TunableNumber("Turret/VelKp");
         public static final TunableNumber velocityKd = new TunableNumber("Turret/VelKd");
@@ -218,10 +221,13 @@ public final class Constants {
         public static final double cameraHeightM = Units.inchesToMeters(26.517);
         public static final Pose2d turretToCamera = GeomUtil.inchesToMeters(new Pose2d(6.461, 0.0, new Rotation2d()));
 
+        public static final TunableNumber targetingLookaheadS = new TunableNumber("Targeting/LookaheadS");
+
         public static final TunableNumber floorToCameraAngleDeg = new TunableNumber("Vision/FloorToCameraDeg");
 
         static {
             floorToCameraAngleDeg.setDefault(51.0);
+            targetingLookaheadS.setDefault(0.7);
         }
 
         // Vision target

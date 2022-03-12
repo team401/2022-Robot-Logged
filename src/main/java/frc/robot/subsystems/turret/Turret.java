@@ -47,7 +47,10 @@ public class Turret extends SubsystemBase {
 
         //PID control - equivalent of our old setdesiredpositionclosedloop methods continuously
         double output = positionController.calculate(turretRotation.getRadians(), goalPosition.getRadians());
-        output += TurretConstants.turretModel.calculate(velocityGoal);
+        // Only add feed velocity if we are not at our hard stops
+        if (goalPosition.getRadians() > TurretConstants.turretLimitLower && goalPosition.getRadians() < TurretConstants.turretLimitUpper) {
+            output += TurretConstants.turretModel.calculate(velocityGoal);
+        }
         io.setVoltage(output);
 
         RobotState.getInstance().recordTurretObservations(turretRotation, inputs.velocityRadPerS);
@@ -63,7 +66,7 @@ public class Turret extends SubsystemBase {
         double goalWrapped = MathUtil.angleModulus(goal.getRadians());
         
         //clamps max values to be within -90 and 90 deg
-        goalWrapped = MathUtil.clamp(goalWrapped, -Math.PI / 2, Math.PI / 2);
+        goalWrapped = MathUtil.clamp(goalWrapped, TurretConstants.turretLimitLower, TurretConstants.turretLimitUpper);
         this.goalPosition = new Rotation2d(goalWrapped);
     }
 
