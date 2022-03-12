@@ -17,12 +17,12 @@ import frc.robot.commands.ClimbSequence;
 import frc.robot.commands.MeasureKs;
 import frc.robot.commands.drive.DriveWithJoysticks;
 import frc.robot.commands.intake.Intake;
-import frc.robot.commands.shooter.CalibrateHood;
 import frc.robot.commands.Turret.Tracking;
 import frc.robot.subsystems.drive.*;
 import frc.robot.subsystems.intake.IntakeWheelsIOComp;
 import frc.robot.subsystems.intake.IntakeWheelsSubsystem;
 import frc.robot.subsystems.rotationarms.*;
+import frc.robot.subsystems.shooter.ShooterIOComp;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.telescopes.TelescopesIOComp;
 import frc.robot.subsystems.telescopes.TelescopesSubsystem;
@@ -43,7 +43,7 @@ public class RobotContainer {
     private final TowerSubsystem towerSubsystem;
     private final Turret turret;
 
-    private final ShooterSubsystem shooter;
+    private final ShooterSubsystem shooterSubsystem;
 
     private final IntakeWheelsSubsystem intakeWheels;
 
@@ -71,7 +71,7 @@ public class RobotContainer {
 
         intakeWheels = new IntakeWheelsSubsystem(new IntakeWheelsIOComp());
         rotationArms = new RotationArms(new RotationArmsIOComp());
-        //shooterSubsystem = new ShooterSubsystem(new ShooterIOComp());
+        shooterSubsystem = new ShooterSubsystem(new ShooterIOComp());
         telescopes = new TelescopesSubsystem(new TelescopesIOComp());
         towerSubsystem = new TowerSubsystem(new TowerIOComp());
         turret = new Turret(new TurretIOComp());
@@ -124,10 +124,6 @@ public class RobotContainer {
                         .alongWith(new InstantCommand(() -> intakeWheels.setPercent(0))
                         .alongWith(new InstantCommand(() -> towerSubsystem.setConveyorPercent(0))
                         .alongWith(new InstantCommand(() -> towerSubsystem.setIndexWheelsPercent(0))))));
-
-        new JoystickButton(gamepad, Button.kStart.value)
-                .whenPressed(new CalibrateHood(shooter))
-                .alongWith(telescopes.);
 
 
 
