@@ -22,7 +22,8 @@ public class TurretIOComp implements TurretIO {
 
     public TurretIOComp() {
        turretMotor.configFactoryDefault(1000);
-       turretMotor.setNeutralMode(NeutralMode.Brake);
+       turretMotor.setNeutralMode(NeutralMode.Coast);
+       turretMotor.setInverted(true);
        turretMotor.configVoltageCompSaturation(12, 1000);
        turretMotor.enableVoltageCompensation(true);
        turretMotor.configNeutralDeadband(0, 1000);
@@ -52,7 +53,7 @@ public class TurretIOComp implements TurretIO {
 
     @Override
     public void updateInputs(TurretIOInputs inputs) {
-        inputs.positionRad = Units.degreesToRadians(turretEncoder.getPosition());
+        inputs.positionRad = Units.degreesToRadians(turretEncoder.getPosition()) - TurretConstants.turretEncoderOffsetRad;
         inputs.velocityRadPerS = Units.degreesToRadians(turretEncoder.getVelocity());
         inputs.current = turretMotor.getSupplyCurrent();
     }

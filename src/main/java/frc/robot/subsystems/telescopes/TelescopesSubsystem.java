@@ -1,11 +1,15 @@
 package frc.robot.subsystems.telescopes;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.util.GeomUtil;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -137,5 +141,19 @@ public class TelescopesSubsystem extends SubsystemBase {
     public final Command moveToLatch() { return new InstantCommand(() -> setDesiredPosition(ClimberConstants.telescopeLatchRad), this); }
     public final Command moveToPull() { return new InstantCommand(() -> setDesiredPosition(ClimberConstants.telescopePullPositionRad), this); }
 
+
+    public static void main(String[] args) {
+        Pose2d fieldToVehicle = new Pose2d(10, 10, Rotation2d.fromDegrees(90));
+        Pose2d fieldToTarget = new Pose2d(5, 1, new Rotation2d());
+
+        Pose2d vehicleToTarget = GeomUtil.poseInverse(fieldToVehicle).transformBy(GeomUtil.poseToTransform(fieldToTarget));
+        Rotation2d vehicleToTargetDirection = GeomUtil.direction(vehicleToTarget.getTranslation());
+
+        System.out.println(vehicleToTargetDirection);
+
+        Twist2d velocity = new Twist2d(0.0, 10.0, 0.0);
+
+        System.out.println(velocity.dx * vehicleToTargetDirection.getSin() - velocity.dy * vehicleToTargetDirection.getCos());
+    }
 
 }

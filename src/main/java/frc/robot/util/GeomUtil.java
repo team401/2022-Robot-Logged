@@ -60,6 +60,10 @@ public class GeomUtil {
         return new Transform2d(translation, ROTATION_ZERO);
     }
 
+    public static Transform2d transformFromTranslation(double x, double y) {
+        return new Transform2d(new Translation2d(x, y), ROTATION_ZERO);
+    }
+
     /**
      * Creates a pure rotating transform
      * @param rotation The rotation to create the transform with

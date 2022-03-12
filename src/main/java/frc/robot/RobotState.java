@@ -1,10 +1,8 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.*;
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.util.GeomUtil;
@@ -22,16 +20,14 @@ public class RobotState {
 
     private Pose2d fieldToBoot = new Pose2d();
     private final PoseHistory bootToVehicle = new PoseHistory(100);
-    private final PoseHistory vehicleToTurretFixed = new PoseHistory(100);
     private final PoseHistory turretFixedToTurret = new PoseHistory(100);
     private ChassisSpeeds vehicleVelocity = new ChassisSpeeds();
     private double turretVelocityRadPerSec = 0.0;
 
-    private Pose2d latestMeasuredFieldToTarget = new Pose2d();
+    private Translation2d latestMeasuredFieldToTarget = Constants.FieldConstants.hubCenter;
 
     private RobotState() {
         bootToVehicle.insert(0.0, new Pose2d());
-        vehicleToTurretFixed.insert(0.0, new Pose2d());
         turretFixedToTurret.insert(0.0, new Pose2d());
     }
 
@@ -47,8 +43,6 @@ public class RobotState {
      * Sets the robot pose to the given pose
      * 
      * @param fieldToVehicle The robot pose to set
-     * @param fieldToTarget  The position of the target in the field frame to start
-     *                       with. Vision will update this over time.
      */
     public void forceRobotPose(Pose2d fieldToVehicle) {
         Pose2d bootToVehicle = this.bootToVehicle.getLatest().orElseThrow().getPose();
@@ -59,6 +53,17 @@ public class RobotState {
     public void recordOdometryObservations(Pose2d bootToVehicle, ChassisSpeeds velocity) {
         this.bootToVehicle.insert(Timer.getFPGATimestamp(), bootToVehicle);
         vehicleVelocity = velocity;
+    }
+
+    public void recordTurretObservations(Rotation2d turretFixedToTurretRotation, double turretVelocityRadPerSec) {
+        this.turretVelocityRadPerSec = turretVelocityRadPerSec;
+        turretFixedToTurret.insert(Timer.getFPGATimestamp(), GeomUtil.poseFromRotation(turretFixedToTurretRotation));
+    }
+
+    public void recordVisionObservations(double captureTimestamp, Translation2d cameraToTarget) {
+        latestMeasuredFieldToTarget = getFieldToTurret(captureTimestamp)
+                .transformBy(GeomUtil.poseToTransform(Constants.VisionConstants.turretToCamera))
+                .transformBy(GeomUtil.transformFromTranslation(cameraToTarget)).getTranslation();
     }
 
     public Pose2d getFieldToVehicle(double timestamp) {
@@ -76,6 +81,14 @@ public class RobotState {
                 new Twist2d(vehicleVelocity.vxMetersPerSecond * lookaheadTime,
                         vehicleVelocity.vyMetersPerSecond * lookaheadTime,
                         vehicleVelocity.omegaRadiansPerSecond * lookaheadTime));
+    }
+
+    public Pose2d getFieldToTurret(double timestamp) {
+        return getFieldToVehicle(timestamp).transformBy(GeomUtil.poseToTransform(Constants.TurretConstants.vehicleToTurretFixed)).transformBy(GeomUtil.poseToTransform(turretFixedToTurret.get(timestamp).orElseThrow()));
+    }
+
+    public Pose2d getLatestFieldToTurret() {
+        return getLatestFieldToVehicle().transformBy(GeomUtil.poseToTransform(Constants.TurretConstants.vehicleToTurretFixed)).transformBy(GeomUtil.poseToTransform(turretFixedToTurret.getLatest().orElseThrow().getPose()));
     }
 
 }

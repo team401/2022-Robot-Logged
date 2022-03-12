@@ -4,26 +4,24 @@
 
 package frc.robot;
 
-import java.util.function.BooleanSupplier;
-
-import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.commands.ClimbSequence;
+import frc.robot.commands.MeasureKs;
 import frc.robot.commands.drive.DriveWithJoysticks;
-import frc.robot.commands.shooter.PrepareToShoot;
 import frc.robot.subsystems.drive.*;
 import frc.robot.subsystems.rotationarms.*;
 import frc.robot.subsystems.telescopes.TelescopesIOComp;
 import frc.robot.subsystems.telescopes.TelescopesSubsystem;
+import frc.robot.subsystems.turret.Turret;
+import frc.robot.subsystems.turret.TurretIOComp;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionIOLimelight;
 
 public class RobotContainer {
     private final Drive drive;
@@ -32,7 +30,9 @@ public class RobotContainer {
     //private final ShooterSubsystem shooterSubsystem;
     private final TelescopesSubsystem telescopes;
     //private final TowerSubsystem towerSubsystem;
-    //private final TurretSubsystem turretSubsystem;
+    private final Turret turret;
+
+    private final Vision vision;
 
 
     private final Joystick leftStick = new Joystick(0);
@@ -59,7 +59,9 @@ public class RobotContainer {
         //shooterSubsystem = new ShooterSubsystem(new ShooterIOComp());
         telescopes = new TelescopesSubsystem(new TelescopesIOComp());
         //towerSubsystem = new TowerSubsystem(new TowerIOComp());
-        //turretSubsystem = new TurretSubsystem(new TurretIOComp());
+        turret = new Turret(new TurretIOComp());
+
+        vision = new Vision(new VisionIOLimelight());
 
         // Create commands
         driveWithJoysticks = new DriveWithJoysticks(
@@ -76,22 +78,26 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
+        Command moveUp = new InstantCommand(telescopes::jogUp);
+        Command moveDown = new InstantCommand(telescopes::jogDown);
 
-        new JoystickButton(gamepad, Button.kB.value)
-            .whileHeld(new InstantCommand(telescopes::jogUp));
-        new JoystickButton(gamepad, Button.kA.value)
-            .whileHeld(new InstantCommand(telescopes::jogDown));
-        new JoystickButton(gamepad, Button.kX.value)
-            .whenHeld(new ClimbSequence(telescopes, rotationArms, gamepad));
+        //Command climbSequence = telescopes.moveToStow.alongWith(rotationArms.moveToStow) // Start moving hooks down and make sure rotation arms are out of the way
+        //        .andThen(telescopes.waitForMove) // Wait for the telescopes to finish retracting all the way
+        //        .andThen(rotationArms.moveToClimbGrab) // Move the rotation arms into the position above the rung
+        //        .andThen(rotationArms.waitForMove) // Wait for the rotation arms to finish moving
+        //        .andThen(telescopes.moveToPop) // Move the telescopes up a bit to clear them off the rung
+        //        .andThen(telescopes.waitForMove);
+                // TODO: swing rotation arms + retract telescopes?
 
-        //new JoystickButton(gamepad, Button.kRightBumper.value)
-          //  .whenHeld(new PrepareToShoot());
+        JoystickButton b = new JoystickButton(gamepad, Button.kB.value);
+        b.whileHeld(moveUp);
+        JoystickButton a = new JoystickButton(gamepad, Button.kA.value);
+        a.whileHeld(moveDown);
+        JoystickButton x = new JoystickButton(gamepad, Button.kX.value);
+        //x.whenHeld(climbSequence);
     }
 
     public Command getAutonomousCommand() {
-        SwerveModuleState zero = new SwerveModuleState();
-        SwerveModuleState[] zeros = new SwerveModuleState[]{zero, zero, zero, zero};
-        return new InstantCommand(() -> drive.setGoalModuleStates(zeros), drive).andThen(new WaitCommand(2.0))
-                .andThen(new InstantCommand(() -> drive.setDriveVoltages(new double[]{4, 4, 4, 4}), drive)).andThen(new WaitCommand(10.0));
+        return new MeasureKs(turret, turret::getVelocityRadPerS, turret::setVoltage);
     }
 }

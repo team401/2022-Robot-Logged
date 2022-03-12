@@ -34,6 +34,7 @@ public class TowerIOComp implements TowerIO {
         conveyorMotor.setInverted(true);
 
         // Uncomment to burn settings into sparks
+        //TODO comment!
         indexMotor.burnFlash();
         conveyorMotor.burnFlash();
     }
