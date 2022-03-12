@@ -16,7 +16,7 @@ public class IntakeWheelsSubsystem extends SubsystemBase {
     public void periodic() {
     }
 
-    void setPercent(double percent) {
+    public void setPercent(double percent) {
         io.setPercent(percent);
     }
     

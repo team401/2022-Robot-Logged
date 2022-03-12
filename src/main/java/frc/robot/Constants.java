@@ -127,7 +127,7 @@ public final class Constants {
         public static final double climbStowPositionRad = Units.degreesToRadians(-10);
         public static final double intakeStowPositionRad = Units.degreesToRadians(-5);
         public static final double climbGrabPositionRad = Units.degreesToRadians(2);
-        public static final double intakePositionRad = Units.degreesToRadians(30);
+        public static final double intakePositionRad = Units.degreesToRadians(25);
         public static final double climbSwingPositionRad = Units.degreesToRadians(30);
         public static final double rotationLatchRad = Units.degreesToRadians(25);
 
@@ -169,7 +169,7 @@ public final class Constants {
         public static final double telescopeHomingVolts = -4;
 
         static {
-            rotationArmKp.setDefault(30.0);
+            rotationArmKp.setDefault(25.0);
             rotationArmKd.setDefault(0.5);
             telescopeArmKp.setDefault(5.0);
             telescopeArmKd.setDefault(0.0);
@@ -183,7 +183,7 @@ public final class Constants {
     }
 
     public static final class BallConstants {
-        public static final double intakePower = 0.5;
+        public static final double intakePower = 1.0;
         public static final double towerPower = 0.5;
     }
 

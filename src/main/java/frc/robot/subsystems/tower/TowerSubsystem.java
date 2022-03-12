@@ -31,5 +31,9 @@ public class TowerSubsystem extends SubsystemBase {
     public void setIndexWheelsPercent(double percent) {
         io.setIndexWheelsPercent(percent);
     }   
+
+    public boolean getTopSensor() {
+        return ioInputs.topSensor;
+    }
     
 }

@@ -31,7 +31,8 @@ public class TowerIOComp implements TowerIO {
         conveyorMotor.setSmartCurrentLimit(20);
         indexMotor.setSmartCurrentLimit(20);
 
-        conveyorMotor.setInverted(true);
+        conveyorMotor.setInverted(false);
+        indexMotor.setInverted(true);
 
         // Uncomment to burn settings into sparks
         //TODO comment!

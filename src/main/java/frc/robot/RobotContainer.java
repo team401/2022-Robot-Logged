@@ -16,11 +16,17 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.ClimbSequence;
 import frc.robot.commands.MeasureKs;
 import frc.robot.commands.drive.DriveWithJoysticks;
+import frc.robot.commands.intake.Intake;
 import frc.robot.commands.turret.Tracking;
 import frc.robot.subsystems.drive.*;
+import frc.robot.subsystems.intake.IntakeWheelsIOComp;
+import frc.robot.subsystems.intake.IntakeWheelsSubsystem;
 import frc.robot.subsystems.rotationarms.*;
 import frc.robot.subsystems.telescopes.TelescopesIOComp;
 import frc.robot.subsystems.telescopes.TelescopesSubsystem;
+import frc.robot.subsystems.tower.TowerIOComp;
+import frc.robot.subsystems.tower.TowerSubsystem;
+import frc.robot.subsystems.tower.TowerIO.TowerIOInputs;
 import frc.robot.subsystems.turret.Turret;
 import frc.robot.subsystems.turret.TurretIOComp;
 import frc.robot.subsystems.vision.Vision;
@@ -32,8 +38,10 @@ public class RobotContainer {
     private final RotationArms rotationArms;
     //private final ShooterSubsystem shooterSubsystem;
     private final TelescopesSubsystem telescopes;
-    //private final TowerSubsystem towerSubsystem;
+    private final TowerSubsystem towerSubsystem;
     private final Turret turret;
+
+    private final IntakeWheelsSubsystem intakeWheels;
 
     private final Vision vision;
 
@@ -57,11 +65,11 @@ public class RobotContainer {
                         CANDevices.backRightRotationEncoderID, DriveConstants.backRightAngleOffset)
         }, new DriveAngleIOComp());
 
-        //intakeSubsystem = new IntakeSubsystem(new IntakeWheelsIOComp());
+        intakeWheels = new IntakeWheelsSubsystem(new IntakeWheelsIOComp());
         rotationArms = new RotationArms(new RotationArmsIOComp());
         //shooterSubsystem = new ShooterSubsystem(new ShooterIOComp());
         telescopes = new TelescopesSubsystem(new TelescopesIOComp());
-        //towerSubsystem = new TowerSubsystem(new TowerIOComp());
+        towerSubsystem = new TowerSubsystem(new TowerIOComp());
         turret = new Turret(new TurretIOComp());
 
         vision = new Vision(new VisionIOLimelight());
@@ -93,12 +101,26 @@ public class RobotContainer {
         //        .andThen(telescopes.waitForMove);
                 // TODO: swing rotation arms + retract telescopes?
 
-        JoystickButton b = new JoystickButton(gamepad, Button.kB.value);
-        b.whileHeld(moveUp);
-        JoystickButton a = new JoystickButton(gamepad, Button.kA.value);
-        a.whileHeld(moveDown);
-        JoystickButton x = new JoystickButton(gamepad, Button.kX.value);
-        //x.whenHeld(new ClimbSequence(telescopes, rotationArms, gamepad));
+        new JoystickButton(gamepad, Button.kB.value).whileHeld(moveUp);
+
+        new JoystickButton(gamepad, Button.kA.value).whileHeld(moveDown);
+
+        new JoystickButton(gamepad, Button.kY.value)
+                .whileHeld(rotationArms.moveToIntake()
+                        .alongWith(new Intake(towerSubsystem, intakeWheels)))
+                .whenReleased(rotationArms.moveToStow());
+        
+                
+        new JoystickButton(gamepad, Button.kX.value)
+                .whenPressed(rotationArms.moveToIntake()
+                        .alongWith(new InstantCommand(() -> intakeWheels.setPercent(-0.5))
+                        .alongWith(new InstantCommand(() -> towerSubsystem.setConveyorPercent(-0.5))
+                        .alongWith(new InstantCommand(() -> towerSubsystem.setIndexWheelsPercent(-0.5))))))
+                .whenReleased(rotationArms.moveToStow()
+                        .alongWith(new InstantCommand(() -> intakeWheels.setPercent(0))
+                        .alongWith(new InstantCommand(() -> towerSubsystem.setConveyorPercent(0))
+                        .alongWith(new InstantCommand(() -> towerSubsystem.setIndexWheelsPercent(0))))));
+
 
         JoystickButton two = new JoystickButton(rightStick, 2);
         two.whenPressed(new InstantCommand(() -> RobotState.getInstance().forceRobotPose(new Pose2d())));
