@@ -1,5 +1,6 @@
 package frc.robot.subsystems.shooter;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants.ShooterConstants;
@@ -38,6 +39,11 @@ public class ShooterSubsystem extends SubsystemBase {
         if (ShooterConstants.flywheelKp.hasChanged() || ShooterConstants.flywheelKd.hasChanged()) {
             io.setFlywheelPD(ShooterConstants.flywheelKp.get(), ShooterConstants.flywheelKd.get());
         }
+
+        Logger.getInstance().recordOutput("Shooter/HoodAngleDeg", Units.radiansToDegrees(ioInputs.hoodPositionRad));
+        Logger.getInstance().recordOutput("Shooter/HoodSetpointDeg", Units.radiansToDegrees(hoodGoalRad));
+        Logger.getInstance().recordOutput("Shooter/FlywheelRPM", Units.radiansPerSecondToRotationsPerMinute(ioInputs.flywheelSpeedRadPerS));
+        Logger.getInstance().recordOutput("Shooter/FlywheelSetpointRPM", Units.radiansPerSecondToRotationsPerMinute(flywheelGoalRadPerS));
 
         if (!homed) {
             if (DriverStation.isEnabled()) {
