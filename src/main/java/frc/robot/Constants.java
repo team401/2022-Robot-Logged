@@ -130,7 +130,7 @@ public final class Constants {
 
         public static final double telescopeHomePositionRad = Units.degreesToRadians(200);
         public static final double telescopePullPositionRad = Units.degreesToRadians(50);
-        public static final double telescopeMaxPositionRad = Units.rotationsToRadians(12);
+        public static final double telescopeMaxPositionRad = Units.rotationsToRadians(14);
         public static final double telescopePopAboveRungRad = Units.degreesToRadians(700);
         public static final double telescopeLatchRad = Units.degreesToRadians(4750);
         public static final double telescopeRotationSafePositionRad = Units.degreesToRadians(2500);
