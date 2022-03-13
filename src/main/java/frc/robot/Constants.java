@@ -11,6 +11,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import frc.robot.util.GeomUtil;
+import frc.robot.util.InterpolatingDouble;
+import frc.robot.util.InterpolatingTreeMap;
 import frc.robot.util.TunableNumber;
 
 public final class Constants {
@@ -189,13 +191,30 @@ public final class Constants {
         public static final TunableNumber flywheelKp = new TunableNumber("Shooter/FlywheelKp");
         public static final TunableNumber flywheelKd = new TunableNumber("Shooter/FlywheelKd");
 
+        public static final InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> flywheelLookup = new InterpolatingTreeMap<>();
+        public static final InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> hoodLookup = new InterpolatingTreeMap<>();
+
+
         public static final SimpleMotorFeedforward flywheelModel = new SimpleMotorFeedforward(0.0539, 0.0190538);
+
+        public static final double hoodMinRad = 0.27;
+        public static final double hoodMaxRad = 0.63;
 
         static {
             hoodKp.setDefault(0.7);
             hoodKd.setDefault(0);
-            flywheelKp.setDefault(0);
-            flywheelKd.setDefault(0);
+            flywheelKp.setDefault(0.07);
+            flywheelKd.setDefault(4);
+
+            flywheelLookup.put(new InterpolatingDouble(3.332), new InterpolatingDouble(2250.0));
+            flywheelLookup.put(new InterpolatingDouble(2.58), new InterpolatingDouble(2250.0));
+            flywheelLookup.put(new InterpolatingDouble(1.81), new InterpolatingDouble(2250.0));
+            flywheelLookup.put(new InterpolatingDouble(1.54), new InterpolatingDouble(2400.0));
+
+            hoodLookup.put(new InterpolatingDouble(3.332), new InterpolatingDouble(0.63));
+            hoodLookup.put(new InterpolatingDouble(2.58), new InterpolatingDouble(0.4));
+            hoodLookup.put(new InterpolatingDouble(1.81), new InterpolatingDouble(0.29));
+            hoodLookup.put(new InterpolatingDouble(1.54), new InterpolatingDouble(0.27));
         }
 
 
@@ -241,12 +260,14 @@ public final class Constants {
         public static final Pose2d turretToCamera = GeomUtil.inchesToMeters(new Pose2d(6.461, 0.0, new Rotation2d()));
 
         public static final TunableNumber targetingLookaheadS = new TunableNumber("Targeting/LookaheadS");
+        public static final TunableNumber targetingAngularLookaheadS = new TunableNumber("Targeting/AngularLookaheadS");
 
         public static final TunableNumber floorToCameraAngleDeg = new TunableNumber("Vision/FloorToCameraDeg");
 
         static {
             floorToCameraAngleDeg.setDefault(51.0);
             targetingLookaheadS.setDefault(0.7);
+            targetingAngularLookaheadS.setDefault(0.15);
         }
 
         // Vision target

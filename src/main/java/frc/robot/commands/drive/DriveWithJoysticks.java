@@ -21,9 +21,9 @@ public class DriveWithJoysticks extends CommandBase {
   private final DoubleSupplier yPercent;
   private final DoubleSupplier omegaPercent;
 
-  private final AxisProcessor xProcessor = new AxisProcessor();
-  private final AxisProcessor yProcessor = new AxisProcessor();
-  private final AxisProcessor omegaProcessor = new AxisProcessor();
+  private final AxisProcessor xProcessor = new AxisProcessor(false);
+  private final AxisProcessor yProcessor = new AxisProcessor(false);
+  private final AxisProcessor omegaProcessor = new AxisProcessor(true);
 
   /** Creates a new DriveWithJoysticks. */
   public DriveWithJoysticks(Drive drive, DoubleSupplier xPercent, DoubleSupplier yPercent, DoubleSupplier omegaPercent) {
@@ -74,6 +74,11 @@ public class DriveWithJoysticks extends CommandBase {
   public static class AxisProcessor {
     private TrapezoidProfile.State state = new TrapezoidProfile.State();
     private static final double deadband = DriveConstants.driveJoystickDeadbandPercent;
+    private final boolean square;
+
+    public AxisProcessor(boolean square) {
+      this.square = square;
+    }
 
     public void reset(double value) {
       state = new TrapezoidProfile.State(value, 0.0);
@@ -85,8 +90,12 @@ public class DriveWithJoysticks extends CommandBase {
       if (Math.abs(value) > deadband) {
         //Joystick input that starts after deadband as ratio of total possible joystick inputs
         scaledValue = (Math.abs(value) - deadband) / (1 - deadband);
-        //scaled value is squared 
-        scaledValue = Math.copySign(scaledValue * scaledValue, value);
+        //scaled value is squared
+        if (square) {
+          scaledValue = Math.copySign(scaledValue * scaledValue, value);
+        } else {
+          scaledValue = Math.copySign(scaledValue, value);
+        }
       }
       TrapezoidProfile profile = new TrapezoidProfile(
           new TrapezoidProfile.Constraints(99999,

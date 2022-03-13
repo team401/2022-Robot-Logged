@@ -18,6 +18,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.MeasureKs;
 import frc.robot.commands.drive.DriveWithJoysticks;
 import frc.robot.commands.intake.Intake;
+import frc.robot.commands.shooter.PrepareToShoot;
 import frc.robot.commands.turret.Tracking;
 import frc.robot.subsystems.drive.*;
 import frc.robot.subsystems.intake.IntakeWheelsIOComp;
@@ -133,9 +134,12 @@ public class RobotContainer {
 
         new JoystickButton(gamepad, Button.kStart.value)
                 .whenPressed(new InstantCommand(() -> shooterSubsystem.setSetpoint(
-                        hoodTuningPositionRad.get(), 
+                        hoodTuningPositionRad.get(),
                         Units.rotationsPerMinuteToRadiansPerSecond(shooterTuningSpeedRPM.get()))))
                 .whenReleased(shooterSubsystem::stopShooter);
+
+        new JoystickButton(gamepad, Button.kBack.value)
+                .whenHeld(new PrepareToShoot(shooterSubsystem));
 
         new JoystickButton(gamepad, Button.kRightBumper.value)
                 .whenHeld(new InstantCommand(() -> towerSubsystem.setConveyorPercent(1.0))

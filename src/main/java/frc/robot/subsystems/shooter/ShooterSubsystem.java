@@ -1,5 +1,6 @@
 package frc.robot.subsystems.shooter;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
@@ -93,6 +94,7 @@ public class ShooterSubsystem extends SubsystemBase {
         hoodEnable = true;
         flywheelEnable = true;
         this.hoodGoalRad = hoodAngleRad;
+        this.hoodGoalRad = MathUtil.clamp(this.hoodGoalRad, ShooterConstants.hoodMinRad, ShooterConstants.hoodMaxRad);
         this.flywheelGoalRadPerS = flywheelGoalRadPerS;
     }
 

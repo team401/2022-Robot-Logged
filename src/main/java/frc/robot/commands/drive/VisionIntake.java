@@ -17,7 +17,7 @@ public class VisionIntake extends CommandBase {
     private final Drive drive;
 
     private final DoubleSupplier yPercent;
-    private final AxisProcessor yProcessor = new AxisProcessor();
+    private final AxisProcessor yProcessor = new AxisProcessor(false);
 
     private final PIDController controller = new PIDController(DriveConstants.intakeVisionKP.get(), 0, DriveConstants.intakeVisionKD.get());
 

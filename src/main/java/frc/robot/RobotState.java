@@ -76,11 +76,11 @@ public class RobotState {
         return fieldToBoot.transformBy(bootToVehicle);
     }
 
-    public Pose2d getPredictedFieldToVehicle(double lookaheadTime) {
+    public Pose2d getPredictedFieldToVehicle(double lookaheadTime, double angularLookaheadTime) {
         return getLatestFieldToVehicle().exp(
                 new Twist2d(vehicleVelocity.vxMetersPerSecond * lookaheadTime,
                         vehicleVelocity.vyMetersPerSecond * lookaheadTime,
-                        vehicleVelocity.omegaRadiansPerSecond * lookaheadTime));
+                        vehicleVelocity.omegaRadiansPerSecond * angularLookaheadTime));
     }
 
     public Pose2d getFieldToTurret(double timestamp) {
@@ -92,7 +92,7 @@ public class RobotState {
     }
 
     public AimingParameters getAimingParameters() {
-        Pose2d fieldToPredictedVehicle = getPredictedFieldToVehicle(Constants.VisionConstants.targetingLookaheadS.get());
+        Pose2d fieldToPredictedVehicle = getPredictedFieldToVehicle(Constants.VisionConstants.targetingLookaheadS.get(), Constants.VisionConstants.targetingAngularLookaheadS.get());
         Pose2d fieldToPredictedTurretFixed = fieldToPredictedVehicle
             .transformBy(GeomUtil.poseToTransform(Constants.TurretConstants.vehicleToTurretFixed));
             
@@ -107,7 +107,10 @@ public class RobotState {
         Rotation2d turretDirection = GeomUtil.direction(turretFixedToTargetTranslation);
         double targetDistance = turretFixedToTargetTranslation.getNorm();
 
-        
+        Logger.getInstance().recordOutput("RobotState/TargetDistance", targetDistance);
+
+
+
         double feedVelocity = vehicleVelocity.vxMetersPerSecond * vehicleToGoalDirection.getSin() / targetDistance - vehicleVelocity.vyMetersPerSecond * vehicleToGoalDirection.getCos() / targetDistance - vehicleVelocity.omegaRadiansPerSecond;
 
         return new AimingParameters(turretDirection, targetDistance, feedVelocity);
