@@ -188,7 +188,7 @@ public class Drive extends SubsystemBase {
   }
 
   public void resetOdometry(Pose2d pose) {
-    odometry.resetPosition(pose, pose.getRotation());
+    odometry.resetPosition(pose, new Rotation2d());
   }
 
 }
