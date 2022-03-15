@@ -87,16 +87,30 @@ public final class Constants {
         public static final TunableNumber driveKp = new TunableNumber("Drive/DriveKp");
         public static final TunableNumber driveKd = new TunableNumber("Drive/DriveKd");
 
-        public static final TunableNumber followTrajectoryXControllerKp = new TunableNumber("followTrajectoryXControllerKp");
-        public static final TunableNumber followTrajectoryXControllerKd = new TunableNumber("followTrajectoryXControllerKd");
-        public static final TunableNumber followTrajectoryYControllerKp = new TunableNumber("followTrajectoryYControllerKp");
-        public static final TunableNumber followTrajectoryYControllerKd = new TunableNumber("followTrajectoryYControllerKd");
+        public static final TunableNumber followTrajectoryXControllerKp = new TunableNumber("Drive/FollowTrajectoryXControllerKp");
+        public static final TunableNumber followTrajectoryXControllerKd = new TunableNumber("Drive/FollowTrajectoryXControllerKd");
 
-        public static final TunableNumber followTrajectoryOmegaControllerKp = new TunableNumber("followTrajectoryOmegaControllerKp");
-        public static final TunableNumber followTrajectoryOmegaControllerKd = new TunableNumber("followTrajectoryOmegaControllerKp");
+        public static final TunableNumber followTrajectoryYControllerKp = new TunableNumber("Drive/FollowTrajectoryYControllerKp");
+        public static final TunableNumber followTrajectoryYControllerKd = new TunableNumber("Drive/FollowTrajectoryYControllerKd");
+
+        public static final TunableNumber followTrajectoryThetaControllerKp = new TunableNumber("Drive/FollowTrajectoryThetaControllerKp");
+        public static final TunableNumber followTrajectoryThetaControllerKd = new TunableNumber("Drive/FollowTrajectoryThetaControllerKd");
+
+        static {
+                followTrajectoryXControllerKp.setDefault(0.25);
+                followTrajectoryXControllerKd.setDefault(0);
+
+                followTrajectoryYControllerKp.setDefault(0.25);
+                followTrajectoryYControllerKd.setDefault(0);
+
+                followTrajectoryThetaControllerKp.setDefault(0.25);
+                followTrajectoryThetaControllerKd.setDefault(0);
+
+        }
 
         public static final double driveJoystickDeadbandPercent = 0.05;
         public static final double driveMaxJerk = 200.0;
+        
 
         static {
             // Tuned on 3/8/22

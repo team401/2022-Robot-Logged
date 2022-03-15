@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.MeasureKs;
+import frc.robot.commands.autonomous.AutoRoutines;
 import frc.robot.commands.drive.DriveWithJoysticks;
 import frc.robot.commands.intake.Intake;
 import frc.robot.commands.shooter.PrepareToShoot;
@@ -148,11 +149,11 @@ public class RobotContainer {
                         .alongWith(new InstantCommand(() -> towerSubsystem.setIndexWheelsPercent(0))));
 
 
-        JoystickButton two = new JoystickButton(rightStick, 2);
-        two.whenPressed(new InstantCommand(() -> RobotState.getInstance().forceRobotPose(new Pose2d())));
+        new JoystickButton(rightStick, 2)
+            .whenPressed(new InstantCommand(() -> RobotState.getInstance().forceRobotPose(new Pose2d())));
     }
 
     public Command getAutonomousCommand() {
-        return null;
-}
+        return new AutoRoutines(drive);
+    }
 }

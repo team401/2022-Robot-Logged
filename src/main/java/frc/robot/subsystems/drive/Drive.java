@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.drive;
 
+import java.util.function.Consumer;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
@@ -179,6 +181,14 @@ public class Drive extends SubsystemBase {
       sum += inputs[i].driveVelocityRadPerS;
     }
     return sum / 4.0;
+  }
+
+  public Pose2d getPose() {
+    return odometry.getPoseMeters();
+  }
+
+  public void resetOdometry(Pose2d pose) {
+    odometry.resetPosition(pose, pose.getRotation());
   }
 
 }
