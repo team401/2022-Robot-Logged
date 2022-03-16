@@ -18,14 +18,13 @@ public class AutoRoutines extends SequentialCommandGroup {
 
         addCommands(
             new PrepareToShoot(shoot)
-                .raceWith(new WaitCommand(5)
+                .raceWith(new WaitCommand(1.5)
                 .andThen(new InstantCommand(() -> tower.setConveyorPercent(1.0))
                     .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(1.0))))
-                .andThen(new WaitCommand(3))),
-            //new WaitCommand(2),
+                .andThen(new WaitCommand(2))),
             new InstantCommand(() -> tower.setConveyorPercent(0.0))
                 .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(0.0))),
-            new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), PathPlanner.loadPath("PID Test Path", 2, 2))
+            new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), PathPlanner.loadPath("PID Test Path", 4, 5))
         ); 
     }
 

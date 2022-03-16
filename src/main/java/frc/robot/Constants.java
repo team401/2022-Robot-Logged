@@ -103,7 +103,7 @@ public final class Constants {
                 followTrajectoryYControllerKp.setDefault(0.25);
                 followTrajectoryYControllerKd.setDefault(0);
 
-                followTrajectoryThetaControllerKp.setDefault(1);
+                followTrajectoryThetaControllerKp.setDefault(3.0);
                 followTrajectoryThetaControllerKd.setDefault(0);
 
         }
