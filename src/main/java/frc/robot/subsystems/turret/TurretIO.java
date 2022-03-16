@@ -1,5 +1,7 @@
 package frc.robot.subsystems.turret;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+
 import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
@@ -32,4 +34,7 @@ public interface TurretIO {
     void setVelocitySetpoint(double velocityRadPerS, double ffVolts);
 
     void setVelocityPD(double p, double d);
+
+    public void setNeutralMode(NeutralMode mode);
+    
 }

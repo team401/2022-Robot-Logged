@@ -3,6 +3,11 @@ package frc.robot.subsystems.turret;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -29,6 +34,13 @@ public class Turret extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.getInstance().processInputs("Turret", inputs);
+
+        if (!DriverStation.isEnabled()) {
+            io.setNeutralMode(NeutralMode.Coast);
+        }
+        else {
+            io.setNeutralMode(NeutralMode.Brake);
+        }
 
         // Update gains if they have changed
         if (TurretConstants.positionKp.hasChanged() || TurretConstants.positionKd.hasChanged()) {
@@ -85,7 +97,8 @@ public class Turret extends SubsystemBase {
      */
     public void setAbsolutePositionGoal(double positionRad) {
         // Clamp to absolute maximum range of motion
-        positionRad = MathUtil.clamp(positionRad, -Math.PI, Math.PI / 2.0);
+        // Negative contraint was -180 instead of -90
+        positionRad = MathUtil.clamp(positionRad, -Math.PI / 2.0, Math.PI / 2.0); 
         this.goalPosition = positionRad;
     }
 

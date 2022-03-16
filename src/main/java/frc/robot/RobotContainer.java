@@ -26,11 +26,11 @@ import frc.robot.subsystems.intake.IntakeWheelsIOComp;
 import frc.robot.subsystems.intake.IntakeWheelsSubsystem;
 import frc.robot.subsystems.rotationarms.*;
 import frc.robot.subsystems.shooter.ShooterIOComp;
-import frc.robot.subsystems.shooter.ShooterSubsystem;
+import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.telescopes.TelescopesIOComp;
 import frc.robot.subsystems.telescopes.TelescopesSubsystem;
 import frc.robot.subsystems.tower.TowerIOComp;
-import frc.robot.subsystems.tower.TowerSubsystem;
+import frc.robot.subsystems.tower.Tower;
 import frc.robot.subsystems.turret.Turret;
 import frc.robot.subsystems.turret.TurretIOComp;
 import frc.robot.subsystems.vision.Vision;
@@ -43,10 +43,10 @@ public class RobotContainer {
     private final RotationArms rotationArms;
     //private final ShooterSubsystem shooterSubsystem;
     private final TelescopesSubsystem telescopes;
-    private final TowerSubsystem towerSubsystem;
+    private final Tower tower;
     private final Turret turret;
 
-    private final ShooterSubsystem shooterSubsystem;
+    private final Shooter shooter;
 
     private final IntakeWheelsSubsystem intakeWheels;
 
@@ -74,9 +74,9 @@ public class RobotContainer {
 
         intakeWheels = new IntakeWheelsSubsystem(new IntakeWheelsIOComp());
         rotationArms = new RotationArms(new RotationArmsIOComp());
-        shooterSubsystem = new ShooterSubsystem(new ShooterIOComp());
+        shooter = new Shooter(new ShooterIOComp());
         telescopes = new TelescopesSubsystem(new TelescopesIOComp());
-        towerSubsystem = new TowerSubsystem(new TowerIOComp());
+        tower = new Tower(new TowerIOComp());
         turret = new Turret(new TurretIOComp());
 
         vision = new Vision(new VisionIOLimelight());
@@ -91,7 +91,7 @@ public class RobotContainer {
 
         // Bind default commands
         drive.setDefaultCommand(driveWithJoysticks);
-        //turret.setDefaultCommand(new Tracking(vision, turret));
+        turret.setDefaultCommand(new Tracking(vision, turret));
 
         configureButtonBindings();
     }
@@ -114,19 +114,19 @@ public class RobotContainer {
 
         new JoystickButton(gamepad, Button.kY.value)
                 .whileHeld(rotationArms.moveToIntake()
-                        .alongWith(new Intake(towerSubsystem, intakeWheels)))
+                        .alongWith(new Intake(tower, intakeWheels)))
                 .whenReleased(rotationArms.moveToStow());
         
                 
         new JoystickButton(gamepad, Button.kX.value)
                 .whenPressed(rotationArms.moveToIntake()
                         .alongWith(new InstantCommand(() -> intakeWheels.setPercent(-0.5))
-                        .alongWith(new InstantCommand(() -> towerSubsystem.setConveyorPercent(-0.5))
-                        .alongWith(new InstantCommand(() -> towerSubsystem.setIndexWheelsPercent(-0.5))))))
+                        .alongWith(new InstantCommand(() -> tower.setConveyorPercent(-0.5))
+                        .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(-0.5))))))
                 .whenReleased(rotationArms.moveToStow()
                         .alongWith(new InstantCommand(() -> intakeWheels.setPercent(0))
-                        .alongWith(new InstantCommand(() -> towerSubsystem.setConveyorPercent(0))
-                        .alongWith(new InstantCommand(() -> towerSubsystem.setIndexWheelsPercent(0))))));
+                        .alongWith(new InstantCommand(() -> tower.setConveyorPercent(0))
+                        .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(0))))));
 
         TunableNumber hoodTuningPositionRad = new TunableNumber("hoodTuningPositionRad");
         TunableNumber shooterTuningSpeedRPM = new TunableNumber("shooterTuningSpeedRPM");
@@ -134,19 +134,19 @@ public class RobotContainer {
         shooterTuningSpeedRPM.setDefault(0);
 
         new JoystickButton(gamepad, Button.kStart.value)
-                .whenPressed(new InstantCommand(() -> shooterSubsystem.setSetpoint(
+                .whenPressed(new InstantCommand(() -> shooter.setSetpoint(
                         hoodTuningPositionRad.get(),
                         Units.rotationsPerMinuteToRadiansPerSecond(shooterTuningSpeedRPM.get()))))
-                .whenReleased(shooterSubsystem::stopShooter);
+                .whenReleased(shooter::stopShooter);
 
         new JoystickButton(gamepad, Button.kBack.value)
-                .whenHeld(new PrepareToShoot(shooterSubsystem));
+                .whenHeld(new PrepareToShoot(shooter));
 
         new JoystickButton(gamepad, Button.kRightBumper.value)
-                .whenHeld(new InstantCommand(() -> towerSubsystem.setConveyorPercent(1.0))
-                        .alongWith(new InstantCommand(() -> towerSubsystem.setIndexWheelsPercent(1.0))))
-                .whenReleased(new InstantCommand(() -> towerSubsystem.setConveyorPercent(0))
-                        .alongWith(new InstantCommand(() -> towerSubsystem.setIndexWheelsPercent(0))));
+                .whenHeld(new InstantCommand(() -> tower.setConveyorPercent(1.0))
+                        .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(1.0))))
+                .whenReleased(new InstantCommand(() -> tower.setConveyorPercent(0))
+                        .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(0))));
 
 
         new JoystickButton(rightStick, 2)
@@ -154,6 +154,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return new AutoRoutines(drive);
+        return new AutoRoutines(drive, shooter, tower);
     }
 }

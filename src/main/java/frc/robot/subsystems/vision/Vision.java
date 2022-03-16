@@ -32,7 +32,7 @@ public class Vision extends SubsystemBase {
     private double lastCaptureTimestamp = 0.0;
 
     // Whether or not the LEDs should be on.
-    private boolean ledsOn = false;
+    private boolean ledsState = true;
 
     // Field of view constants for the limelight at 1x zoom
     private static final double vpw =
@@ -59,7 +59,7 @@ public class Vision extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.getInstance().processInputs("Vision", inputs);
 
-        io.setLeds(ledsOn);
+        io.setLeds(ledsState);
 
         // If there is no new frame, do nothing
         if (inputs.captureTimestamp == lastCaptureTimestamp) return;
@@ -67,7 +67,7 @@ public class Vision extends SubsystemBase {
 
         // Grab target count from corners array.  If LEDs are off, force
         // no targets
-        int targetCount = ledsOn ? inputs.cornerX.length / 4 : 0;
+        int targetCount = ledsState ? inputs.cornerX.length / 4 : 0;
 
         // Stop if we don't have enough targets
         if (targetCount < minTargetCount) return;
@@ -242,13 +242,13 @@ public class Vision extends SubsystemBase {
      * Turns on the limelight LEDs
      */
     public void turnOnLeds() {
-        ledsOn = true;
+        ledsState = true;
     }
 
     /**
      * Turns off the limelight LEDs
      */
     public void turnOffLeds() {
-        ledsOn = false;
+        ledsState = false;
     }
 }

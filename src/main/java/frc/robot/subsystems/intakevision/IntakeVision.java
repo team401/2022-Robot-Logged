@@ -18,6 +18,8 @@ public class IntakeVision extends SubsystemBase {
     public void periodic() {
         io.updateInputs(ioInputs);
         Logger.getInstance().processInputs("IntakeVision", ioInputs);
+
+        io.setLeds(false);
     }
 
     public boolean hasTarget() {

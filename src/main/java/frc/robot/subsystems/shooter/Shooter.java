@@ -12,7 +12,7 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.shooter.ShooterIO.ShooterIOInputs;
 
-public class ShooterSubsystem extends SubsystemBase {
+public class Shooter extends SubsystemBase {
 
     private final ShooterIO io;
     private final ShooterIOInputs ioInputs = new ShooterIOInputs();
@@ -24,7 +24,7 @@ public class ShooterSubsystem extends SubsystemBase {
     private boolean flywheelEnable = false;
     private final Timer homeTimer = new Timer();
 
-    public ShooterSubsystem(ShooterIO io) {
+    public Shooter(ShooterIO io) {
         this.io = io;
     }
 

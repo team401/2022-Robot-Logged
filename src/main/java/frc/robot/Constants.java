@@ -103,7 +103,7 @@ public final class Constants {
                 followTrajectoryYControllerKp.setDefault(0.25);
                 followTrajectoryYControllerKd.setDefault(0);
 
-                followTrajectoryThetaControllerKp.setDefault(0.25);
+                followTrajectoryThetaControllerKp.setDefault(1);
                 followTrajectoryThetaControllerKd.setDefault(0);
 
         }
@@ -207,7 +207,6 @@ public final class Constants {
 
         public static final InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> flywheelLookup = new InterpolatingTreeMap<>();
         public static final InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> hoodLookup = new InterpolatingTreeMap<>();
-
 
         public static final SimpleMotorFeedforward flywheelModel = new SimpleMotorFeedforward(0.0539, 0.0190538);
 

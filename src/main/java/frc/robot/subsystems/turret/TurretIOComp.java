@@ -91,4 +91,8 @@ public class TurretIOComp implements TurretIO {
         turretMotor.config_kP(0, p, 1000);
         turretMotor.config_kD(0, d, 1000);
     }
+
+    public void setNeutralMode(NeutralMode mode) {
+        turretMotor.setNeutralMode(mode);
+    }
 }

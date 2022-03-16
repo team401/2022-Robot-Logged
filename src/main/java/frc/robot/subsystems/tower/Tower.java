@@ -5,12 +5,12 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.tower.TowerIO.TowerIOInputs;
 
-public class TowerSubsystem extends SubsystemBase {
+public class Tower extends SubsystemBase {
 
     private final TowerIO io;
     private final TowerIOInputs ioInputs = new TowerIOInputs();
 
-    public TowerSubsystem(TowerIO io) {
+    public Tower(TowerIO io) {
 
         this.io = io;
 
