@@ -7,6 +7,7 @@ package frc.robot;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.inputs.LoggedSystemStats;
+import org.littletonrobotics.junction.io.ByteLogReceiver;
 import org.littletonrobotics.junction.io.LogSocketServer;
 
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
@@ -32,7 +33,8 @@ public class Robot extends LoggedRobot {
   public void robotInit() {
     Logger logger = Logger.getInstance();
 
-    logger.addDataReceiver(new LogSocketServer(5800));
+    logger.addDataReceiver(new LogSocketServer(5800)); // Send to Advantage Scope
+    logger.addDataReceiver(new ByteLogReceiver("/media/sda1/")); // Log to USB drive
     
     logger.start();
 
