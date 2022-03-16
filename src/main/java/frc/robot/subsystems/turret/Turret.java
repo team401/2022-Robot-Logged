@@ -30,15 +30,23 @@ public class Turret extends SubsystemBase {
         io.resetEncoderAbsolute();
     }
 
+    int turretResetCounter = 0;
+
     @Override
     public void periodic() {
         io.updateInputs(inputs);
         Logger.getInstance().processInputs("Turret", inputs);
 
-        if (!DriverStation.isEnabled()) {
+        if (DriverStation.isDisabled()) {
             io.setNeutralMode(NeutralMode.Coast);
-        }
-        else {
+
+            // Reset the turret encoder to absolute.  This deals with a CANCoder bug.
+            if (turretResetCounter > 5) {
+                io.resetEncoderAbsolute();
+                turretResetCounter = 0;
+            }
+            turretResetCounter++;
+        } else {
             io.setNeutralMode(NeutralMode.Brake);
         }
 

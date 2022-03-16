@@ -71,7 +71,7 @@ public class TurretIOComp implements TurretIO {
         // to use the "angle modulus" of the new offset angle.  This puts zero at forward, and once the relative encoder
         // is set up it will not wrap around.
         double absoluteOffset = Units.degreesToRadians(turretEncoder.getAbsolutePosition()) - TurretConstants.turretEncoderOffsetRad;
-        turretEncoder.setPosition(Units.radiansToDegrees(MathUtil.angleModulus(absoluteOffset)), 10000);
+        turretEncoder.setPosition(Units.radiansToDegrees(MathUtil.angleModulus(absoluteOffset)));
     }
 
     @Override
