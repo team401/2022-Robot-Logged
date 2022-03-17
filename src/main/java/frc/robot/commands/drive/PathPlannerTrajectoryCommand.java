@@ -35,8 +35,7 @@ public class PathPlannerTrajectoryCommand extends CommandBase {
             new TrapezoidProfile.Constraints(0, 0)
         );
 
-    private final HolonomicDriveController controller = new HolonomicDriveController(
-        xController, yController, thetaController);
+    private final HolonomicDriveController controller;
 
     //private final PPSwerveControllerCommand trajectoryController;
     private final PathPlannerState pathState;
@@ -48,6 +47,9 @@ public class PathPlannerTrajectoryCommand extends CommandBase {
         this.drive = drive;
         this.robotState = robotState;
         this.trajectory = trajectory;
+
+        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+        this.controller  = new HolonomicDriveController(xController, yController, thetaController);
 
         pathState = trajectory.getInitialState();
 
