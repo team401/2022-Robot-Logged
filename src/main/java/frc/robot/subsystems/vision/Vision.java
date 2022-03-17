@@ -50,6 +50,8 @@ public class Vision extends SubsystemBase {
     // and transport over the network that cannot be measured in software.
     private static final double constantLatency = 0.06;
 
+    private double distanceToTargetIn = 0.0;
+
     public Vision(VisionIO io) {
         this.io = io;
     }
@@ -103,6 +105,8 @@ public class Vision extends SubsystemBase {
 
         Translation2d cameraToTargetTranslation = CircleFitter.fit(VisionConstants.visionTargetDiameter / 2.0,
                 cameraToTargetTranslations, circleFitPrecision);
+
+        distanceToTargetIn = Units.metersToInches(cameraToTargetTranslation.getNorm());
 
         Logger.getInstance().recordOutput("Vision/TargetDistanceIn", Units.metersToInches(cameraToTargetTranslation.getNorm()));
         Logger.getInstance().recordOutput("Vision/CameraToTargetIn", new double[] {Units.metersToInches(cameraToTargetTranslation.getX()), Units.metersToInches(cameraToTargetTranslation.getY()), 0});
@@ -250,5 +254,9 @@ public class Vision extends SubsystemBase {
      */
     public void turnOffLeds() {
         ledsState = false;
+    }
+
+    public double distanceToTargetIn() {
+        return distanceToTargetIn;
     }
 }

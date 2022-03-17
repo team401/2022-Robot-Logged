@@ -4,7 +4,8 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPlannerTrajectory.PathPlannerState;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
-import com.pathplanner.lib.PathPlannerTrajectory.*;
+
+import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
@@ -37,7 +38,7 @@ public class PathPlannerTrajectoryCommand extends CommandBase {
     private final HolonomicDriveController controller = new HolonomicDriveController(
         xController, yController, thetaController);
 
-    private final PPSwerveControllerCommand trajectoryController;
+    //private final PPSwerveControllerCommand trajectoryController;
     private final PathPlannerState pathState;
     
     private final Timer timer = new Timer();
@@ -50,7 +51,7 @@ public class PathPlannerTrajectoryCommand extends CommandBase {
 
         pathState = trajectory.getInitialState();
 
-        trajectoryController = 
+        /*trajectoryController = 
             new PPSwerveControllerCommand(
                 trajectory,
                 drive::getPose,
@@ -60,7 +61,7 @@ public class PathPlannerTrajectoryCommand extends CommandBase {
                 thetaController,
                 drive::setGoalModuleStates,
                 drive
-            );
+            );*/
 
         addRequirements(drive);
 
@@ -97,7 +98,16 @@ public class PathPlannerTrajectoryCommand extends CommandBase {
         latestFieldToVehicle = robotState.getLatestFieldToVehicle();
         
         PathPlannerState desiredState = (PathPlannerState) trajectory.sample(timer.get());
+
+        Logger.getInstance().recordOutput("Auto/desiredStateX", trajectory.sample(timer.get()).poseMeters.getX());
+        Logger.getInstance().recordOutput("Auto/desiredStateY", trajectory.sample(timer.get()).poseMeters.getY());
+        Logger.getInstance().recordOutput("Auto/desiredStateRotation", trajectory.sample(timer.get()).poseMeters.getRotation().getDegrees());
     
+        Logger.getInstance().recordOutput("Auto/actualX", drive.getPose().getX());
+        Logger.getInstance().recordOutput("Auto/actualY", drive.getPose().getY());
+        Logger.getInstance().recordOutput("Auto/actualRotation", drive.getPose().getRotation().getDegrees());
+
+
         ChassisSpeeds adjustedSpeeds = controller.calculate(
             drive.getPose(), desiredState, desiredState.holonomicRotation);
 
@@ -109,12 +119,13 @@ public class PathPlannerTrajectoryCommand extends CommandBase {
     }
 
     @Override
+    public boolean isFinished() {
+        return timer.hasElapsed(trajectory.getTotalTimeSeconds());
+    }
+
+    @Override
     public void end(boolean interrupted) {
         timer.stop();
     }
 
-    @Override
-    public boolean isFinished() {
-        return timer.hasElapsed(trajectory.getTotalTimeSeconds());
-    }
 }

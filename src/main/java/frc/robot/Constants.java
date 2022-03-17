@@ -108,7 +108,7 @@ public final class Constants {
 
         }
 
-        public static final double driveJoystickDeadbandPercent = 0.05;
+        public static final double driveJoystickDeadbandPercent = 0.075;
         public static final double driveMaxJerk = 200.0;
         
 
@@ -209,9 +209,11 @@ public final class Constants {
         public static final InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> hoodLookup = new InterpolatingTreeMap<>();
 
         public static final SimpleMotorFeedforward flywheelModel = new SimpleMotorFeedforward(0.0539, 0.0190538);
-
+        
         public static final double hoodMinRad = 0.27;
         public static final double hoodMaxRad = 0.63;
+        
+        public static final double maxDistanceToTargetIn = 14*12;
 
         static {
             hoodKp.setDefault(0.7);
@@ -229,6 +231,7 @@ public final class Constants {
             hoodLookup.put(new InterpolatingDouble(1.81), new InterpolatingDouble(0.29));
             hoodLookup.put(new InterpolatingDouble(1.54), new InterpolatingDouble(0.27));
         }
+
 
 
     }

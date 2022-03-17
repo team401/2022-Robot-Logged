@@ -24,6 +24,9 @@ public class Shooter extends SubsystemBase {
     private boolean flywheelEnable = false;
     private final Timer homeTimer = new Timer();
 
+    private final double flywheelToleranceRadPerS = Units.rotationsPerMinuteToRadiansPerSecond(50);
+    private final double hoodToleranceRad = Units.rotationsToRadians(0.25);
+
     public Shooter(ShooterIO io) {
         this.io = io;
     }
@@ -109,6 +112,15 @@ public class Shooter extends SubsystemBase {
 
     public double getFlywheelVelocityRadPerS() {
         return ioInputs.flywheelSpeedRadPerS;
+    }
+
+    public double getHoodPositionRad() {
+        return ioInputs.hoodPositionRad;
+    }
+
+    public boolean atGoal() {
+        return Math.abs(ioInputs.flywheelSpeedRadPerS-flywheelGoalRadPerS) < flywheelToleranceRadPerS &&
+                Math.abs(ioInputs.hoodPositionRad-hoodGoalRad) < hoodToleranceRad;
     }
     
 }

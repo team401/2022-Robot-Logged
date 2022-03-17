@@ -13,8 +13,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.commands.ClimbSequence;
 import frc.robot.commands.MeasureKs;
 import frc.robot.commands.autonomous.AutoRoutines;
 import frc.robot.commands.drive.DriveWithJoysticks;
@@ -23,7 +25,7 @@ import frc.robot.commands.shooter.PrepareToShoot;
 import frc.robot.commands.turret.Tracking;
 import frc.robot.subsystems.drive.*;
 import frc.robot.subsystems.intake.IntakeWheelsIOComp;
-import frc.robot.subsystems.intake.IntakeWheelsSubsystem;
+import frc.robot.subsystems.intake.IntakeWheels;
 import frc.robot.subsystems.rotationarms.*;
 import frc.robot.subsystems.shooter.ShooterIOComp;
 import frc.robot.subsystems.shooter.Shooter;
@@ -39,17 +41,12 @@ import frc.robot.util.TunableNumber;
 
 public class RobotContainer {
     private final Drive drive;
-    //private final IntakeSubsystem intakeSubsystem;
     private final RotationArms rotationArms;
-    //private final ShooterSubsystem shooterSubsystem;
     private final TelescopesSubsystem telescopes;
     private final Tower tower;
     private final Turret turret;
-
     private final Shooter shooter;
-
-    private final IntakeWheelsSubsystem intakeWheels;
-
+    private final IntakeWheels intakeWheels;
     private final Vision vision;
 
 
@@ -72,7 +69,7 @@ public class RobotContainer {
                         CANDevices.backRightRotationEncoderID, DriveConstants.backRightAngleOffset)
         }, new DriveAngleIOComp());
 
-        intakeWheels = new IntakeWheelsSubsystem(new IntakeWheelsIOComp());
+        intakeWheels = new IntakeWheels(new IntakeWheelsIOComp());
         rotationArms = new RotationArms(new RotationArmsIOComp());
         shooter = new Shooter(new ShooterIOComp());
         telescopes = new TelescopesSubsystem(new TelescopesIOComp());
@@ -97,16 +94,61 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
+        // Available Buttons (as of 3/16/22)
+        // Start, Left Bumper, X, A
+
+        // Telescope Up/Down
+        new POVButton(gamepad, 0)
+                .whileHeld(new InstantCommand(() -> telescopes.jogUp()));
+        new POVButton(gamepad, 180)
+                .whileHeld(new InstantCommand(() -> telescopes.jogDown()));
+
+        // Rotation Arms Intake/Stow
+        new POVButton(gamepad, 90)
+                .whenHeld(new InstantCommand(() -> rotationArms.moveToIntake()));
+        new POVButton(gamepad, 270)
+                .whenHeld(new InstantCommand(() -> rotationArms.moveToStow()));
+                
+        // Intake
+        new JoystickButton(gamepad, Button.kB.value)
+                .whileHeld(rotationArms.moveToIntake()
+                        .alongWith(new Intake(tower, intakeWheels)))
+                .whenReleased(rotationArms.moveToStow());
+        
+        // Reverse Intake
+        new JoystickButton(gamepad, Button.kBack.value)
+                .whenPressed(rotationArms.moveToIntake()
+                        .alongWith(new InstantCommand(() -> intakeWheels.setPercent(-0.5))
+                        .alongWith(new InstantCommand(() -> tower.setConveyorPercent(-0.5))
+                        .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(-0.5))))))
+                .whenReleased(rotationArms.moveToStow()
+                        .alongWith(new InstantCommand(() -> intakeWheels.setPercent(0))
+                        .alongWith(new InstantCommand(() -> tower.setConveyorPercent(0))
+                        .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(0))))));
+                        
+        // Prepare to shoot
+        new JoystickButton(gamepad, Button.kRightBumper.value)
+                .whenHeld(new PrepareToShoot(shooter));
+                        
+        // Shoot
+        new JoystickButton(gamepad, Button.kY.value)
+                .whenHeld(new InstantCommand(() -> tower.setConveyorPercent(1.0))
+                        .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(1.0))))
+                .whenReleased(new InstantCommand(() -> tower.setConveyorPercent(0))
+                        .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(0))));
+
+        // Reset Gyro
+        new JoystickButton(rightStick, 2)
+            .whenPressed(new InstantCommand(() -> RobotState.getInstance().forceRobotPose(new Pose2d())));
+
+        // Climb Sequence (DISABLED)
+        /*new JoystickButton(gamepad, Button.kX.value)
+                .whenHeld(new ClimbSequence(telescopes, rotationArms, gamepad));*/
+
+        /*
+        old button bindings:
         Command moveUp = new InstantCommand(telescopes::jogUp);
         Command moveDown = new InstantCommand(telescopes::jogDown);
-
-        //Command climbSequence = telescopes.moveToStow.alongWith(rotationArms.moveToStow) // Start moving hooks down and make sure rotation arms are out of the way
-        //        .andThen(telescopes.waitForMove) // Wait for the telescopes to finish retracting all the way
-        //        .andThen(rotationArms.moveToClimbGrab) // Move the rotation arms into the position above the rung
-        //        .andThen(rotationArms.waitForMove) // Wait for the rotation arms to finish moving
-        //        .andThen(telescopes.moveToPop) // Move the telescopes up a bit to clear them off the rung
-        //        .andThen(telescopes.waitForMove);
-                // TODO: swing rotation arms + retract telescopes?
 
         new JoystickButton(gamepad, Button.kB.value).whileHeld(moveUp);
 
@@ -141,19 +183,19 @@ public class RobotContainer {
 
         new JoystickButton(gamepad, Button.kBack.value)
                 .whenHeld(new PrepareToShoot(shooter));
-
+        
         new JoystickButton(gamepad, Button.kRightBumper.value)
                 .whenHeld(new InstantCommand(() -> tower.setConveyorPercent(1.0))
                         .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(1.0))))
                 .whenReleased(new InstantCommand(() -> tower.setConveyorPercent(0))
                         .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(0))));
 
-
         new JoystickButton(rightStick, 2)
-            .whenPressed(new InstantCommand(() -> RobotState.getInstance().forceRobotPose(new Pose2d())));
+            .whenPressed(new InstantCommand(() -> RobotState.getInstance().forceRobotPose(new Pose2d())));*/
     }
 
     public Command getAutonomousCommand() {
-        return new AutoRoutines(drive, shooter, tower);
+        return new AutoRoutines(drive, rotationArms, shooter, tower, intakeWheels, vision);
     }
+
 }

@@ -44,6 +44,7 @@ public class Tracking extends CommandBase {
 
     @Override
     public void end(boolean isInterrupted) {
-        turret.setPositionGoal(new Rotation2d());
+        //TODO: was this what killed turret?
+        //turret.setPositionGoal(new Rotation2d());
     }
 }
