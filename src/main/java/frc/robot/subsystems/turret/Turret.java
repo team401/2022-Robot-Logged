@@ -1,13 +1,10 @@
 package frc.robot.subsystems.turret;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -20,7 +17,7 @@ public class Turret extends SubsystemBase {
     private final TurretIOInputs inputs = new TurretIOInputs();
     private PIDController positionController = new PIDController(TurretConstants.positionKp.get(), 0, TurretConstants.positionKd.get());
     private final TurretIO io;
-    private double goalPosition = 0;
+    private Rotation2d goalPosition = new Rotation2d();
     private double velocityGoal = 0;
 
     public Turret(TurretIO io) {
@@ -30,23 +27,15 @@ public class Turret extends SubsystemBase {
         io.resetEncoderAbsolute();
     }
 
-    int turretResetCounter = 0;
-
     @Override
     public void periodic() {
         io.updateInputs(inputs);
         Logger.getInstance().processInputs("Turret", inputs);
 
-        if (DriverStation.isDisabled()) {
+        if (!DriverStation.isEnabled()) {
             io.setNeutralMode(NeutralMode.Coast);
-
-            // Reset the turret encoder to absolute.  This deals with a CANCoder bug.
-            if (turretResetCounter > 5) {
-                io.resetEncoderAbsolute();
-                turretResetCounter = 0;
-            }
-            turretResetCounter++;
-        } else {
+        }
+        else {
             io.setNeutralMode(NeutralMode.Brake);
         }
 
@@ -62,13 +51,13 @@ public class Turret extends SubsystemBase {
 
         Rotation2d turretRotation = new Rotation2d(MathUtil.angleModulus(inputs.positionRad));
         Logger.getInstance().recordOutput("Turret/RotationDeg", turretRotation.getDegrees());
-        Logger.getInstance().recordOutput("Turret/SetpointDeg", Units.radiansToDegrees(goalPosition));
+        Logger.getInstance().recordOutput("Turret/SetpointDeg", goalPosition.getDegrees());
         Logger.getInstance().recordOutput("Turret/VelocityFFDegPerSec", Units.radiansToDegrees(velocityGoal));
 
         //PID control - equivalent of our old setdesiredpositionclosedloop methods continuously
-        double output = positionController.calculate(inputs.positionRad, goalPosition);
+        double output = positionController.calculate(turretRotation.getRadians(), goalPosition.getRadians());
         // Only add feed velocity if we are not at our hard stops
-        if (goalPosition > TurretConstants.turretLimitLower && goalPosition < TurretConstants.turretLimitUpper) {
+        if (goalPosition.getRadians() > TurretConstants.turretLimitLower && goalPosition.getRadians() < TurretConstants.turretLimitUpper) {
             output += TurretConstants.turretModel.calculate(velocityGoal);
         }
         io.setVoltage(output);
@@ -87,27 +76,13 @@ public class Turret extends SubsystemBase {
         
         //clamps max values to be within -90 and 90 deg
         goalWrapped = MathUtil.clamp(goalWrapped, TurretConstants.turretLimitLower, TurretConstants.turretLimitUpper);
-        this.goalPosition = goalWrapped;
+        this.goalPosition = new Rotation2d(goalWrapped);
     }
 
     public void setPositionGoal(Rotation2d goal) {
 
         setPositionGoal(goal, 0);
 
-    }
-
-    /**
-     * Sets an absolute position target for the turret.  This can be used to force the turret to, for example,
-     * move to positive 180 degrees (something that would not be possible with setPositionGoal as 180 degrees is the
-     * wraparound point of Rotation2d objects).
-     *
-     * @param positionRad The absolute position target for the turret, in radians.
-     */
-    public void setAbsolutePositionGoal(double positionRad) {
-        // Clamp to absolute maximum range of motion
-        // Negative contraint was -180 instead of -90
-        positionRad = MathUtil.clamp(positionRad, -Math.PI / 2.0, Math.PI / 2.0); 
-        this.goalPosition = positionRad;
     }
 
     public double getVelocityRadPerS() {

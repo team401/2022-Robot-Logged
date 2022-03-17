@@ -11,7 +11,6 @@ import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoderStatusFrame;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import frc.robot.Constants.TurretConstants;
 import frc.robot.Constants.CANDevices;
@@ -55,23 +54,14 @@ public class TurretIOComp implements TurretIO {
 
     @Override
     public void updateInputs(TurretIOInputs inputs) {
-        inputs.positionRad = Units.degreesToRadians(turretEncoder.getPosition());
+        inputs.positionRad = Units.degreesToRadians(turretEncoder.getPosition()) - TurretConstants.turretEncoderOffsetRad;
         inputs.velocityRadPerS = Units.degreesToRadians(turretEncoder.getVelocity());
         inputs.current = turretMotor.getSupplyCurrent();
     }
 
     @Override
     public void resetEncoderAbsolute() {
-        // The absolute position is configured to wrap at the crossing between 0 and 360, as an unsigned value.
-        // This means we can boot up at either side of that crossing point, meaning if we subtract our offset on one side
-        // we get a negative number, and on the other we get a positive number.  We want to re-center this range
-        // so that zero points straight ahead, but we also don't jump from positive to negative at 180 degrees.
-
-        // This is set up to read the absolute angle, subtract the offset, and then reconfigure the relative encoder
-        // to use the "angle modulus" of the new offset angle.  This puts zero at forward, and once the relative encoder
-        // is set up it will not wrap around.
-        double absoluteOffset = Units.degreesToRadians(turretEncoder.getAbsolutePosition()) - TurretConstants.turretEncoderOffsetRad;
-        turretEncoder.setPosition(Units.radiansToDegrees(MathUtil.angleModulus(absoluteOffset)));
+        turretEncoder.setPositionToAbsolute();
     }
 
     @Override
