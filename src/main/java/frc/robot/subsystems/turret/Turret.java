@@ -20,10 +20,12 @@ public class Turret extends SubsystemBase {
     private Rotation2d goalPosition = new Rotation2d();
     private double velocityGoal = 0;
 
+    private double encoderOffset = 0;
+    private int setupCycleCount = 0;
+
     public Turret(TurretIO io) {
         this.io = io;
         
-
         io.resetEncoder();
     }
 
@@ -31,6 +33,15 @@ public class Turret extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.getInstance().processInputs("Turret", inputs);
+
+        if (setupCycleCount == 20) {
+            io.resetEncoder();
+            encoderOffset = MathUtil.angleModulus(inputs.absolutePositionRad);
+            setupCycleCount++;
+        }
+        else {
+            setupCycleCount++;
+        }
 
         if (!DriverStation.isEnabled()) {
             io.setNeutralMode(NeutralMode.Coast);
@@ -49,26 +60,27 @@ public class Turret extends SubsystemBase {
             io.setVelocityPD(TurretConstants.velocityKp.get(), TurretConstants.velocityKd.get());
         }
 
-        Rotation2d turretRotation = new Rotation2d(MathUtil.angleModulus(inputs.positionRad));
-        Logger.getInstance().recordOutput("Turret/RotationDeg", turretRotation.getDegrees());
+        double turretRotation = inputs.positionRad + encoderOffset;
+        Logger.getInstance().recordOutput("Turret/RotationDeg", Units.radiansToDegrees(turretRotation));
         Logger.getInstance().recordOutput("Turret/SetpointDeg", goalPosition.getDegrees());
         Logger.getInstance().recordOutput("Turret/VelocityFFDegPerSec", Units.radiansToDegrees(velocityGoal));
 
         //PID control - equivalent of our old setdesiredpositionclosedloop methods continuously
-        double output = positionController.calculate(turretRotation.getRadians(), goalPosition.getRadians());
+        double output = positionController.calculate(turretRotation, goalPosition.getRadians());
         // Only add feed velocity if we are not at our hard stops
         if (goalPosition.getRadians() > TurretConstants.turretLimitLower && goalPosition.getRadians() < TurretConstants.turretLimitUpper) {
             output += TurretConstants.turretModel.calculate(velocityGoal);
         }
-        else if (turretRotation.getRadians() > TurretConstants.turretLimitUpper && output < 0) {
+        else if (turretRotation > TurretConstants.turretLimitUpper && output < 0) {
             output = 0;
         }
-        else if (turretRotation.getRadians() < TurretConstants.turretLimitLower && output > 0) {
+        else if (turretRotation < TurretConstants.turretLimitLower && output > 0) {
             output = 0;
         }
-        io.setVoltage(output);
+        if (setupCycleCount > 10)
+            io.setVoltage(output);
 
-        RobotState.getInstance().recordTurretObservations(turretRotation, inputs.velocityRadPerS);
+        RobotState.getInstance().recordTurretObservations(new Rotation2d(turretRotation), inputs.velocityRadPerS);
     }
 
     public void setVoltage(double volts) {

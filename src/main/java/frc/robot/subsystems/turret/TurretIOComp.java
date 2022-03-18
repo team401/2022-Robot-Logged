@@ -63,7 +63,7 @@ public class TurretIOComp implements TurretIO {
 
     @Override
     public void updateInputs(TurretIOInputs inputs) {
-        inputs.absolutePositionRad = Units.rotationsToRadians(turretAbsEncoder.getDistance()) - TurretConstants.turretEncoderOffsetRad;
+        inputs.absolutePositionRad = Units.rotationsToRadians(-turretAbsEncoder.getDistance()) - TurretConstants.turretEncoderOffsetRad;
         inputs.positionRad = Units.rotationsToRadians(turretRelEncoder.getDistance());
         inputs.velocityRadPerS = Units.rotationsToRadians(turretRelEncoder.getRate());
         inputs.current = turretMotor.getSupplyCurrent();

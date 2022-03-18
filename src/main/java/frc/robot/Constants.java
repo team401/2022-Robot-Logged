@@ -65,9 +65,9 @@ public final class Constants {
         public static final int leftRotationArmEncoder = 2;
         public static final int rightRotationArmEncoder = 3;
 
-        public static final int turretEncoderA = 4;
-        public static final int turretEncoderB = 5;
-        public static final int turretEncoderPulse = 6;
+        public static final int turretEncoderPulse = 4;
+        public static final int turretEncoderA = 5;
+        public static final int turretEncoderB = 6;
 
     }
     
@@ -225,6 +225,10 @@ public final class Constants {
             flywheelKp.setDefault(0.07);
             flywheelKd.setDefault(4);
 
+            //TODO: redo values
+            // Value is in real outputs/robot state/distance
+            // Left is distance in meters, right flywheel RPM/hood position
+            // hood max - 0.63rad, hood min - 0.27rad
             flywheelLookup.put(new InterpolatingDouble(3.332), new InterpolatingDouble(2250.0));
             flywheelLookup.put(new InterpolatingDouble(2.58), new InterpolatingDouble(2250.0));
             flywheelLookup.put(new InterpolatingDouble(1.81), new InterpolatingDouble(2250.0));
@@ -250,7 +254,7 @@ public final class Constants {
 
         public static final Pose2d vehicleToTurretFixed = GeomUtil.inchesToMeters(new Pose2d(-5.25, 0.0, Rotation2d.fromDegrees(180)));
 
-        public static final double turretEncoderOffsetRad = 0.0;
+        public static final double turretEncoderOffsetRad = -0.23344302303378667;
 
         public static final double turretLimitLower = -Math.PI / 2.0;
         public static final double turretLimitUpper = Math.PI / 2.0;
