@@ -195,7 +195,7 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return new AutoRoutines(drive, rotationArms, shooter, tower, intakeWheels, vision);
+        return new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision);
     }
 
 }

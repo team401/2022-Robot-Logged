@@ -7,12 +7,14 @@ import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 public interface TurretIO {
     public static class TurretIOInputs implements LoggableInputs {
+        public double absolutePositionRad;
         public double positionRad;
         public double velocityRadPerS;
         public double current;
 
         @Override
         public void toLog(LogTable table) {
+            table.put("AbsolutePositionRad", absolutePositionRad);
             table.put("PositionRad", positionRad);
             table.put("VelocityRadPerS", velocityRadPerS);
             table.put("Current", current);
@@ -20,6 +22,7 @@ public interface TurretIO {
 
         @Override
         public void fromLog(LogTable table) {
+            absolutePositionRad = table.getDouble("AbsolutePositionRad", absolutePositionRad);
             positionRad = table.getDouble("PositionRad", positionRad);
             velocityRadPerS = table.getDouble("VelocityRadPerS", velocityRadPerS);
             current = table.getDouble("Current", current);
@@ -28,7 +31,7 @@ public interface TurretIO {
 
     void updateInputs(TurretIOInputs inputs);
 
-    void resetEncoderAbsolute();
+    void resetEncoder();
 
     void setVoltage(double voltage);
     void setVelocitySetpoint(double velocityRadPerS, double ffVolts);

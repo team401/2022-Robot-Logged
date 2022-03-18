@@ -2,6 +2,7 @@ package frc.robot.commands.autonomous;
 
 import com.pathplanner.lib.PathPlanner;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -11,16 +12,18 @@ import frc.robot.commands.drive.PathPlannerTrajectoryCommand;
 import frc.robot.commands.intake.Intake;
 import frc.robot.commands.shooter.AutoShoot;
 import frc.robot.commands.shooter.PrepareToShoot;
+import frc.robot.commands.turret.ForceSetPosition;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.IntakeWheels;
 import frc.robot.subsystems.rotationarms.RotationArms;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.tower.Tower;
+import frc.robot.subsystems.turret.Turret;
 import frc.robot.subsystems.vision.Vision;
 
 public class AutoRoutines extends SequentialCommandGroup {
     
-    public AutoRoutines(Drive drive, RotationArms rotationArms, Shooter shoot, Tower tower, IntakeWheels intakeWheels, Vision vision) {
+    public AutoRoutines(Drive drive, RotationArms rotationArms, Shooter shoot, Turret turret, Tower tower, IntakeWheels intakeWheels, Vision vision) {
         
         addCommands(
 
@@ -35,8 +38,8 @@ public class AutoRoutines extends SequentialCommandGroup {
                 .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(0.0))),
             new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), PathPlanner.loadPath("PID Test Path", 4, 5))
             */
-
-            new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), PathPlanner.loadPath("Right Tarmac Path", 2, 1.5))
+            new ForceSetPosition(turret, new Rotation2d()),
+            new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), PathPlanner.loadPath("Right Tarmac Short", 2, 1.5))
 
             /*new InstantCommand(() -> rotationArms.moveToIntake()),
             new ParallelCommandGroup(

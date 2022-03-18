@@ -24,7 +24,7 @@ public class Turret extends SubsystemBase {
         this.io = io;
         
 
-        io.resetEncoderAbsolute();
+        io.resetEncoder();
     }
 
     @Override
@@ -60,6 +60,12 @@ public class Turret extends SubsystemBase {
         if (goalPosition.getRadians() > TurretConstants.turretLimitLower && goalPosition.getRadians() < TurretConstants.turretLimitUpper) {
             output += TurretConstants.turretModel.calculate(velocityGoal);
         }
+        else if (turretRotation.getRadians() > TurretConstants.turretLimitUpper && output < 0) {
+            output = 0;
+        }
+        else if (turretRotation.getRadians() < TurretConstants.turretLimitLower && output > 0) {
+            output = 0;
+        }
         io.setVoltage(output);
 
         RobotState.getInstance().recordTurretObservations(turretRotation, inputs.velocityRadPerS);
@@ -89,5 +95,10 @@ public class Turret extends SubsystemBase {
         return inputs.velocityRadPerS;
     }
 
+    public boolean atGoal() {
+
+        return Math.abs(inputs.positionRad-goalPosition.getRadians()) < Units.degreesToRadians(1);
+
+    }
 
 }

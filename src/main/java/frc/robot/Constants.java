@@ -65,6 +65,10 @@ public final class Constants {
         public static final int leftRotationArmEncoder = 2;
         public static final int rightRotationArmEncoder = 3;
 
+        public static final int turretEncoderA = 4;
+        public static final int turretEncoderB = 5;
+        public static final int turretEncoderPulse = 6;
+
     }
     
     public static final class DriveConstants {
@@ -246,7 +250,7 @@ public final class Constants {
 
         public static final Pose2d vehicleToTurretFixed = GeomUtil.inchesToMeters(new Pose2d(-5.25, 0.0, Rotation2d.fromDegrees(180)));
 
-        public static final double turretEncoderOffsetRad = 2.3669323557075446;
+        public static final double turretEncoderOffsetRad = 0.0;
 
         public static final double turretLimitLower = -Math.PI / 2.0;
         public static final double turretLimitUpper = Math.PI / 2.0;
