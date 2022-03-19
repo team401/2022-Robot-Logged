@@ -12,15 +12,18 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.ClimbSequence;
 import frc.robot.commands.MeasureKs;
 import frc.robot.commands.autonomous.AutoRoutines;
+import frc.robot.commands.autonomous.AutoRoutines.Paths;
 import frc.robot.commands.drive.DriveWithJoysticks;
 import frc.robot.commands.intake.Intake;
 import frc.robot.commands.shooter.PrepareToShoot;
@@ -57,7 +60,11 @@ public class RobotContainer {
 
     private final DriveWithJoysticks driveWithJoysticks;
 
-    private final PathPlannerTrajectory path;
+    private final PathPlannerTrajectory[] rightPath;
+    private final PathPlannerTrajectory[] leftPath;
+    private final PathPlannerTrajectory[] backPath;
+
+    SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
     public RobotContainer() {
         // Create subsystems
@@ -91,8 +98,26 @@ public class RobotContainer {
         // Bind default commands
         drive.setDefaultCommand(driveWithJoysticks);
         turret.setDefaultCommand(new Tracking(vision, turret));
+        
+        // Load auto paths
+        rightPath = new PathPlannerTrajectory[3];
+        for (int i = 0; i < rightPath.length; i++)
+                rightPath[i] = PathPlanner.loadPath("Right Tarmac Path " + (i+1), AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+        leftPath = new PathPlannerTrajectory[3];
+        for (int i = 0; i < leftPath.length; i++)
+                leftPath[i] = PathPlanner.loadPath("Left Tarmac Path " + (i+1), AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+        backPath = new PathPlannerTrajectory[1];
+        backPath[0] = PathPlanner.loadPath("Back Path", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
 
-        path = PathPlanner.loadPath("Right Tarmac Path", 2, 1.5);
+        // Sendable chooser for the auto paths
+        autoChooser.addOption("Right Tarmac Path", 
+                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, rightPath, Paths.Right));
+        autoChooser.addOption("Left Tarmac Path", 
+                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, leftPath, Paths.Left));
+        autoChooser.addOption("Right Tarmac Path", 
+                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, backPath, Paths.Back));
+        
+
 
         configureButtonBindings();
     }
@@ -147,17 +172,18 @@ public class RobotContainer {
                 .whenHeld(new ClimbSequence(telescopes, rotationArms, gamepad));
 
         // Kill commands if needed for competition
-        /*new JoystickButton(gamepad, Button.kX.value)
+        /*new JoystickButton(gamepad, Button.kStart.value)
                 .whenPressed(new InstantCommand(() -> shooter.killTurret()));
-        new JoystickButton(gamepad, Button.kX.value)
+        new JoystickButton(gamepad, Button.kStart.value)
                 .whenPressed(new InstantCommand(() -> shooter.killHood()));
-        new JoystickButton(gamepad, Button.kX.value)
+        new JoystickButton(gamepad, Button.kStart.value)
                 .whenPressed(new InstantCommand(() -> rotationArms.kill()));*/
 
     }
 
     public Command getAutonomousCommand() {
-        return new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, path);
+        return autoChooser.getSelected();
+        //return new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, path);
     }
 
 }

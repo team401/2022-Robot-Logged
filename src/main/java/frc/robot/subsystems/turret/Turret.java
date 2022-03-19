@@ -36,11 +36,10 @@ public class Turret extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.getInstance().processInputs("Turret", inputs);
 
-        if (setupCycleCount == 20) {// && DriverStation.isTeleopEnabled() && !hasReset) {
+        if (setupCycleCount == TurretConstants.setupCycleCount) {
             io.resetEncoder();
             encoderOffset = MathUtil.angleModulus(inputs.absolutePositionRad);
             setupCycleCount++;
-            //hasReset = true;
         }
         else {
             setupCycleCount++;
@@ -74,14 +73,8 @@ public class Turret extends SubsystemBase {
         if (goalPosition.getRadians() > TurretConstants.turretLimitLower && goalPosition.getRadians() < TurretConstants.turretLimitUpper) {
             output += TurretConstants.turretModel.calculate(velocityGoal);
         }
-        /*if (turretRotation > TurretConstants.turretLimitUpper && output   < 0) {
-            output = 0;
-        }
-        if (turretRotation < TurretConstants.turretLimitLower && output > 0) {
-            output = 0;
-        }*/
         Logger.getInstance().recordOutput("Turret/Output", output);
-        if (setupCycleCount > 20)//hasReset || DriverStation.isTeleopEnabled())
+        if (setupCycleCount > TurretConstants.setupCycleCount)
             io.setVoltage(output);
 
         RobotState.getInstance().recordTurretObservations(new Rotation2d(turretRotation), inputs.velocityRadPerS);

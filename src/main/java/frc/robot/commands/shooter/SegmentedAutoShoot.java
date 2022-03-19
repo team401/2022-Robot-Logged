@@ -10,25 +10,28 @@ import frc.robot.subsystems.tower.Tower;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.util.InterpolatingDouble;
 
-public class AutoShoot extends CommandBase {
+public class SegmentedAutoShoot extends CommandBase {
 
     private final Shooter shooter;
     private final Tower tower;
     private final Vision vision;
 
-    private final Timer shotTimer = new Timer();
-    private boolean timerStarted = false;
+    private final Timer timer = new Timer();
 
-    public AutoShoot(Shooter shooter, Tower tower, Vision vision) {
+    public SegmentedAutoShoot(Shooter shooter, Tower tower, Vision vision) {
+
         this.shooter = shooter;
         this.tower = tower;
         this.vision = vision;
+
     }
 
     @Override
     public void initialize() {
-        shotTimer.reset();
-        shotTimer.stop();
+
+        timer.reset();
+        timer.start();
+
     }
 
     @Override
@@ -40,23 +43,31 @@ public class AutoShoot extends CommandBase {
 
         shooter.setSetpoint(hoodAngle, shotSpeed);
 
-        if (vision.distanceToTargetIn() < ShooterConstants.maxDistanceToTargetIn && shooter.atGoal()) {
-
-            tower.setConveyorPercent(1.0);
-            tower.setIndexWheelsPercent(1.0);
-        }
-        else {
+        if (!shooter.atGoal()) {
+            timer.reset();
             tower.setConveyorPercent(0.0);
             tower.setIndexWheelsPercent(0.0);
+        }
+
+        if (timer.get() > 0.1) {
+            tower.setConveyorPercent(1.0);
+            tower.setIndexWheelsPercent(1.0);
         }
 
     }
 
     @Override
+    public boolean isFinished() {
+        return timer.get() > 1 || vision.distanceToTargetIn() >= ShooterConstants.maxDistanceToTargetIn;
+    }
+
+    @Override
     public void end(boolean isInterrupted) {
+
+        shooter.stopShooter();
         tower.setConveyorPercent(0.0);
         tower.setIndexWheelsPercent(0.0);
-        shooter.stopShooter();
+
     }
     
 }

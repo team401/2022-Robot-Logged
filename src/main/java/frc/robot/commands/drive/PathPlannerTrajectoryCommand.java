@@ -81,8 +81,6 @@ public class PathPlannerTrajectoryCommand extends CommandBase {
         robotState.forceRobotPose(trajectory.getInitialState().poseMeters);
         drive.resetOdometry(new Pose2d(pathState.poseMeters.getTranslation(), pathState.holonomicRotation));
 
-        //turret.reset();
-
     }
 
     @Override

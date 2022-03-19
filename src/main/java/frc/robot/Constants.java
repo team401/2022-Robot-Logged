@@ -220,7 +220,7 @@ public final class Constants {
         public static final double hoodMinRad = 0.27;
         public static final double hoodMaxRad = 0.63;
         
-        public static final double maxDistanceToTargetIn = 14*12;
+        public static final double maxDistanceToTargetIn = Units.metersToInches(4.5);
 
         public static final TunableNumber flywheelDesired = new TunableNumber("Shooter/FlywheelDesired");
         public static final TunableNumber hoodDesired = new TunableNumber("Shooter/HoodDesired");
@@ -234,11 +234,6 @@ public final class Constants {
 
             flywheelDesired.setDefault(0);
             hoodDesired.setDefault(hoodMinRad);
-
-            //TODO: redo values
-            // Value is in real outputs/robot state/distance
-            // Left is distance in meters, right flywheel RPM/hood position
-            // hood max - 0.63rad, hood min - 0.27rad
 
             flywheelLookup.put(new InterpolatingDouble(1.732), new InterpolatingDouble(2200.0));
             flywheelLookup.put(new InterpolatingDouble(2.126), new InterpolatingDouble(2000.0));
@@ -291,6 +286,8 @@ public final class Constants {
         }
 
         public static final SimpleMotorFeedforward turretModel = new SimpleMotorFeedforward(0.204, 2.20697674);
+
+        public static final int setupCycleCount = 20;
     }
 
     public static final class VisionConstants {
@@ -438,8 +435,8 @@ public final class Constants {
     }
 
     public static final class AutoConstants {
-        public static final double kMaxVelocityMetersPerSecond = 0.0;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 0.0;
+        public static final double kMaxVelocityMetersPerSecond = 2.0;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 4.0;
     }
 
 }
