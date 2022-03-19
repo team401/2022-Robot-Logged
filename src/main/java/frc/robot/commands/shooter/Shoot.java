@@ -31,13 +31,13 @@ public class Shoot extends CommandBase {
     @Override
     public void execute() {
 
-        if (shooter.atGoal() && !timerStarted) {
-            timerStarted = true;
+        if (!shooter.atGoal()) {
             timer.reset();
-            timer.start();
+            tower.setConveyorPercent(0.0);
+            tower.setIndexWheelsPercent(0.0);
         }
 
-        if (timer.get() > 0.1 && timerStarted) {
+        if (timer.get() > 0.1) {
             tower.setConveyorPercent(1.0);
             tower.setIndexWheelsPercent(1.0);
         }
