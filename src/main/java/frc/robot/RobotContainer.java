@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -116,8 +117,7 @@ public class RobotContainer {
                 new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, leftPath, Paths.Left));
         autoChooser.addOption("Right Tarmac Path", 
                 new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, backPath, Paths.Back));
-        
-
+        SmartDashboard.putData("Auto Mode", autoChooser);
 
         configureButtonBindings();
     }
