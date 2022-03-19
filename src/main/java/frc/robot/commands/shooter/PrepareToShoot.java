@@ -4,8 +4,8 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.RobotState;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.vision.Vision;
 import frc.robot.util.InterpolatingDouble;
 
 public class PrepareToShoot extends CommandBase {
@@ -28,6 +28,8 @@ public class PrepareToShoot extends CommandBase {
         double shotSpeed = Units.rotationsPerMinuteToRadiansPerSecond(Constants.ShooterConstants.flywheelLookup.getInterpolated(new InterpolatingDouble(params.getDistanceM())).value);
 
         shooter.setSetpoint(hoodAngle, shotSpeed);
+
+        //shooter.setSetpoint(ShooterConstants.hoodDesired.get(), Units.rotationsPerMinuteToRadiansPerSecond(ShooterConstants.flywheelDesired.get()));
     }
 
     @Override

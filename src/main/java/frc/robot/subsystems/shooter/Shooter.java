@@ -122,5 +122,15 @@ public class Shooter extends SubsystemBase {
         return Math.abs(ioInputs.flywheelSpeedRadPerS-flywheelGoalRadPerS) < flywheelToleranceRadPerS &&
                 Math.abs(ioInputs.hoodPositionRad-hoodGoalRad) < hoodToleranceRad;
     }
+
+    public void killTurret() {
+        setFlywheelVolts(0);
+        flywheelEnable = false;
+    }
+
+    public void killHood() {
+        io.setHoodVoltage(0);
+        hoodEnable = false;
+    }
     
 }

@@ -148,7 +148,7 @@ public final class Constants {
         public static final double climbGrabPositionRad = Units.degreesToRadians(2);
         public static final double intakePositionRad = Units.degreesToRadians(25);
         public static final double climbSwingPositionRad = Units.degreesToRadians(30);
-        public static final double rotationLatchRad = Units.degreesToRadians(25);
+        public static final double rotationLatchRad = Units.degreesToRadians(17.5);
 
         public static final double telescopeHomePositionRad = Units.degreesToRadians(200);
         public static final double telescopePullPositionRad = Units.degreesToRadians(50);
@@ -167,8 +167,8 @@ public final class Constants {
         public static final double telescopeAcceleration = telescopeCruiseVelocity * 4;
 
         // measured offsets
-        public static final double leftRotationOffset = 0.41786360261458094;
-        public static final double rightRotationOffset = -0.7620011828295176;
+        public static final double leftRotationOffset = 0.41786360261458094-0.2582445577938238;
+        public static final double rightRotationOffset = -0.7620011828295176+3.4407606122667653;
 
         //vertical conversion from rotations
         public static final double linearConversion = 0.625 * Math.PI;
@@ -190,7 +190,7 @@ public final class Constants {
         static {
             rotationArmKp.setDefault(25.0);
             rotationArmKd.setDefault(0.5);
-            telescopeArmKp.setDefault(5.0);
+            telescopeArmKp.setDefault(10.0);
             telescopeArmKd.setDefault(0.0);
         }
 
@@ -219,25 +219,40 @@ public final class Constants {
         
         public static final double maxDistanceToTargetIn = 14*12;
 
+        public static final TunableNumber flywheelDesired = new TunableNumber("Shooter/FlywheelDesired");
+        public static final TunableNumber hoodDesired = new TunableNumber("Shooter/HoodDesired");
+
+
         static {
             hoodKp.setDefault(0.7);
             hoodKd.setDefault(0);
             flywheelKp.setDefault(0.07);
             flywheelKd.setDefault(4);
 
+            flywheelDesired.setDefault(0);
+            hoodDesired.setDefault(hoodMinRad);
+
             //TODO: redo values
             // Value is in real outputs/robot state/distance
             // Left is distance in meters, right flywheel RPM/hood position
             // hood max - 0.63rad, hood min - 0.27rad
-            flywheelLookup.put(new InterpolatingDouble(3.332), new InterpolatingDouble(2250.0));
-            flywheelLookup.put(new InterpolatingDouble(2.58), new InterpolatingDouble(2250.0));
-            flywheelLookup.put(new InterpolatingDouble(1.81), new InterpolatingDouble(2250.0));
-            flywheelLookup.put(new InterpolatingDouble(1.54), new InterpolatingDouble(2400.0));
 
-            hoodLookup.put(new InterpolatingDouble(3.332), new InterpolatingDouble(0.63));
-            hoodLookup.put(new InterpolatingDouble(2.58), new InterpolatingDouble(0.4));
-            hoodLookup.put(new InterpolatingDouble(1.81), new InterpolatingDouble(0.29));
-            hoodLookup.put(new InterpolatingDouble(1.54), new InterpolatingDouble(0.27));
+            flywheelLookup.put(new InterpolatingDouble(1.732), new InterpolatingDouble(2200.0));
+            flywheelLookup.put(new InterpolatingDouble(2.126), new InterpolatingDouble(2000.0));
+            flywheelLookup.put(new InterpolatingDouble(2.874), new InterpolatingDouble(2100.0));
+            flywheelLookup.put(new InterpolatingDouble(3.141), new InterpolatingDouble(2300.0));
+            flywheelLookup.put(new InterpolatingDouble(3.588), new InterpolatingDouble(2500.0));
+            flywheelLookup.put(new InterpolatingDouble(3.840), new InterpolatingDouble(2650.0));
+            flywheelLookup.put(new InterpolatingDouble(4.221), new InterpolatingDouble(2750.0));
+
+            hoodLookup.put(new InterpolatingDouble(1.732), new InterpolatingDouble(0.3));
+            hoodLookup.put(new InterpolatingDouble(2.126), new InterpolatingDouble(0.4));
+            hoodLookup.put(new InterpolatingDouble(2.874), new InterpolatingDouble(0.63));
+            hoodLookup.put(new InterpolatingDouble(3.141), new InterpolatingDouble(0.63));
+            hoodLookup.put(new InterpolatingDouble(3.588), new InterpolatingDouble(0.63));
+            hoodLookup.put(new InterpolatingDouble(3.840), new InterpolatingDouble(0.63));
+            hoodLookup.put(new InterpolatingDouble(4.221), new InterpolatingDouble(0.63));
+
         }
 
 

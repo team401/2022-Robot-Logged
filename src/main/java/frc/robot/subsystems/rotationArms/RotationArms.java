@@ -31,6 +31,8 @@ public class RotationArms extends SubsystemBase {
         ClimberConstants.rotationArmKp.get(), 0, ClimberConstants.rotationArmKd.get(),
         normalConstraints);
 
+    private boolean killed = false;
+
     public RotationArms(RotationArmsIO io) {
         this.io = io;
 
@@ -67,10 +69,12 @@ public class RotationArms extends SubsystemBase {
         Logger.getInstance().recordOutput("RotationArms/RightAngleModDeg", Units.radiansToDegrees(rightMod));
 
         double leftOutput = leftController.calculate(leftMod);
-        io.setLeftVolts(leftOutput);
+        if (!killed)
+            io.setLeftVolts(leftOutput);
 
         double rightOutput = rightController.calculate(rightMod);
-        io.setRightVolts(rightOutput);
+        if (!killed)
+            io.setRightVolts(rightOutput);
 
         Logger.getInstance().recordOutput("RotationArms/LeftSetpointDeg", Units.radiansToDegrees(leftController.getSetpoint().position));
         Logger.getInstance().recordOutput("RotationArms/RightSetpointDeg", Units.radiansToDegrees(rightController.getSetpoint().position));
@@ -100,6 +104,12 @@ public class RotationArms extends SubsystemBase {
 
     public boolean atGoal() {
         return leftController.atGoal() && rightController.atGoal();
+    }
+
+    public void kill() {
+        setLeftPercent(0);
+        setRightPercent(0);
+        killed = true;
     }
 
 
