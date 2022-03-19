@@ -150,6 +150,9 @@ public final class Constants {
         public static final double climbSwingPositionRad = Units.degreesToRadians(30);
         public static final double rotationLatchRad = Units.degreesToRadians(17.5);
 
+        public static final double rotationMax = Units.degreesToRadians(32);
+        public static final double rotationMin = Units.degreesToRadians(-12);
+
         public static final double telescopeHomePositionRad = Units.degreesToRadians(200);
         public static final double telescopePullPositionRad = Units.degreesToRadians(50);
         public static final double telescopeMaxPositionRad = Units.rotationsToRadians(14);

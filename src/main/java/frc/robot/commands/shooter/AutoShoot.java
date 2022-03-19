@@ -19,14 +19,12 @@ public class AutoShoot extends CommandBase {
     private final Timer shotTimer = new Timer();
     private boolean timerStarted = false;
 
-    private boolean hasBall = true;
+    //private boolean hasBall = true;
 
     public AutoShoot(Shooter shooter, Tower tower, Vision vision) {
         this.shooter = shooter;
         this.tower = tower;
         this.vision = vision;
-
-        addRequirements(shooter, tower, vision);
     }
 
     @Override
@@ -38,32 +36,40 @@ public class AutoShoot extends CommandBase {
     @Override
     public void execute() {
 
-        if (tower.getTopSensor()) {
+        /*if (tower.getTopSensor()) {
             hasBall = true;
-        }
+        }*/
 
-        if (hasBall && vision.distanceToTargetIn() < ShooterConstants.maxDistanceToTargetIn) {
-            RobotState.AimingParameters params = RobotState.getInstance().getAimingParameters();
-            double hoodAngle = ShooterConstants.hoodLookup.getInterpolated(new InterpolatingDouble(params.getDistanceM())).value;
-            double shotSpeed = Units.rotationsPerMinuteToRadiansPerSecond(ShooterConstants.flywheelLookup.getInterpolated(new InterpolatingDouble(params.getDistanceM())).value);
+        RobotState.AimingParameters params = RobotState.getInstance().getAimingParameters();
+        double hoodAngle = ShooterConstants.hoodLookup.getInterpolated(new InterpolatingDouble(params.getDistanceM())).value;
+        double shotSpeed = Units.rotationsPerMinuteToRadiansPerSecond(ShooterConstants.flywheelLookup.getInterpolated(new InterpolatingDouble(params.getDistanceM())).value);
 
-            shooter.setSetpoint(hoodAngle, shotSpeed);
+        shooter.setSetpoint(hoodAngle, shotSpeed);
 
-            if (!timerStarted && shooter.atGoal()) {
+        if (vision.distanceToTargetIn() < ShooterConstants.maxDistanceToTargetIn && shooter.atGoal()) {
+
+            tower.setConveyorPercent(1.0);
+            tower.setIndexWheelsPercent(1.0);
+
+            /*if (!timerStarted && shooter.atGoal()) {
                 tower.setConveyorPercent(1.0);
                 tower.setIndexWheelsPercent(1.0);
                 shotTimer.reset();
                 timerStarted = true;
-            }
+            }*/
+        }
+        else {
+            tower.setConveyorPercent(0.0);
+            tower.setIndexWheelsPercent(0.0);
         }
 
-        if (timerStarted && shotTimer.get() > 1) {
+        /*if (timerStarted && shotTimer.get() > 1) {
             tower.setConveyorPercent(0.0);
             tower.setIndexWheelsPercent(0.0);
             shooter.stopShooter();
             timerStarted = false;
             hasBall = false;
-        }
+        }*/
 
     }
 

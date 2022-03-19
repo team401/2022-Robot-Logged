@@ -11,7 +11,6 @@ public class Shoot extends CommandBase {
     private final Shooter shooter;
 
     private final Timer timer = new Timer();
-    private boolean timerStarted = false;
 
     public Shoot(Tower tower, Shooter shooter) {
 

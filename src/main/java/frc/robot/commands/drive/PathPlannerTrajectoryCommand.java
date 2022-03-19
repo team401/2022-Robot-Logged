@@ -19,6 +19,7 @@ import frc.robot.RobotState;
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.turret.Turret;
 
 public class PathPlannerTrajectoryCommand extends CommandBase {
     private final Drive drive;
@@ -39,14 +40,17 @@ public class PathPlannerTrajectoryCommand extends CommandBase {
 
     //private final PPSwerveControllerCommand trajectoryController;
     private final PathPlannerState pathState;
+
+    private final Turret turret;
     
     private final Timer timer = new Timer();
 
-    public PathPlannerTrajectoryCommand(Drive drive, RobotState robotState, PathPlannerTrajectory trajectory) {
+    public PathPlannerTrajectoryCommand(Drive drive, RobotState robotState, Turret turret,  PathPlannerTrajectory trajectory) {
         
         this.drive = drive;
         this.robotState = robotState;
         this.trajectory = trajectory;
+        this.turret = turret;
 
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
         this.controller  = new HolonomicDriveController(xController, yController, thetaController);
@@ -76,6 +80,8 @@ public class PathPlannerTrajectoryCommand extends CommandBase {
 
         robotState.forceRobotPose(trajectory.getInitialState().poseMeters);
         drive.resetOdometry(new Pose2d(pathState.poseMeters.getTranslation(), pathState.holonomicRotation));
+
+        //turret.reset();
 
     }
 

@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Joystick;
@@ -54,6 +57,8 @@ public class RobotContainer {
 
     private final DriveWithJoysticks driveWithJoysticks;
 
+    private final PathPlannerTrajectory path;
+
     public RobotContainer() {
         // Create subsystems
         drive = new Drive(new DriveModuleIO[]{
@@ -87,12 +92,14 @@ public class RobotContainer {
         drive.setDefaultCommand(driveWithJoysticks);
         turret.setDefaultCommand(new Tracking(vision, turret));
 
+        path = PathPlanner.loadPath("Right Tarmac Path", 2, 1.5);
+
         configureButtonBindings();
     }
 
     private void configureButtonBindings() {
         // Available Buttons (as of 3/18/22)
-        // Start, Left Bumper, A, X(Used but commented out)
+        // Start, Left Bumper, A
 
         // Telescope Up/Down
         new POVButton(gamepad, 0)
@@ -135,7 +142,7 @@ public class RobotContainer {
         new JoystickButton(rightStick, 2)
             .whenPressed(new InstantCommand(() -> RobotState.getInstance().forceRobotPose(new Pose2d())));
 
-        // Climb Sequence (DISABLED)
+        // Climb Sequence
         new JoystickButton(gamepad, Button.kX.value)
                 .whenHeld(new ClimbSequence(telescopes, rotationArms, gamepad));
 
@@ -150,7 +157,7 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision);
+        return new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, path);
     }
 
 }

@@ -23,6 +23,8 @@ public class Turret extends SubsystemBase {
     private double encoderOffset = 0;
     private int setupCycleCount = 0;
 
+    //private boolean hasReset = false;
+
     public Turret(TurretIO io) {
         this.io = io;
         
@@ -34,10 +36,11 @@ public class Turret extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.getInstance().processInputs("Turret", inputs);
 
-        if (setupCycleCount == 20) {
+        if (setupCycleCount == 20) {// && DriverStation.isTeleopEnabled() && !hasReset) {
             io.resetEncoder();
             encoderOffset = MathUtil.angleModulus(inputs.absolutePositionRad);
             setupCycleCount++;
+            //hasReset = true;
         }
         else {
             setupCycleCount++;
@@ -71,13 +74,14 @@ public class Turret extends SubsystemBase {
         if (goalPosition.getRadians() > TurretConstants.turretLimitLower && goalPosition.getRadians() < TurretConstants.turretLimitUpper) {
             output += TurretConstants.turretModel.calculate(velocityGoal);
         }
-        else if (turretRotation > TurretConstants.turretLimitUpper && output < 0) {
+        /*if (turretRotation > TurretConstants.turretLimitUpper && output   < 0) {
             output = 0;
         }
-        else if (turretRotation < TurretConstants.turretLimitLower && output > 0) {
+        if (turretRotation < TurretConstants.turretLimitLower && output > 0) {
             output = 0;
-        }
-        if (setupCycleCount > 10)
+        }*/
+        Logger.getInstance().recordOutput("Turret/Output", output);
+        if (setupCycleCount > 20)//hasReset || DriverStation.isTeleopEnabled())
             io.setVoltage(output);
 
         RobotState.getInstance().recordTurretObservations(new Rotation2d(turretRotation), inputs.velocityRadPerS);
@@ -112,5 +116,15 @@ public class Turret extends SubsystemBase {
         return Math.abs(inputs.positionRad-goalPosition.getRadians()) < Units.degreesToRadians(1);
 
     }
+
+    /*public void reset() {
+
+        if (!hasReset) {
+            io.resetEncoder();
+            encoderOffset = MathUtil.angleModulus(inputs.absolutePositionRad);
+            hasReset = true;
+        }
+
+    }*/
 
 }

@@ -69,12 +69,23 @@ public class RotationArms extends SubsystemBase {
         Logger.getInstance().recordOutput("RotationArms/RightAngleModDeg", Units.radiansToDegrees(rightMod));
 
         double leftOutput = leftController.calculate(leftMod);
+        if (ioInputs.leftPositionRad > ClimberConstants.rotationMax && leftOutput > 0)
+            leftOutput = 0;
+        else if (ioInputs.leftPositionRad < ClimberConstants.rotationMin && leftOutput < 0)
+            leftOutput = 0;
+        Logger.getInstance().recordOutput("RotationArms/LeftOutput", leftOutput);
         if (!killed)
             io.setLeftVolts(leftOutput);
 
         double rightOutput = rightController.calculate(rightMod);
-        if (!killed)
+        if (ioInputs.rightPositionRad > ClimberConstants.rotationMax && rightOutput > 0)
+            rightOutput = 0;
+        else if (ioInputs.rightPositionRad < ClimberConstants.rotationMin && rightOutput < 0)
+            rightOutput = 0;
+        Logger.getInstance().recordOutput("RotationArms/RightOutput", rightOutput);
+        if (!killed) {
             io.setRightVolts(rightOutput);
+        }
 
         Logger.getInstance().recordOutput("RotationArms/LeftSetpointDeg", Units.radiansToDegrees(leftController.getSetpoint().position));
         Logger.getInstance().recordOutput("RotationArms/RightSetpointDeg", Units.radiansToDegrees(rightController.getSetpoint().position));

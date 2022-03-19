@@ -1,6 +1,7 @@
 package frc.robot.commands.autonomous;
 
 import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -23,7 +24,7 @@ import frc.robot.subsystems.vision.Vision;
 
 public class AutoRoutines extends SequentialCommandGroup {
     
-    public AutoRoutines(Drive drive, RotationArms rotationArms, Shooter shoot, Turret turret, Tower tower, IntakeWheels intakeWheels, Vision vision) {
+    public AutoRoutines(Drive drive, RotationArms rotationArms, Shooter shoot, Turret turret, Tower tower, IntakeWheels intakeWheels, Vision vision, PathPlannerTrajectory path) {
         
         addCommands(
 
@@ -38,17 +39,19 @@ public class AutoRoutines extends SequentialCommandGroup {
                 .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(0.0))),
             new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), PathPlanner.loadPath("PID Test Path", 4, 5))
             */
-            new ForceSetPosition(turret, new Rotation2d()),
-            new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), PathPlanner.loadPath("Right Tarmac Short", 2, 1.5))
+            //new ForceSetPosition(turret, new Rotation2d()),
 
-            /*new InstantCommand(() -> rotationArms.moveToIntake()),
+            //new WaitCommand(2),
+            rotationArms.moveToIntake(),
             new ParallelCommandGroup(
+                new Intake(tower, intakeWheels, rotationArms),
                 new AutoShoot(shoot, tower, vision),
-                new Intake(tower, intakeWheels)
-                    .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), PathPlanner.loadPath("Right Tarmac Path", 3, 0.5)))
-                    .andThen(new InstantCommand(() -> rotationArms.moveToStow()))
-
-            )*/
+                new SequentialCommandGroup(
+                    new WaitCommand(1),
+                    new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path),
+                    rotationArms.moveToStow()
+                )
+            )
         ); 
 
     }
