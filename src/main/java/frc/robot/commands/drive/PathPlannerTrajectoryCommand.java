@@ -118,10 +118,6 @@ public class PathPlannerTrajectoryCommand extends CommandBase {
             drive.getPose(), desiredState, desiredState.holonomicRotation);
 
         drive.setGoalChassisSpeeds(adjustedSpeeds);
-
-        robotState.recordOdometryObservations(latestFieldToVehicle, adjustedSpeeds);
-        robotState.logRobotState();
-
     }
 
     @Override
