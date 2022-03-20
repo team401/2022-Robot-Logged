@@ -106,16 +106,16 @@ public class RobotContainer {
                 rightPath[i] = PathPlanner.loadPath("Right Tarmac Path " + (i+1), AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
         leftPath = new PathPlannerTrajectory[3];
         for (int i = 0; i < leftPath.length; i++)
-                leftPath[i] = PathPlanner.loadPath("Left Tarmac Path " + (i+1), AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+                leftPath[i] = PathPlanner.loadPath("Right Tarmac Path " + (i+1), AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
         backPath = new PathPlannerTrajectory[1];
         backPath[0] = PathPlanner.loadPath("Back Path", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
 
-        // Sendable chooser for the auto paths
+        // Sendable chooser for auto paths
         autoChooser.addOption("Right Tarmac Path", 
                 new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, rightPath, Paths.Right));
         autoChooser.addOption("Left Tarmac Path", 
                 new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, leftPath, Paths.Left));
-        autoChooser.addOption("Right Tarmac Path", 
+        autoChooser.addOption("Back Tarmac Path", 
                 new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, backPath, Paths.Back));
         SmartDashboard.putData("Auto Mode", autoChooser);
 
