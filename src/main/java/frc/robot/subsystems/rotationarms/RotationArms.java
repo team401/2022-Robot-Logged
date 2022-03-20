@@ -123,6 +123,10 @@ public class RotationArms extends SubsystemBase {
         killed = true;
     }
 
+    public double getGoal() {
+        return leftController.getGoal().position;
+    }
+
 
     // Commands
     public final Command waitForMove() { return new WaitUntilCommand(this::atGoal); }

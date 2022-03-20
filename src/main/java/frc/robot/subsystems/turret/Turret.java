@@ -29,6 +29,8 @@ public class Turret extends SubsystemBase {
         this.io = io;
         
         io.resetEncoder();
+
+        positionController.setTolerance(Units.degreesToRadians(3));
     }
 
     @Override
@@ -106,7 +108,8 @@ public class Turret extends SubsystemBase {
 
     public boolean atGoal() {
 
-        return Math.abs(inputs.positionRad-goalPosition.getRadians()) < Units.degreesToRadians(1);
+        return positionController.atSetpoint();
+        //return Math.abs(inputs.positionRad-goalPosition.getRadians()) < Units.degreesToRadians(1);
 
     }
 

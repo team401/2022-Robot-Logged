@@ -2,6 +2,7 @@ package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.BallConstants;
+import frc.robot.Constants.ClimberConstants;
 import frc.robot.subsystems.intake.IntakeWheels;
 import frc.robot.subsystems.intake.IntakeWheelsIO.IntakeWheelsIOInput;
 import frc.robot.subsystems.rotationarms.RotationArms;
@@ -19,6 +20,8 @@ public class Intake extends CommandBase {
         this.tower = tower;
         this.intake = intake;
         this.rotationArms = rotationArms;
+
+        addRequirements(tower, intake);
         
     }
 
@@ -29,7 +32,7 @@ public class Intake extends CommandBase {
         else tower.setConveyorPercent(0.0);
 
         tower.setIndexWheelsPercent(BallConstants.towerPower);
-        if (rotationArms.atGoal())
+        if (rotationArms.atGoal() && rotationArms.getGoal() == ClimberConstants.intakePositionRad)
             intake.setPercent(BallConstants.intakePower);
         else
             intake.setPercent(0);

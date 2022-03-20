@@ -17,6 +17,8 @@ public class Shoot extends CommandBase {
         this.shooter = shooter;
         this.tower = tower;
 
+        addRequirements(tower);
+
     }
 
     @Override

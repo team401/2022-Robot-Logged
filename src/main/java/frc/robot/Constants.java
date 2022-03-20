@@ -16,7 +16,7 @@ import frc.robot.util.InterpolatingTreeMap;
 import frc.robot.util.TunableNumber;
 
 public final class Constants {
-    public static final boolean tuningMode = true;
+    public static final boolean tuningMode = false;
 
     public static final double trackWidth = Units.inchesToMeters(19.75);
     public static final double wheelBase = Units.inchesToMeters(19.75);

@@ -8,6 +8,7 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -29,6 +30,7 @@ import frc.robot.commands.drive.DriveWithJoysticks;
 import frc.robot.commands.intake.Intake;
 import frc.robot.commands.shooter.PrepareToShoot;
 import frc.robot.commands.shooter.Shoot;
+import frc.robot.commands.turret.ForceSetPosition;
 import frc.robot.commands.turret.Tracking;
 import frc.robot.subsystems.drive.*;
 import frc.robot.subsystems.intake.IntakeWheelsIOComp;
@@ -124,7 +126,7 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         // Available Buttons (as of 3/18/22)
-        // Start, Left Bumper, A
+        // Start, Left Bumper
 
         // Telescope Up/Down
         new POVButton(gamepad, 0)
@@ -134,9 +136,9 @@ public class RobotContainer {
 
         // Rotation Arms Intake/Stow
         new POVButton(gamepad, 90)
-                .whenPressed(new InstantCommand(() -> rotationArms.moveToIntake()));
+                .whenPressed(rotationArms.moveToIntake());
         new POVButton(gamepad, 270)
-                .whenPressed(new InstantCommand(() -> rotationArms.moveToStow()));
+                .whenPressed(rotationArms.moveToStow());
                 
         // Intake
         new JoystickButton(gamepad, Button.kB.value)
@@ -171,7 +173,17 @@ public class RobotContainer {
         new JoystickButton(gamepad, Button.kX.value)
                 .whenHeld(new ClimbSequence(telescopes, rotationArms, gamepad));
 
-        // Kill commands if needed for competition
+        // Center Turret
+        new JoystickButton(gamepad, Button.kA.value)
+                .whenHeld(new ForceSetPosition(turret, vision, new Rotation2d()));
+
+        // Shooter RPM Offset
+        new JoystickButton(leftStick, 3)
+                .whenPressed(new InstantCommand(() -> shooter.incrementRPMOffset(10)));
+        new JoystickButton(leftStick, 4)
+                .whenPressed(new InstantCommand(() -> shooter.incrementRPMOffset(-10)));
+
+        // Kill commands
         /*new JoystickButton(gamepad, Button.kStart.value)
                 .whenPressed(new InstantCommand(() -> shooter.killTurret()));
         new JoystickButton(gamepad, Button.kStart.value)

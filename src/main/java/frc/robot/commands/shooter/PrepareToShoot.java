@@ -28,6 +28,8 @@ public class PrepareToShoot extends CommandBase {
         double shotSpeed = Units.rotationsPerMinuteToRadiansPerSecond(Constants.ShooterConstants.flywheelLookup.getInterpolated(new InterpolatingDouble(params.getDistanceM())).value);
 
         shooter.setSetpoint(hoodAngle, shotSpeed);
+        
+        //shooter.setSetpoint(.5, Units.rotationsPerMinuteToRadiansPerSecond(1000));
 
         //shooter.setSetpoint(ShooterConstants.hoodDesired.get(), Units.rotationsPerMinuteToRadiansPerSecond(ShooterConstants.flywheelDesired.get()));
     }

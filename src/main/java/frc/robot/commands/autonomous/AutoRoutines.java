@@ -14,6 +14,7 @@ import frc.robot.commands.intake.Intake;
 import frc.robot.commands.shooter.AutoShoot;
 import frc.robot.commands.shooter.PrepareToShoot;
 import frc.robot.commands.shooter.SegmentedAutoShoot;
+import frc.robot.commands.shooter.Shoot;
 import frc.robot.commands.turret.ForceSetPosition;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.IntakeWheels;
@@ -23,7 +24,7 @@ import frc.robot.subsystems.tower.Tower;
 import frc.robot.subsystems.turret.Turret;
 import frc.robot.subsystems.vision.Vision;
 
-public class AutoRoutines extends SequentialCommandGroup {
+public class AutoRoutines extends ParallelCommandGroup {
     
     public enum Paths {
         Left, Right, Back
@@ -36,30 +37,46 @@ public class AutoRoutines extends SequentialCommandGroup {
             case Left:
             case Right:
                 addCommands(
-                    new SegmentedAutoShoot(shooter, tower, vision),
+                    new PrepareToShoot(shooter),
+                    new SequentialCommandGroup(
+                        //new SegmentedAutoShoot(shooter, tower, vision),
+                        new Shoot(tower, shooter).withTimeout(2),
 
-                    rotationArms.moveToIntake(),
-                    new Intake(tower, intake, rotationArms)
-                        .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[0])),
-                    rotationArms.moveToStow(),
-                    new SegmentedAutoShoot(shooter, tower, vision),
+                        rotationArms.moveToIntake(),
+                        new Intake(tower, intake, rotationArms)
+                            .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[0])),
+                        rotationArms.moveToStow(),
+                        //new SegmentedAutoShoot(shooter, tower, vision),
+                        new Shoot(tower, shooter).withTimeout(2),
 
-                    rotationArms.moveToIntake(),
-                    new Intake(tower, intake, rotationArms)
-                        .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[1])),
-                    rotationArms.moveToStow(),
+                        rotationArms.moveToIntake(),
+                        new Intake(tower, intake, rotationArms)
+                            .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[1])),
+                        rotationArms.moveToStow(),
 
-                    new Intake(tower, intake, rotationArms)
-                        .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[2])),
-                    new SegmentedAutoShoot(shooter, tower, vision)
+                        new Intake(tower, intake, rotationArms)
+                            .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[2])),
+                        //new SegmentedAutoShoot(shooter, tower, vision)
+                        new Shoot(tower, shooter).withTimeout(3)
+                    )
 
                 );
                 break;
 
             case Back:
                 addCommands(
-                    new SegmentedAutoShoot(shooter, tower, vision),
-                    new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[0])
+                    new PrepareToShoot(shooter),
+                    new SequentialCommandGroup(
+                        //new SegmentedAutoShoot(shooter, tower, vision),
+                        new Shoot(tower, shooter).withTimeout(2),
+
+                        rotationArms.moveToIntake(),
+                        new Intake(tower, intake, rotationArms)
+                            .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[0])),
+                        rotationArms.moveToStow(),
+                        //new SegmentedAutoShoot(shooter, tower, vision),
+                        new Shoot(tower, shooter).withTimeout(2)
+                    )
                 );
                 break;
 

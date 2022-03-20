@@ -26,6 +26,7 @@ public class Tracking extends CommandBase {
     @Override
     public void initialize() {
         filter.reset();
+        vision.turnOnLeds();
     }
 
     @Override
@@ -44,7 +45,6 @@ public class Tracking extends CommandBase {
 
     @Override
     public void end(boolean isInterrupted) {
-        //TODO: was this what killed turret?
-        //turret.setPositionGoal(new Rotation2d());
+        vision.turnOffLeds();;
     }
 }

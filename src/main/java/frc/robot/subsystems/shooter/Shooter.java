@@ -4,6 +4,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.ShooterConstants;
 
 import frc.robot.commands.shooter.Shoot;
@@ -24,8 +25,10 @@ public class Shooter extends SubsystemBase {
     private boolean flywheelEnable = false;
     private final Timer homeTimer = new Timer();
 
-    private final double flywheelToleranceRadPerS = Units.rotationsPerMinuteToRadiansPerSecond(50);
+    private final double flywheelToleranceRadPerS = Units.rotationsPerMinuteToRadiansPerSecond(150);
     private final double hoodToleranceRad = Units.rotationsToRadians(0.25);
+
+    private double rpmOffset = 0;
 
     public Shooter(ShooterIO io) {
         this.io = io;
@@ -48,6 +51,9 @@ public class Shooter extends SubsystemBase {
         Logger.getInstance().recordOutput("Shooter/HoodSetpointDeg", Units.radiansToDegrees(hoodGoalRad));
         Logger.getInstance().recordOutput("Shooter/FlywheelRPM", Units.radiansPerSecondToRotationsPerMinute(ioInputs.flywheelSpeedRadPerS));
         Logger.getInstance().recordOutput("Shooter/FlywheelSetpointRPM", Units.radiansPerSecondToRotationsPerMinute(flywheelGoalRadPerS));
+
+        Logger.getInstance().recordOutput("Shooter/RPMOffset", rpmOffset);
+        SmartDashboard.putNumber("RPM Offset", rpmOffset);
 
         if (!homed) {
             if (DriverStation.isEnabled()) {
@@ -99,6 +105,7 @@ public class Shooter extends SubsystemBase {
         this.hoodGoalRad = hoodAngleRad;
         this.hoodGoalRad = MathUtil.clamp(this.hoodGoalRad, ShooterConstants.hoodMinRad, ShooterConstants.hoodMaxRad);
         this.flywheelGoalRadPerS = flywheelGoalRadPerS;
+        if (flywheelGoalRadPerS != 0) this.flywheelGoalRadPerS += Units.rotationsPerMinuteToRadiansPerSecond(rpmOffset);
     }
 
     public void stopShooter() {
@@ -131,6 +138,10 @@ public class Shooter extends SubsystemBase {
     public void killHood() {
         io.setHoodVoltage(0);
         hoodEnable = false;
+    }
+
+    public void incrementRPMOffset(int offset) {
+        rpmOffset += offset;
     }
     
 }

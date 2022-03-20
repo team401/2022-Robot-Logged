@@ -18,7 +18,8 @@ public class SegmentedAutoShoot extends CommandBase {
 
     private final Timer timer = new Timer();
 
-    public SegmentedAutoShoot(Shooter shooter, Tower tower, Vision vision) {
+    public 
+    SegmentedAutoShoot(Shooter shooter, Tower tower, Vision vision) {
 
         this.shooter = shooter;
         this.tower = tower;
@@ -58,7 +59,7 @@ public class SegmentedAutoShoot extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return timer.get() > 1 || vision.distanceToTargetIn() >= ShooterConstants.maxDistanceToTargetIn;
+        return timer.get() > 1;// || vision.distanceToTargetIn() >= ShooterConstants.maxDistanceToTargetIn;
     }
 
     @Override

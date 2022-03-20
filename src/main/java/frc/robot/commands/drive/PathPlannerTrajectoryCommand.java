@@ -79,7 +79,7 @@ public class PathPlannerTrajectoryCommand extends CommandBase {
         timer.start();
 
         robotState.forceRobotPose(trajectory.getInitialState().poseMeters);
-        drive.resetOdometry(new Pose2d(pathState.poseMeters.getTranslation(), pathState.holonomicRotation));
+        //drive.resetOdometry(new Pose2d(pathState.poseMeters.getTranslation(), pathState.holonomicRotation));
 
     }
 
@@ -115,7 +115,7 @@ public class PathPlannerTrajectoryCommand extends CommandBase {
 
 
         ChassisSpeeds adjustedSpeeds = controller.calculate(
-            drive.getPose(), desiredState, desiredState.holonomicRotation);
+            latestFieldToVehicle, desiredState, desiredState.holonomicRotation);
 
         drive.setGoalChassisSpeeds(adjustedSpeeds);
     }
