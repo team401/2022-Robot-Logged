@@ -59,10 +59,16 @@ public class RotationArmsIOComp implements RotationArmsIO {
 
     @Override
     public void updateInputs(RotationArmsIOInputs inputs) {
-        inputs.leftPositionRad = leftEncoder.getDistance() * 2.0 * Math.PI - ClimberConstants.leftRotationOffset;
-        inputs.rightPositionRad = rightEncoder.getDistance() * 2.0 * Math.PI - ClimberConstants.rightRotationOffset;
+        inputs.leftPositionRad = leftEncoder.getAbsolutePosition() * 2.0 * Math.PI - ClimberConstants.leftRotationOffset;
+        inputs.rightPositionRad = rightEncoder.getAbsolutePosition() * 2.0 * Math.PI - ClimberConstants.rightRotationOffset;
         inputs.leftCurrent = leftMotor.getOutputCurrent();
         inputs.rightCurrent = rightMotor.getOutputCurrent();
+    }
+
+    @Override
+    public void resetEncoder() {
+        leftEncoder.reset();
+        rightEncoder.reset();
     }
 
     @Override

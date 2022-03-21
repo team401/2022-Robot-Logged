@@ -29,6 +29,8 @@ public interface RotationArmsIO {
 
     void updateInputs(RotationArmsIOInputs inputs);
 
+    void resetEncoder();
+
     void setLeftVolts(double volts);
     void setRightVolts(double volts);
 }

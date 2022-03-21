@@ -63,8 +63,9 @@ public class TelescopesSubsystem extends SubsystemBase {
 
         if (!homed) {
             if (DriverStation.isEnabled()) {
-                if (Math.abs(ioInputs.leftVelocityRadPerS) < ClimberConstants.telescopeHomingThresholdRadPerS
-                        && Math.abs(ioInputs.rightVelocityRadPerS) < ClimberConstants.telescopeHomingThresholdRadPerS) {
+                if (Math.abs(ioInputs.leftVelocityRadPerS) < ClimberConstants.telescopeHomingThresholdRadPerS) {
+                        //TODO UN-COMMENT WHEN THE RIGHT CLIMBER IS FIXED
+                        //&& Math.abs(ioInputs.rightVelocityRadPerS) < ClimberConstants.telescopeHomingThresholdRadPerS) {
                     homeTimer.start();
                 } else {
                     homeTimer.stop();

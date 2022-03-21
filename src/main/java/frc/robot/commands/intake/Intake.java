@@ -32,7 +32,7 @@ public class Intake extends CommandBase {
         else tower.setConveyorPercent(0.0);
 
         tower.setIndexWheelsPercent(BallConstants.towerPower);
-        if (rotationArms.atGoal() && rotationArms.getGoal() == ClimberConstants.intakePositionRad)
+        if (rotationArms.getKilled() || (rotationArms.atGoal() && rotationArms.getGoal() == ClimberConstants.intakePositionRad))
             intake.setPercent(BallConstants.intakePower);
         else
             intake.setPercent(0);

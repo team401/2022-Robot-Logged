@@ -170,8 +170,8 @@ public final class Constants {
         public static final double telescopeAcceleration = telescopeCruiseVelocity * 4;
 
         // measured offsets
-        public static final double leftRotationOffset = 0.41786360261458094-0.2582445577938238;
-        public static final double rightRotationOffset = -0.7620011828295176+3.4407606122667653;
+        public static final double leftRotationOffset = 5.7940924040267765;
+        public static final double rightRotationOffset = 2.7144526943793306;
 
         //vertical conversion from rotations
         public static final double linearConversion = 0.625 * Math.PI;

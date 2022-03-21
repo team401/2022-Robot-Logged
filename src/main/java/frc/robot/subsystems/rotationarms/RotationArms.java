@@ -21,7 +21,7 @@ public class RotationArms extends SubsystemBase {
     // Speed and acceleration for regular moves
     private final TrapezoidProfile.Constraints normalConstraints = new TrapezoidProfile.Constraints(2 * Math.PI / 2, 10);
     // Speed and acceleration for slower climb moves
-    private final TrapezoidProfile.Constraints climbConstraints = new TrapezoidProfile.Constraints(0.15 * Math.PI / 2, 0.75);
+    private final TrapezoidProfile.Constraints climbConstraints = new TrapezoidProfile.Constraints(0.15 * Math.PI , 0.75*2);//(0.15 * Math.PI / 2, 0.75)
 
     private final ProfiledPIDController leftController = new ProfiledPIDController(
         ClimberConstants.rotationArmKp.get(), 0, ClimberConstants.rotationArmKd.get(), 
@@ -32,6 +32,10 @@ public class RotationArms extends SubsystemBase {
         normalConstraints);
 
     private boolean killed = false;
+
+    private double leftOffset = 0;
+    private double rightOffset = 0;
+    private int setupCycleCount = 0;
 
     public RotationArms(RotationArmsIO io) {
         this.io = io;
@@ -45,6 +49,18 @@ public class RotationArms extends SubsystemBase {
     public void periodic() {
         io.updateInputs(ioInputs);
         Logger.getInstance().processInputs("RotationArms", ioInputs);
+
+        // if (setupCycleCount == 20) {
+        //     io.resetEncoder();
+        //     leftOffset = MathUtil.angleModulus(ioInputs.leftPositionRad - ClimberConstants.leftRotationOffset);
+        //     rightOffset = MathUtil.angleModulus(ioInputs.rightPositionRad - ClimberConstants.rightRotationOffset);
+        //     leftController.setGoal(leftOffset);
+        //     rightController.setGoal(rightOffset);
+        //     setupCycleCount++;
+        // }
+        // else {
+        //     setupCycleCount++;
+        // }
 
         if (ClimberConstants.rotationArmKp.hasChanged() || ClimberConstants.rotationArmKd.hasChanged()) {
             leftController.setPID(ClimberConstants.rotationArmKp.get(), 0, ClimberConstants.rotationArmKd.get());
@@ -68,23 +84,35 @@ public class RotationArms extends SubsystemBase {
         Logger.getInstance().recordOutput("RotationArms/LeftAngleModDeg", Units.radiansToDegrees(leftMod));
         Logger.getInstance().recordOutput("RotationArms/RightAngleModDeg", Units.radiansToDegrees(rightMod));
 
-        double leftOutput = leftController.calculate(leftMod);
-        if (ioInputs.leftPositionRad > ClimberConstants.rotationMax && leftOutput > 0)
-            leftOutput = 0;
-        else if (ioInputs.leftPositionRad < ClimberConstants.rotationMin && leftOutput < 0)
-            leftOutput = 0;
-        Logger.getInstance().recordOutput("RotationArms/LeftOutput", leftOutput);
-        if (!killed)
-            io.setLeftVolts(leftOutput);
 
-        double rightOutput = rightController.calculate(rightMod);
-        if (ioInputs.rightPositionRad > ClimberConstants.rotationMax && rightOutput > 0)
-            rightOutput = 0;
-        else if (ioInputs.rightPositionRad < ClimberConstants.rotationMin && rightOutput < 0)
-            rightOutput = 0;
-        Logger.getInstance().recordOutput("RotationArms/RightOutput", rightOutput);
         if (!killed) {
-            io.setRightVolts(rightOutput);
+            double leftOutput = leftController.calculate(leftMod);
+            //if (ioInputs.leftPositionRad > ClimberConstants.rotationMax && leftOutput > 0)
+            //    leftOutput = 0;
+            //else if (ioInputs.leftPositionRad < ClimberConstants.rotationMin && leftOutput < 0)
+            //    leftOutput = 0;
+            Logger.getInstance().recordOutput("RotationArms/LeftOutput", leftOutput);
+
+            double rightOutput = rightController.calculate(rightMod);
+            //if (ioInputs.rightPositionRad > ClimberConstants.rotationMax && rightOutput > 0)
+            //    rightOutput = 0;
+            //else if (ioInputs.rightPositionRad < ClimberConstants.rotationMin && rightOutput < 0)
+            //    rightOutput = 0;
+            Logger.getInstance().recordOutput("RotationArms/RightOutput", rightOutput);
+
+            //if (Math.abs(leftController.getPositionError()) < Units.degreesToRadians(100) && Math.abs(rightController.getPositionError()) < Units.degreesToRadians(100)) {
+                io.setLeftVolts(leftOutput);
+                io.setRightVolts(rightOutput);
+            //} else {
+            //    io.setLeftVolts(0);
+            //    io.setRightVolts(0);
+            //    setupCycleCount = 0; // Force encoders to reset.
+           // }
+
+  
+        } else {
+            io.setLeftVolts(0);
+            io.setRightVolts(0);
         }
 
         Logger.getInstance().recordOutput("RotationArms/LeftSetpointDeg", Units.radiansToDegrees(leftController.getSetpoint().position));
@@ -121,6 +149,10 @@ public class RotationArms extends SubsystemBase {
         setLeftPercent(0);
         setRightPercent(0);
         killed = true;
+    }
+
+    public boolean getKilled() {
+        return killed;
     }
 
     public double getGoal() {

@@ -135,10 +135,10 @@ public class RobotContainer {
                 .whileHeld(new InstantCommand(() -> telescopes.jogDown()));
 
         // Rotation Arms Intake/Stow
-        new POVButton(gamepad, 90)
+        /*new POVButton(gamepad, 90)
                 .whenPressed(rotationArms.moveToIntake());
         new POVButton(gamepad, 270)
-                .whenPressed(rotationArms.moveToStow());
+                .whenPressed(rotationArms.moveToStow());*/
                 
         // Intake
         new JoystickButton(gamepad, Button.kB.value)
@@ -187,9 +187,9 @@ public class RobotContainer {
         /*new JoystickButton(gamepad, Button.kStart.value)
                 .whenPressed(new InstantCommand(() -> shooter.killTurret()));
         new JoystickButton(gamepad, Button.kStart.value)
-                .whenPressed(new InstantCommand(() -> shooter.killHood()));
+                .whenPressed(new InstantCommand(() -> shooter.killHood()));*/
         new JoystickButton(gamepad, Button.kStart.value)
-                .whenPressed(new InstantCommand(() -> rotationArms.kill()));*/
+                .whenPressed(new InstantCommand(() -> rotationArms.kill()));
 
     }
 
