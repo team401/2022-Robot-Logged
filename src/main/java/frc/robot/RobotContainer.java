@@ -63,9 +63,9 @@ public class RobotContainer {
 
     private final DriveWithJoysticks driveWithJoysticks;
 
-    private final PathPlannerTrajectory[] rightPath;
-    private final PathPlannerTrajectory[] leftPath;
-    private final PathPlannerTrajectory[] backPath;
+    private PathPlannerTrajectory[] rightPath;
+    private PathPlannerTrajectory[] leftPath;
+    private PathPlannerTrajectory[] backPath;
 
     SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
@@ -100,8 +100,15 @@ public class RobotContainer {
 
         // Bind default commands
         drive.setDefaultCommand(driveWithJoysticks);
-        turret.setDefaultCommand(new Tracking(vision, turret));
-        
+        //turret.setDefaultCommand(new Tracking(vision, turret));
+
+        configureAutoPaths();
+
+        configureButtonBindings();
+    }
+
+    private void configureAutoPaths() {
+
         // Load auto paths
         rightPath = new PathPlannerTrajectory[3];
         for (int i = 0; i < rightPath.length; i++)
@@ -110,7 +117,7 @@ public class RobotContainer {
         for (int i = 0; i < leftPath.length; i++)
                 leftPath[i] = PathPlanner.loadPath("Right Tarmac Path " + (i+1), AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
         backPath = new PathPlannerTrajectory[1];
-        backPath[0] = PathPlanner.loadPath("Back Path", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+        backPath[0] = PathPlanner.loadPath("Right Tarmac Path Whole", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
 
         // Sendable chooser for auto paths
         autoChooser.addOption("Right Tarmac Path", 
@@ -121,12 +128,12 @@ public class RobotContainer {
                 new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, backPath, Paths.Back));
         SmartDashboard.putData("Auto Mode", autoChooser);
 
-        configureButtonBindings();
+
     }
 
     private void configureButtonBindings() {
-        // Available Buttons (as of 3/18/22)
-        // Start, Left Bumper
+        // Available Buttons (as of 3/22/22)
+        // Left Bumper
 
         // Telescope Up/Down
         new POVButton(gamepad, 0)
@@ -184,10 +191,6 @@ public class RobotContainer {
                 .whenPressed(new InstantCommand(() -> shooter.incrementRPMOffset(-10)));
 
         // Kill commands
-        /*new JoystickButton(gamepad, Button.kStart.value)
-                .whenPressed(new InstantCommand(() -> shooter.killTurret()));
-        new JoystickButton(gamepad, Button.kStart.value)
-                .whenPressed(new InstantCommand(() -> shooter.killHood()));*/
         new JoystickButton(gamepad, Button.kStart.value)
                 .whenPressed(new InstantCommand(() -> rotationArms.kill()));
 
@@ -195,7 +198,6 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         return autoChooser.getSelected();
-        //return new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, path);
     }
 
 }

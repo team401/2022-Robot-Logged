@@ -45,7 +45,7 @@ public class PathPlannerTrajectoryCommand extends CommandBase {
     
     private final Timer timer = new Timer();
 
-    public PathPlannerTrajectoryCommand(Drive drive, RobotState robotState, Turret turret,  PathPlannerTrajectory trajectory) {
+    public  PathPlannerTrajectoryCommand(Drive drive, RobotState robotState, Turret turret,  PathPlannerTrajectory trajectory) {
         
         this.drive = drive;
         this.robotState = robotState;
@@ -128,6 +128,7 @@ public class PathPlannerTrajectoryCommand extends CommandBase {
     @Override
     public void end(boolean interrupted) {
         timer.stop();
+        drive.setGoalChassisSpeeds(new ChassisSpeeds(0, 0, 0));
     }
 
 }

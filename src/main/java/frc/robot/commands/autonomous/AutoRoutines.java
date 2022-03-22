@@ -37,16 +37,24 @@ public class AutoRoutines extends ParallelCommandGroup {
             case Left:
             case Right:
                 addCommands(
+                    new SequentialCommandGroup(
+                        new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[0]),
+                        new WaitCommand(2),
+                        new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[1]),
+                        new WaitCommand(2),
+                        new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[2])
+                    )
+
+                );
+                /*addCommands(
                     new PrepareToShoot(shooter),
                     new SequentialCommandGroup(
-                        //new SegmentedAutoShoot(shooter, tower, vision),
                         new Shoot(tower, shooter).withTimeout(2),
 
                         rotationArms.moveToIntake(),
                         new Intake(tower, intake, rotationArms)
                             .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[0])),
                         rotationArms.moveToStow(),
-                        //new SegmentedAutoShoot(shooter, tower, vision),
                         new Shoot(tower, shooter).withTimeout(2),
 
                         rotationArms.moveToIntake(),
@@ -56,45 +64,29 @@ public class AutoRoutines extends ParallelCommandGroup {
 
                         new Intake(tower, intake, rotationArms)
                             .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[2])),
-                        //new SegmentedAutoShoot(shooter, tower, vision)
                         new Shoot(tower, shooter).withTimeout(3)
                     )
 
-                );
+                );*/
                 break;
 
             case Back:
                 addCommands(
-                    new PrepareToShoot(shooter),
+                    new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[0])
+                    /*new PrepareToShoot(shooter),
                     new SequentialCommandGroup(
-                        //new SegmentedAutoShoot(shooter, tower, vision),
                         new Shoot(tower, shooter).withTimeout(2),
 
                         rotationArms.moveToIntake(),
                         new Intake(tower, intake, rotationArms)
                             .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[0])),
                         rotationArms.moveToStow(),
-                        //new SegmentedAutoShoot(shooter, tower, vision),
                         new Shoot(tower, shooter).withTimeout(2)
-                    )
+                    )*/
                 );
                 break;
 
         }
-
-        /*addCommands(
-
-            rotationArms.moveToIntake(),
-            new ParallelCommandGroup(
-                new Intake(tower, intake, rotationArms),
-                new AutoShoot(shooter, tower, vision),
-                new SequentialCommandGroup(
-                    new WaitCommand(1),
-                    new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path),
-                    rotationArms.moveToStow()
-                )
-            )
-        ); */
 
     }
 
