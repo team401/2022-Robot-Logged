@@ -121,10 +121,6 @@ public class RotationArms extends SubsystemBase {
         killed = true;
     }
 
-    public boolean getKilled() {
-        return killed;
-    }
-
     public double getGoal() {
         return leftController.getGoal().position;
     }

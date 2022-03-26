@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.DIOChannels;
 import frc.robot.util.PicoColorSensor;
-import frc.robot.util.PicoColorSensor.RawColor;
 
 public class TowerIOComp implements TowerIO {
 
@@ -17,14 +16,12 @@ public class TowerIOComp implements TowerIO {
 
     private final DigitalInput topBanner;
 
-    private final PicoColorSensor colorSensor;
+    private final PicoColorSensor colorSensor = new PicoColorSensor();
 
     public TowerIOComp() {
         conveyorMotor = new CANSparkMax(CANDevices.conveyorMotorID, MotorType.kBrushed);
         indexMotor = new CANSparkMax(CANDevices.indexMotorID, MotorType.kBrushed);
         topBanner = new DigitalInput(DIOChannels.topBannerPort);
-
-        colorSensor = new PicoColorSensor();
 
         conveyorMotor.setIdleMode(IdleMode.kBrake);
         indexMotor.setIdleMode(IdleMode.kBrake);
