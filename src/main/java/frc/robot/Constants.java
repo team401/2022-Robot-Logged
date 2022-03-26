@@ -258,8 +258,13 @@ public final class Constants {
     }
 
     public static final class BallConstants {
-        public static final double intakePower = 1.0;
+        //public static final double intakePower = 1.0;
+        public static final TunableNumber intakePower = new TunableNumber("Intake/IntakePower");
         public static final double towerPower = 0.5;
+
+        static {
+                intakePower.setDefault(1.0);
+        }
     }
 
     public static final class TurretConstants {

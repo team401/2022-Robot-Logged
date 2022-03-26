@@ -39,7 +39,7 @@ public class Intake extends CommandBase {
             else tower.setConveyorPercent(0.0);
     
             tower.setIndexWheelsPercent(BallConstants.towerPower);
-            intake.setPercent(BallConstants.intakePower);
+            intake.setPercent(BallConstants.intakePower.get());
             //}
 
         } else {
