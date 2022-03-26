@@ -8,7 +8,7 @@ import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.tower.Tower;
 import frc.robot.subsystems.vision.Vision;
-import frc.robot.util.InterpolatingDouble;
+import frc.robot.util.Interpolation.InterpolatingDouble;
 
 public class AutoShoot extends CommandBase {
 

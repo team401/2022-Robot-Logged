@@ -1,4 +1,4 @@
-package frc.robot.util;
+package frc.robot.util.Interpolation;
 
 public class InterpolatingDouble implements Interpolable<InterpolatingDouble>, InverseInterpolable<InterpolatingDouble>,
         Comparable<InterpolatingDouble> {

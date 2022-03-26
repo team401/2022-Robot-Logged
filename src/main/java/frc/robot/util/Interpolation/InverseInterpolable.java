@@ -1,4 +1,4 @@
-package frc.robot.util;
+package frc.robot.util.Interpolation;
 
 public interface InverseInterpolable<T> {
     /**

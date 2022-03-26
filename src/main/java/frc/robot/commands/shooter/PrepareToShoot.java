@@ -6,7 +6,7 @@ import frc.robot.Constants;
 import frc.robot.RobotState;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.util.InterpolatingDouble;
+import frc.robot.util.Interpolation.InterpolatingDouble;
 
 public class PrepareToShoot extends CommandBase {
 

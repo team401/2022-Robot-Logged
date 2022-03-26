@@ -9,8 +9,10 @@ import frc.robot.util.GeomUtil;
 import frc.robot.util.PoseHistory;
 
 public class RobotState {
+
     private static RobotState instance;
 
+    //If there is no RobotState instance already, make one
     public static RobotState getInstance() {
         if (instance == null) {
             instance = new RobotState();

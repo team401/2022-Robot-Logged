@@ -63,6 +63,7 @@ public class RobotContainer {
 
     private final DriveWithJoysticks driveWithJoysticks;
 
+    //initialize each auto trajectory 
     private PathPlannerTrajectory[] twoBallPath;
     private PathPlannerTrajectory[] fourBallLeftPath;
     private PathPlannerTrajectory[] fourBallRightPath;
@@ -72,7 +73,10 @@ public class RobotContainer {
     SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
     public RobotContainer() {
-        // Create subsystems
+
+
+        // Create subsystems; each subsystem takes its respective IOComp as a parameter
+
         drive = new Drive(new DriveModuleIO[]{
                 new DriveModuleIOComp(CANDevices.frontLeftDriveMotorID, CANDevices.frontLeftRotationMotorID,
                         CANDevices.frontLeftRotationEncoderID, DriveConstants.frontLeftAngleOffset),
@@ -92,7 +96,7 @@ public class RobotContainer {
         turret = new Turret(new TurretIOComp());
         vision = new Vision(new VisionIOLimelight());
 
-        // Create commands
+        // Create commands  
         driveWithJoysticks = new DriveWithJoysticks(
                 drive,
                 () -> -leftStick.getRawAxis(1),
@@ -100,13 +104,13 @@ public class RobotContainer {
                 () -> -rightStick.getRawAxis(0)
         );
 
-        // Bind default commands
+        // set default commands
         drive.setDefaultCommand(driveWithJoysticks);
-        //turret.setDefaultCommand(new Tracking(vision, turret));
 
         configureAutoPaths();
 
         configureButtonBindings();
+
     }
 
     private void configureAutoPaths() {
@@ -156,13 +160,23 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
+
+        /*CLIMBING BUTTONS*/ 
+
         // Telescope Up/Down
         new POVButton(gamepad, 0)
                 .whileHeld(new InstantCommand(() -> telescopes.jogUp()));
         new POVButton(gamepad, 180)
                 .whileHeld(new InstantCommand(() -> telescopes.jogDown()));
+        
+        // Climb Sequence
+        new JoystickButton(gamepad, Button.kX.value)
+                .whenHeld(new ClimbSequence(telescopes, rotationArms, gamepad));
 
-        // Rotation Arms Intake/Stow
+        
+        /*INTAKE BUTTONS*/ 
+
+        // Rotation Arms Intake/Stow (Without running ball tower)
         new POVButton(gamepad, 90)
                 .whenPressed(rotationArms.moveToIntake());
         new POVButton(gamepad, 270)
@@ -184,6 +198,9 @@ public class RobotContainer {
                         .alongWith(new InstantCommand(() -> intakeWheels.setPercent(0))
                         .alongWith(new InstantCommand(() -> tower.setConveyorPercent(0))
                         .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(0))))));
+
+        
+        /*SHOOTING BUTTONS*/ 
         
         // Prepare to shoot
         new JoystickButton(gamepad, Button.kRightBumper.value)
@@ -193,23 +210,22 @@ public class RobotContainer {
         new JoystickButton(gamepad, Button.kY.value)
                 .whenHeld(new Shoot(tower, shooter));
 
-        // Reset Gyro
-        new JoystickButton(rightStick, 2)
-            .whenPressed(new InstantCommand(() -> RobotState.getInstance().forceRobotPose(new Pose2d())));
-
-        // Climb Sequence
-        new JoystickButton(gamepad, Button.kX.value)
-                .whenHeld(new ClimbSequence(telescopes, rotationArms, gamepad));
-
-        // Center Turret
-        new JoystickButton(gamepad, Button.kA.value)
-                .whenHeld(new ForceSetPosition(turret, vision, new Rotation2d()));
-
-        // Shooter RPM Offset
+        // Shooter RPM Offset (Makes minor adjustments during a game)
         new JoystickButton(leftStick, 3)
                 .whenPressed(new InstantCommand(() -> shooter.incrementRPMOffset(10)));
         new JoystickButton(leftStick, 4)
                 .whenPressed(new InstantCommand(() -> shooter.incrementRPMOffset(-10)));
+
+
+        /*FAILSAFE BUTTONS*/ 
+
+        // Reset Gyro
+        new JoystickButton(rightStick, 2)
+            .whenPressed(new InstantCommand(() -> RobotState.getInstance().forceRobotPose(new Pose2d())));
+
+        // Center Turret
+        new JoystickButton(gamepad, Button.kA.value)
+                .whenHeld(new ForceSetPosition(turret, vision, new Rotation2d()));
 
         // Kill commands
         new JoystickButton(gamepad, Button.kStart.value)

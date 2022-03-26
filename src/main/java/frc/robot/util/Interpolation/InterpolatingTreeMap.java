@@ -1,7 +1,17 @@
-package frc.robot.util;
+package frc.robot.util.Interpolation;
 
 import java.util.Map;
 import java.util.TreeMap;
+
+/**
+ * Treemap which implements Map is a java import 
+ * 
+ * Generic Types 
+ *  K-key
+ *  V-value  
+ * 
+ * Map and Treemap pair keys to values (In our case timestamps to poses)
+ */
 
 public class InterpolatingTreeMap<K extends InverseInterpolable<K> & Comparable<K>, V extends Interpolable<V>>
         extends TreeMap<K, V> {
@@ -71,3 +81,4 @@ public class InterpolatingTreeMap<K extends InverseInterpolable<K> & Comparable<
         }
     }
 }
+

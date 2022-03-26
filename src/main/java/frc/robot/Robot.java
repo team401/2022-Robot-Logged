@@ -31,6 +31,7 @@ public class Robot extends LoggedRobot {
    */
   @Override
   public void robotInit() {
+    //gets instance of logger to set it up 
     Logger logger = Logger.getInstance();
 
     logger.addDataReceiver(new LogSocketServer(5800)); // Send to Advantage Scope
@@ -57,6 +58,8 @@ public class Robot extends LoggedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+
+    //Logs RobotState information immediately after ever command is scheduled 
     RobotState.getInstance().logRobotState();
 
   }

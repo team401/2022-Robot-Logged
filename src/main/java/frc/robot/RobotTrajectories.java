@@ -16,8 +16,6 @@ public class RobotTrajectories {
     /**
      * Defines the trajectories to be run through auto
      * 
-     * Full field length: 
-     * Full field width: 
      */
 
     // configures the maximum velocity and accel for the trajectories
@@ -28,14 +26,5 @@ public class RobotTrajectories {
             AutoConstants.kMaxAccelerationMetersPerSecondSquared
         )
         .setKinematics(DriveConstants.kinematics);
-    
-    // start 
-    public static Trajectory testTrajectory = 
-        TrajectoryGenerator.generateTrajectory(
-            List.of(
-                new Pose2d(Units.inchesToMeters(0), Units.inchesToMeters(0), new Rotation2d(0))
-            ), 
-            config
-        );
 
 }
