@@ -63,9 +63,11 @@ public class RobotContainer {
 
     private final DriveWithJoysticks driveWithJoysticks;
 
-    private PathPlannerTrajectory[] rightPath;
-    private PathPlannerTrajectory[] leftPath;
-    private PathPlannerTrajectory[] backPath;
+    private PathPlannerTrajectory[] twoBallPath;
+    private PathPlannerTrajectory[] fourBallLeftPath;
+    private PathPlannerTrajectory[] fourBallRightPath;
+    private PathPlannerTrajectory[] fiveBallLeftPath;
+    private PathPlannerTrajectory[] fiveBallRightPath;
 
     SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
@@ -109,32 +111,51 @@ public class RobotContainer {
 
     private void configureAutoPaths() {
 
-        // Load auto paths
-        rightPath = new PathPlannerTrajectory[3];
-        for (int i = 0; i < rightPath.length; i++)
-                rightPath[i] = PathPlanner.loadPath("Right Tarmac Path " + (i+1), AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
-        leftPath = new PathPlannerTrajectory[3];
-        for (int i = 0; i < leftPath.length; i++)
-                leftPath[i] = PathPlanner.loadPath("Right Tarmac Path " + (i+1), AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
-        backPath = new PathPlannerTrajectory[1];
-        backPath[0] = PathPlanner.loadPath("Right Tarmac Path Whole", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+        // Two Ball
+        twoBallPath = new PathPlannerTrajectory[1];
+        twoBallPath[0] = PathPlanner.loadPath("Right 1", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+        autoChooser.addOption("Two Ball", 
+                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, twoBallPath, Paths.TwoBall));
 
-        // Sendable chooser for auto paths
-        autoChooser.addOption("Right Tarmac Path", 
-                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, rightPath, Paths.Right));
-        autoChooser.addOption("Left Tarmac Path", 
-                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, leftPath, Paths.Left));
-        autoChooser.addOption("Back Tarmac Path", 
-                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, backPath, Paths.Back));
+        // Four Ball Left
+        fourBallLeftPath = new PathPlannerTrajectory[3];
+        fourBallLeftPath[0] = PathPlanner.loadPath("Left 1", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+        fourBallLeftPath[1] = PathPlanner.loadPath("Left 2", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+        fourBallLeftPath[2] = PathPlanner.loadPath("Left 3", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+        autoChooser.addOption("Four Ball Left", 
+                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, fourBallLeftPath, Paths.FourBall));
+
+        // Four Ball Right
+        fourBallRightPath = new PathPlannerTrajectory[3];
+        fourBallRightPath[0] = PathPlanner.loadPath("Right 1", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+        fourBallRightPath[1] = PathPlanner.loadPath("Right 2", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+        fourBallRightPath[2] = PathPlanner.loadPath("Right 3", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+        autoChooser.addOption("Four Ball Right", 
+                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, fourBallRightPath, Paths.FourBall));
+        
+        // Five Ball Left
+        fiveBallLeftPath = new PathPlannerTrajectory[4];
+        fiveBallLeftPath[0] = PathPlanner.loadPath("Left 1", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+        fiveBallLeftPath[1] = PathPlanner.loadPath("Left 2", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+        fiveBallLeftPath[2] = PathPlanner.loadPath("Left 3", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+        fiveBallLeftPath[3] = PathPlanner.loadPath("Left 4", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+        autoChooser.addOption("Five Ball Left", 
+                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, fiveBallLeftPath, Paths.FiveBall));
+        
+        // Five Ball Right
+        fiveBallRightPath = new PathPlannerTrajectory[4];
+        fiveBallRightPath[0] = PathPlanner.loadPath("Right 1", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+        fiveBallRightPath[1] = PathPlanner.loadPath("Right 2", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+        fiveBallRightPath[2] = PathPlanner.loadPath("Right 4", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+        fiveBallRightPath[3] = PathPlanner.loadPath("Right 5", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+        autoChooser.addOption("Five Ball Right", 
+                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, fiveBallRightPath, Paths.FiveBall));
+
         SmartDashboard.putData("Auto Mode", autoChooser);
-
 
     }
 
     private void configureButtonBindings() {
-        // Available Buttons (as of 3/22/22)
-        // Left Bumper
-
         // Telescope Up/Down
         new POVButton(gamepad, 0)
                 .whileHeld(new InstantCommand(() -> telescopes.jogUp()));
@@ -142,10 +163,10 @@ public class RobotContainer {
                 .whileHeld(new InstantCommand(() -> telescopes.jogDown()));
 
         // Rotation Arms Intake/Stow
-        /*new POVButton(gamepad, 90)
+        new POVButton(gamepad, 90)
                 .whenPressed(rotationArms.moveToIntake());
         new POVButton(gamepad, 270)
-                .whenPressed(rotationArms.moveToStow());*/
+                .whenPressed(rotationArms.moveToStow());
                 
         // Intake
         new JoystickButton(gamepad, Button.kB.value)
@@ -193,6 +214,11 @@ public class RobotContainer {
         // Kill commands
         new JoystickButton(gamepad, Button.kStart.value)
                 .whenPressed(new InstantCommand(() -> rotationArms.kill()));
+
+        // Panic Prepare to shoot (flush against the wall into the low hub)
+        new JoystickButton(gamepad, Button.kStart.value)
+                .whenPressed(new InstantCommand(() -> shooter.setSetpoint(0, 1500)))
+                .whenReleased(new InstantCommand(() -> shooter.stopShooter()));
 
     }
 

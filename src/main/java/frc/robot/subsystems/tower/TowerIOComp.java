@@ -7,6 +7,8 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.DIOChannels;
+import frc.robot.util.PicoColorSensor;
+import frc.robot.util.PicoColorSensor.RawColor;
 
 public class TowerIOComp implements TowerIO {
 
@@ -15,10 +17,14 @@ public class TowerIOComp implements TowerIO {
 
     private final DigitalInput topBanner;
 
+    private final PicoColorSensor colorSensor;
+
     public TowerIOComp() {
         conveyorMotor = new CANSparkMax(CANDevices.conveyorMotorID, MotorType.kBrushed);
         indexMotor = new CANSparkMax(CANDevices.indexMotorID, MotorType.kBrushed);
         topBanner = new DigitalInput(DIOChannels.topBannerPort);
+
+        colorSensor = new PicoColorSensor();
 
         conveyorMotor.setIdleMode(IdleMode.kBrake);
         indexMotor.setIdleMode(IdleMode.kBrake);
@@ -32,8 +38,6 @@ public class TowerIOComp implements TowerIO {
         conveyorMotor.setInverted(false);
         indexMotor.setInverted(true);
 
-        // Uncomment to burn settings into sparks
-        //TODO comment!
         indexMotor.burnFlash();
         conveyorMotor.burnFlash();
     }
@@ -44,6 +48,7 @@ public class TowerIOComp implements TowerIO {
         inputs.topSensor = !topBanner.get();
         inputs.conveyorCurrent = conveyorMotor.getOutputCurrent();
         inputs.indexCurrent = indexMotor.getOutputCurrent();
+        inputs.detectedColor = colorSensor.getRawColor0();
     }
 
     @Override

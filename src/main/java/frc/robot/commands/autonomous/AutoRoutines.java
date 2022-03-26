@@ -27,62 +27,89 @@ import frc.robot.subsystems.vision.Vision;
 public class AutoRoutines extends ParallelCommandGroup {
     
     public enum Paths {
-        Left, Right, Back
+        TwoBall, FourBall, FiveBall
     }
 
     public AutoRoutines(Drive drive, RotationArms rotationArms, Shooter shooter, Turret turret, Tower tower, IntakeWheels intake, Vision vision, PathPlannerTrajectory[] path, Paths startPosition) {
         
         switch (startPosition) {
 
-            case Left:
-            case Right:
+            case TwoBall:
                 addCommands(
-                    new SequentialCommandGroup(
-                        new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[0]),
-                        new WaitCommand(2),
-                        new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[1]),
-                        new WaitCommand(2),
-                        new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[2])
-                    )
-
-                );
-                /*addCommands(
+                    //new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[0], true)
                     new PrepareToShoot(shooter),
                     new SequentialCommandGroup(
                         new Shoot(tower, shooter).withTimeout(2),
 
                         rotationArms.moveToIntake(),
                         new Intake(tower, intake, rotationArms)
-                            .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[0])),
+                            .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[0], true)),
                         rotationArms.moveToStow(),
-                        new Shoot(tower, shooter).withTimeout(2),
+                        new Shoot(tower, shooter).withTimeout(2)
+                    )
+                );
+                break;
 
-                        rotationArms.moveToIntake(),
-                        new Intake(tower, intake, rotationArms)
-                            .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[1])),
-                        rotationArms.moveToStow(),
-
-                        new Intake(tower, intake, rotationArms)
-                            .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[2])),
-                        new Shoot(tower, shooter).withTimeout(3)
+            case FourBall:
+                /*addCommands(
+                    new SequentialCommandGroup(
+                        new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[0], true),
+                        new WaitCommand(2),
+                        new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[1], false),
+                        new WaitCommand(2),
+                        new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[2], false)
                     )
 
                 );*/
-                break;
-
-            case Back:
                 addCommands(
-                    new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[0])
-                    /*new PrepareToShoot(shooter),
+                    new PrepareToShoot(shooter),
                     new SequentialCommandGroup(
                         new Shoot(tower, shooter).withTimeout(2),
 
                         rotationArms.moveToIntake(),
                         new Intake(tower, intake, rotationArms)
-                            .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[0])),
+                            .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[0], true)),
+                        rotationArms.moveToStow(),
+                        new Shoot(tower, shooter).withTimeout(2),
+
+                        rotationArms.moveToIntake(),
+                        new Intake(tower, intake, rotationArms)
+                            .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[1], false)),
+                        rotationArms.moveToStow(),
+
+                        new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[2], false),
+                        new Shoot(tower, shooter).withTimeout(3)
+                    )
+                );
+                break;
+
+            
+            case FiveBall:
+                addCommands(
+                    new PrepareToShoot(shooter),
+                    new SequentialCommandGroup(
+                        new Shoot(tower, shooter).withTimeout(2),
+
+                        rotationArms.moveToIntake(),
+                        new Intake(tower, intake, rotationArms)
+                            .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[0], true)),
+                        rotationArms.moveToStow(),
+                        new Shoot(tower, shooter).withTimeout(2),
+
+                        rotationArms.moveToIntake(),
+                        new Intake(tower, intake, rotationArms)
+                            .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[1], false)),
+                        rotationArms.moveToStow(),
+
+                        new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[2], false),
+                        new Shoot(tower, shooter).withTimeout(3),
+
+                        rotationArms.moveToIntake(),
+                        new Intake(tower, intake, rotationArms)
+                            .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[3], false)),
                         rotationArms.moveToStow(),
                         new Shoot(tower, shooter).withTimeout(2)
-                    )*/
+                    )
                 );
                 break;
 

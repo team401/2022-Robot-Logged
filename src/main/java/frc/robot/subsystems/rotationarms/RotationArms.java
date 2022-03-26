@@ -33,10 +33,6 @@ public class RotationArms extends SubsystemBase {
 
     private boolean killed = false;
 
-    private double leftOffset = 0;
-    private double rightOffset = 0;
-    private int setupCycleCount = 0;
-
     public RotationArms(RotationArmsIO io) {
         this.io = io;
 
@@ -49,18 +45,6 @@ public class RotationArms extends SubsystemBase {
     public void periodic() {
         io.updateInputs(ioInputs);
         Logger.getInstance().processInputs("RotationArms", ioInputs);
-
-        // if (setupCycleCount == 20) {
-        //     io.resetEncoder();
-        //     leftOffset = MathUtil.angleModulus(ioInputs.leftPositionRad - ClimberConstants.leftRotationOffset);
-        //     rightOffset = MathUtil.angleModulus(ioInputs.rightPositionRad - ClimberConstants.rightRotationOffset);
-        //     leftController.setGoal(leftOffset);
-        //     rightController.setGoal(rightOffset);
-        //     setupCycleCount++;
-        // }
-        // else {
-        //     setupCycleCount++;
-        // }
 
         if (ClimberConstants.rotationArmKp.hasChanged() || ClimberConstants.rotationArmKd.hasChanged()) {
             leftController.setPID(ClimberConstants.rotationArmKp.get(), 0, ClimberConstants.rotationArmKd.get());
@@ -87,27 +71,13 @@ public class RotationArms extends SubsystemBase {
 
         if (!killed) {
             double leftOutput = leftController.calculate(leftMod);
-            //if (ioInputs.leftPositionRad > ClimberConstants.rotationMax && leftOutput > 0)
-            //    leftOutput = 0;
-            //else if (ioInputs.leftPositionRad < ClimberConstants.rotationMin && leftOutput < 0)
-            //    leftOutput = 0;
             Logger.getInstance().recordOutput("RotationArms/LeftOutput", leftOutput);
 
             double rightOutput = rightController.calculate(rightMod);
-            //if (ioInputs.rightPositionRad > ClimberConstants.rotationMax && rightOutput > 0)
-            //    rightOutput = 0;
-            //else if (ioInputs.rightPositionRad < ClimberConstants.rotationMin && rightOutput < 0)
-            //    rightOutput = 0;
             Logger.getInstance().recordOutput("RotationArms/RightOutput", rightOutput);
 
-            //if (Math.abs(leftController.getPositionError()) < Units.degreesToRadians(100) && Math.abs(rightController.getPositionError()) < Units.degreesToRadians(100)) {
-                io.setLeftVolts(leftOutput);
-                io.setRightVolts(rightOutput);
-            //} else {
-            //    io.setLeftVolts(0);
-            //    io.setRightVolts(0);
-            //    setupCycleCount = 0; // Force encoders to reset.
-           // }
+            io.setLeftVolts(leftOutput);
+            io.setRightVolts(rightOutput);
 
   
         } else {

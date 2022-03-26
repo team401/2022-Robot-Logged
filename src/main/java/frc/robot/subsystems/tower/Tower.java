@@ -4,6 +4,7 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.tower.TowerIO.TowerIOInputs;
+import frc.robot.util.PicoColorSensor.RawColor;
 
 public class Tower extends SubsystemBase {
 
@@ -34,6 +35,10 @@ public class Tower extends SubsystemBase {
 
     public boolean getTopSensor() {
         return ioInputs.topSensor;
+    }
+
+    public RawColor getDetectedColor() {
+        return ioInputs.detectedColor;
     }
     
 }

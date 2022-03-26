@@ -45,7 +45,9 @@ public class PathPlannerTrajectoryCommand extends CommandBase {
     
     private final Timer timer = new Timer();
 
-    public  PathPlannerTrajectoryCommand(Drive drive, RobotState robotState, Turret turret,  PathPlannerTrajectory trajectory) {
+    private final boolean shouldReset;
+
+    public  PathPlannerTrajectoryCommand(Drive drive, RobotState robotState, Turret turret,  PathPlannerTrajectory trajectory, boolean shouldReset) {
         
         this.drive = drive;
         this.robotState = robotState;
@@ -56,6 +58,8 @@ public class PathPlannerTrajectoryCommand extends CommandBase {
         this.controller  = new HolonomicDriveController(xController, yController, thetaController);
 
         pathState = trajectory.getInitialState();
+
+        this.shouldReset = shouldReset;
 
         /*trajectoryController = 
             new PPSwerveControllerCommand(
@@ -78,7 +82,8 @@ public class PathPlannerTrajectoryCommand extends CommandBase {
         timer.reset();
         timer.start();
 
-        robotState.forceRobotPose(trajectory.getInitialState().poseMeters);
+        if (shouldReset)
+            robotState.forceRobotPose(trajectory.getInitialState().poseMeters);
         //drive.resetOdometry(new Pose2d(pathState.poseMeters.getTranslation(), pathState.holonomicRotation));
 
     }

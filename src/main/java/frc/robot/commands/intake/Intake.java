@@ -1,5 +1,7 @@
 package frc.robot.commands.intake;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.BallConstants;
 import frc.robot.Constants.ClimberConstants;
@@ -22,20 +24,27 @@ public class Intake extends CommandBase {
         this.rotationArms = rotationArms;
 
         addRequirements(tower, intake);
-        
     }
 
     @Override
     public void execute() {
 
-        if(!tower.getTopSensor()) tower.setConveyorPercent(BallConstants.towerPower);
-        else tower.setConveyorPercent(0.0);
+        if (!rotationArms.getKilled() && rotationArms.atGoal() && rotationArms.getGoal() == ClimberConstants.intakePositionRad) {
 
-        tower.setIndexWheelsPercent(BallConstants.towerPower);
-        if (rotationArms.getKilled() || (rotationArms.atGoal() && rotationArms.getGoal() == ClimberConstants.intakePositionRad))
+            /*if ((tower.getDetectedColor().red > 200 && DriverStation.getAlliance() == Alliance.Blue) || (tower.getDetectedColor().blue > 200 && DriverStation.getAlliance() == Alliance.Red)) {
+                tower.setIndexWheelsPercent(-BallConstants.towerPower);
+                intake.setPercent(-BallConstants.intakePower);
+            } else {*/
+            if (!tower.getTopSensor()) tower.setConveyorPercent(BallConstants.towerPower);
+            else tower.setConveyorPercent(0.0);
+    
+            tower.setIndexWheelsPercent(BallConstants.towerPower);
             intake.setPercent(BallConstants.intakePower);
-        else
+            //}
+
+        } else {
             intake.setPercent(0);
+        }
 
     }
 
@@ -47,6 +56,5 @@ public class Intake extends CommandBase {
         intake.setPercent(0.0);
 
     }
-
 
 }
