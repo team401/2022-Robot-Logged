@@ -45,18 +45,20 @@ public class Intake extends CommandBase {
 
         if (rotationArms.atGoal() && rotationArms.getGoal() == ClimberConstants.intakePositionRad) {
 
-            boolean invalidBall = (tower.getDetectedColor().red > 60 && DriverStation.getAlliance() == Alliance.Blue) ||  
+            // incorrect ball intaking wont work rn
+
+            /*boolean invalidBall = (tower.getDetectedColor().red > 60 && DriverStation.getAlliance() == Alliance.Blue) ||  
                                     (tower.getDetectedColor().red < 60 && DriverStation.getAlliance() == Alliance.Red);
             if (invalidBall && lastSensorUpdateTimer.get() < 0.1) {
                 tower.setIndexWheelsPercent(-BallConstants.towerPower);
                 intake.setPercent(-BallConstants.intakePower.get());
-            } else {
+            } else {*/
                 if (!tower.getTopSensor()) tower.setConveyorPercent(BallConstants.towerPower);
                 else tower.setConveyorPercent(0.0);
         
                 tower.setIndexWheelsPercent(BallConstants.towerPower);
                 intake.setPercent(BallConstants.intakePower.get());
-            }
+            //}
 
         } else {
             intake.setPercent(0);

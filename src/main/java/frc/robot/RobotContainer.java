@@ -102,7 +102,7 @@ public class RobotContainer {
 
         // Bind default commands
         drive.setDefaultCommand(driveWithJoysticks);
-        //turret.setDefaultCommand(new Tracking(vision, turret));
+        turret.setDefaultCommand(new Tracking(vision, turret));
 
         configureAutoPaths();
 
