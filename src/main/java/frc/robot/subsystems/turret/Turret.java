@@ -77,7 +77,7 @@ public class Turret extends SubsystemBase {
         }
         Logger.getInstance().recordOutput("Turret/Output", output);
         if (setupCycleCount > TurretConstants.setupCycleCount) {}
-            //io.setVoltage(output);
+            io.setVoltage(output);
 
         RobotState.getInstance().recordTurretObservations(new Rotation2d(turretRotation), inputs.velocityRadPerS);
     }

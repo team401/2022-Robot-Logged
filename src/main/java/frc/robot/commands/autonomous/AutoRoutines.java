@@ -34,37 +34,37 @@ public class AutoRoutines extends ParallelCommandGroup {
             new Intake(tower, intake, rotationArms)
                 .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[0], true)),
             rotationArms.moveToStow(),
-            new Shoot(tower, shooter).withTimeout(2)
+            new Shoot(tower, shooter).withTimeout(1.5)
         );
         
         if (pathPlan == Paths.ThreeBallRight || pathPlan == Paths.FiveBallRight || pathPlan == Paths.SixBallRight) {
             sequentialCommands.addCommands(
                 rotationArms.moveToIntake(),
                 new Intake(tower, intake, rotationArms)
-                    .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[1], true)),
+                    .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[1], false)),
                 rotationArms.moveToStow(),
-                new Shoot(tower, shooter).withTimeout(2)
+                new Shoot(tower, shooter).withTimeout(1.5)
             );
         }
         if (pathPlan == Paths.FiveBallRight || pathPlan == Paths.SixBallRight) {
             sequentialCommands.addCommands(
                 rotationArms.moveToIntake(),
                 new Intake(tower, intake, rotationArms)
-                    .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[2], true)
-                        .andThen(new WaitCommand(3))),
+                    .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[2], false)
+                        .andThen(new WaitCommand(2))),
                 rotationArms.moveToStow(),
 
-                new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[3], true),
-                new Shoot(tower, shooter).withTimeout(2)
+                new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[3], false),
+                new Shoot(tower, shooter).withTimeout(1.5)
             );
         }
         if (pathPlan == Paths.SixBallRight) {
             sequentialCommands.addCommands(
                 rotationArms.moveToIntake(),
                 new Intake(tower, intake, rotationArms)
-                    .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[4], true)),
+                    .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[4], false)),
                 rotationArms.moveToStow(),
-                new Shoot(tower, shooter).withTimeout(2)
+                new Shoot(tower, shooter).withTimeout(1.5)
             );
         }
 
@@ -72,21 +72,21 @@ public class AutoRoutines extends ParallelCommandGroup {
             sequentialCommands.addCommands(
                 rotationArms.moveToIntake(),
                 new Intake(tower, intake, rotationArms)
-                    .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[1], true)
-                        .andThen(new WaitCommand(3))),
+                    .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[1], false)
+                        .andThen(new WaitCommand(2))),
                 rotationArms.moveToStow(),
 
-                new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[2], true),
-                new Shoot(tower, shooter).withTimeout(2)
+                new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[2], false),
+                new Shoot(tower, shooter).withTimeout(1.5)
             );
         }
         if (pathPlan == Paths.FiveBallLeft || pathPlan == Paths.SixBallLeft) {
             sequentialCommands.addCommands(
                 rotationArms.moveToIntake(),
                 new Intake(tower, intake, rotationArms)
-                    .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[4], true)),
+                    .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[3], false)),
                 rotationArms.moveToStow(),
-                new Shoot(tower, shooter).withTimeout(2)
+                new Shoot(tower, shooter).withTimeout(1.5)
             );
         }
 
@@ -95,7 +95,7 @@ public class AutoRoutines extends ParallelCommandGroup {
             sequentialCommands
         );
 
-        /*switch (pathPlan) {
+       /* switch (pathPlan) {
 
             case TwoBall:
                 addCommands(
@@ -117,6 +117,7 @@ public class AutoRoutines extends ParallelCommandGroup {
                     new SequentialCommandGroup(
                         rotationArms.moveToIntake(),
                         rotationArms.waitForMove(),
+                        // TODO: null pointer here????
                         new Intake(tower, intake, rotationArms)
                             .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[0], true)),
                         rotationArms.moveToStow(),
