@@ -17,6 +17,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotState;
 import frc.robot.Constants.DriveConstants;
@@ -64,6 +66,9 @@ public class Drive extends SubsystemBase {
 
   @Override
   public void periodic() {
+    // Display match time for driver
+    SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
+
     // Read inputs from module IO layers and tell the logger about them
     for (int i = 0; i < 4; i++) {
       moduleIOs[i].updateInputs(inputs[i]);

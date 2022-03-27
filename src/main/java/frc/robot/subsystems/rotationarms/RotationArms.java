@@ -61,8 +61,8 @@ public class RotationArms extends SubsystemBase {
             leftController.reset(leftMod);
             rightController.reset(rightMod);
 
-            leftController.setGoal(ClimberConstants.intakeStowPositionRad);
-            rightController.setGoal(ClimberConstants.intakeStowPositionRad);
+            leftController.setGoal(ClimberConstants.stowPositionRad);
+            rightController.setGoal(ClimberConstants.stowPositionRad);
         }
 
         Logger.getInstance().recordOutput("RotationArms/LeftAngleModDeg", Units.radiansToDegrees(leftMod));
@@ -132,7 +132,7 @@ public class RotationArms extends SubsystemBase {
 
     // Commands
     public final Command waitForMove() { return new WaitUntilCommand(this::atGoal); }
-    public final Command moveToStow () { return new InstantCommand(() -> setDesiredPosition(ClimberConstants.climbStowPositionRad), this); }
+    public final Command moveToStow () { return new InstantCommand(() -> setDesiredPosition(ClimberConstants.stowPositionRad), this); }
     public final Command moveToClimbGrab() { return new InstantCommand(() -> setDesiredPosition(ClimberConstants.climbGrabPositionRad), this); }
     public final Command moveToIntake() { return new InstantCommand(() -> setDesiredPosition(ClimberConstants.intakePositionRad), this); }
     public final Command moveToClimbSwing() { return new InstantCommand(() -> setDesiredPositionSlow(ClimberConstants.climbSwingPositionRad), this); }

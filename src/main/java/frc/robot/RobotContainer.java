@@ -50,7 +50,7 @@ import frc.robot.subsystems.vision.VisionIOLimelight;
 public class RobotContainer {
     private final Drive drive;
     private final RotationArms rotationArms;
-    private final TelescopesSubsystem telescopes;
+    //private final TelescopesSubsystem telescopes;
     private final Tower tower;
     private final Turret turret;
     private final Shooter shooter;
@@ -63,7 +63,7 @@ public class RobotContainer {
 
     private final DriveWithJoysticks driveWithJoysticks;
 
-    //initialize each auto trajectory 
+    // Auto trajectories
     private PathPlannerTrajectory[] twoBallPath;
     private PathPlannerTrajectory[] fourBallLeftPath;
     private PathPlannerTrajectory[] fourBallRightPath;
@@ -73,7 +73,6 @@ public class RobotContainer {
     SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
     public RobotContainer() {
-
 
         // Create subsystems; each subsystem takes its respective IOComp as a parameter
 
@@ -91,7 +90,7 @@ public class RobotContainer {
         intakeWheels = new IntakeWheels(new IntakeWheelsIOComp());
         rotationArms = new RotationArms(new RotationArmsIOComp());
         shooter = new Shooter(new ShooterIOComp());
-        telescopes = new TelescopesSubsystem(new TelescopesIOComp());
+        //telescopes = new TelescopesSubsystem(new TelescopesIOComp());
         tower = new Tower(new TowerIOComp());
         turret = new Turret(new TurretIOComp());
         vision = new Vision(new VisionIOLimelight());
@@ -106,12 +105,25 @@ public class RobotContainer {
 
         // set default commands
         drive.setDefaultCommand(driveWithJoysticks);
-        turret.setDefaultCommand(new Tracking(vision, turret));
+        //turret.setDefaultCommand(new Tracking(vision, turret));
 
         configureAutoPaths();
 
         configureButtonBindings();
 
+        /*
+        TODO: 
+        auto paths
+        test vomit
+        intake power
+        interpolate shooting near hub
+        increase rotation speed when climbing
+        turret max rotation
+        rotation arm intake position just so that the intake falls down
+        intake vision webcam
+        coprimes CAN stuff
+        intake ball sensor
+        */
     }
 
     private void configureAutoPaths() {
@@ -156,6 +168,7 @@ public class RobotContainer {
         autoChooser.addOption("Five Ball Right", 
                 new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, fiveBallRightPath, Paths.FiveBall));
 
+        // Send path options to driver station
         SmartDashboard.putData("Auto Mode", autoChooser);
 
     }
@@ -165,14 +178,14 @@ public class RobotContainer {
         /*CLIMBING BUTTONS*/ 
 
         // Telescope Up/Down
-        new POVButton(gamepad, 0)
+        /*new POVButton(gamepad, 0)
                 .whileHeld(new InstantCommand(() -> telescopes.jogUp()));
         new POVButton(gamepad, 180)
                 .whileHeld(new InstantCommand(() -> telescopes.jogDown()));
         
         // Climb Sequence
         new JoystickButton(gamepad, Button.kX.value)
-                .whenHeld(new ClimbSequence(telescopes, rotationArms, gamepad));
+                .whenHeld(new ClimbSequence(telescopes, rotationArms, gamepad));*/
 
         
         /*INTAKE BUTTONS*/ 
@@ -216,13 +229,16 @@ public class RobotContainer {
                 .whenPressed(new InstantCommand(() -> shooter.incrementRPMOffset(10)));
         new JoystickButton(leftStick, 4)
                 .whenPressed(new InstantCommand(() -> shooter.incrementRPMOffset(-10)));
+        
 
-
-        /*FAILSAFE BUTTONS*/ 
+        /*JOYSTICK BUTTONS*/
 
         // Reset Gyro
         new JoystickButton(rightStick, 2)
-            .whenPressed(new InstantCommand(() -> RobotState.getInstance().forceRobotPose(new Pose2d())));
+                .whenPressed(new InstantCommand(() -> RobotState.getInstance().forceRobotPose(new Pose2d())));
+
+
+        /*FAILSAFE BUTTONS*/ 
 
         // Center Turret
         new JoystickButton(gamepad, Button.kA.value)

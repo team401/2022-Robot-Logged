@@ -143,15 +143,15 @@ public final class Constants {
     public static final class ClimberConstants {
         public static final double rotationPositionToleranceRad = Units.degreesToRadians(5.0);
 
-        public static final double climbStowPositionRad = Units.degreesToRadians(-10);
-        public static final double intakeStowPositionRad = Units.degreesToRadians(-1);
+        public static final double rotationMax = Units.degreesToRadians(50);
+        public static final double rotationMin = -0.14;
+
+        public static final double stowPositionRad = rotationMin;
         public static final double climbGrabPositionRad = Units.degreesToRadians(2);
         public static final double intakePositionRad = Units.degreesToRadians(25);
         public static final double climbSwingPositionRad = Units.degreesToRadians(30);
         public static final double rotationLatchRad = Units.degreesToRadians(17.5);
 
-        public static final double rotationMax = Units.degreesToRadians(32);
-        public static final double rotationMin = Units.degreesToRadians(-12);
 
         public static final double telescopeHomePositionRad = Units.degreesToRadians(200);
         public static final double telescopePullPositionRad = Units.degreesToRadians(50);
@@ -170,8 +170,8 @@ public final class Constants {
         public static final double telescopeAcceleration = telescopeCruiseVelocity * 4;
 
         // measured offsets
-        public static final double leftRotationOffset = 5.7940924040267765;
-        public static final double rightRotationOffset = 2.7144526943793306;
+        public static final double leftRotationOffset = 4.9055763070348295;
+        public static final double rightRotationOffset = 5.908454955133876;
 
         //vertical conversion from rotations
         public static final double linearConversion = 0.625 * Math.PI;
@@ -272,7 +272,7 @@ public final class Constants {
 
         public static final Pose2d vehicleToTurretFixed = GeomUtil.inchesToMeters(new Pose2d(-5.25, 0.0, Rotation2d.fromDegrees(180)));
 
-        public static final double turretEncoderOffsetRad = -0.23344302303378667;
+        public static final double turretEncoderOffsetRad = 0;//-0.23344302303378667;
 
         public static final double turretLimitLower = -Math.PI / 2.0;
         public static final double turretLimitUpper = Math.PI / 2.0;
