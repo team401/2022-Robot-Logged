@@ -59,14 +59,15 @@ public class AutoRoutines extends ParallelCommandGroup {
             );
         }
 
-        if (pathPlan == Paths.TrollLeft) {
+        if (pathPlan == Paths.FourBallLeft) {
             sequentialCommands.addCommands(
                 new Intake(tower, intake, rotationArms)
-                    .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[1], false)),
+                    .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[1], false)
+                        .andThen(new WaitCommand(2))),
+
+                new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[2], false),
                 rotationArms.moveToStow(),
-                //new InstantCommand(() -> shooter.setSetpoint(1, 1000), shooter),
-                new WaitCommand(2),
-                new Shoot(tower, shooter).withTimeout(5)
+                new Shoot(tower, shooter).withTimeout(1.5)
             );
         }
 
@@ -82,10 +83,27 @@ public class AutoRoutines extends ParallelCommandGroup {
             );
         }
 
-        addCommands(
-            new PrepareToShoot(shooter),
-            sequentialCommands
-        );
+        if (pathPlan == Paths.TrollLeft) {
+            addCommands(
+                new SequentialCommandGroup(
+                    new PrepareToShoot(shooter)
+                        .raceWith(sequentialCommands),
+                    new InstantCommand(() -> shooter.setSetpoint(1, 1000), shooter),
+                    new Intake(tower, intake, rotationArms)
+                        .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[1], false)),
+                    rotationArms.moveToStow(),
+                    new WaitCommand(1),
+                    new Shoot(tower, shooter).withTimeout(5),
+                    new InstantCommand(() -> shooter.stopShooter(), shooter)
+                );
+            );
+        }
+        else {
+            addCommands(
+                new PrepareToShoot(shooter),
+                sequentialCommands
+            );
+        }
     }
 
 }
