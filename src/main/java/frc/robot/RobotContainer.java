@@ -67,10 +67,8 @@ public class RobotContainer {
     private PathPlannerTrajectory[] twoBallPath;
     private PathPlannerTrajectory[] threeBallRightPath;
     private PathPlannerTrajectory[] fiveBallRightPath;
-    private PathPlannerTrajectory[] sixBallRightPath;
+    private PathPlannerTrajectory[] trollLeftPath;
     private PathPlannerTrajectory[] fourBallLeftPath;
-    private PathPlannerTrajectory[] fiveBallLeftPath;
-    private PathPlannerTrajectory[] sixBallLeftPath;
 
     SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
@@ -116,15 +114,13 @@ public class RobotContainer {
         /*
         TODO: 
         auto paths
-        test vomit
-        intake power
-        interpolate shooting near hub
+        vomit - intake power
         increase rotation speed when climbing
+        intake ball sensor
         turret max rotation
         rotation arm intake position just so that the intake falls down
-        intake vision webcam
         coprimes CAN stuff
-        intake ball sensor
+        intake vision webcam
         */
     }
 
@@ -152,15 +148,12 @@ public class RobotContainer {
         autoChooser.addOption("Five Ball Right", 
                 new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, fiveBallRightPath, Paths.FiveBallRight));
         
-        // Six Ball Right
-        sixBallRightPath = new PathPlannerTrajectory[5];
-        sixBallRightPath[0] = PathPlanner.loadPath("Right 1", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
-        sixBallRightPath[1] = PathPlanner.loadPath("Right 2", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
-        sixBallRightPath[2] = PathPlanner.loadPath("Right 3", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
-        sixBallRightPath[3] = PathPlanner.loadPath("Right 5", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
-        sixBallRightPath[4] = PathPlanner.loadPath("Right 6", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
-        autoChooser.addOption("Six Ball Right", 
-                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, sixBallRightPath, Paths.SixBallRight));
+        // Troll Left
+        trollLeftPath = new PathPlannerTrajectory[2];
+        trollLeftPath[0] = PathPlanner.loadPath("Left 1", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+        trollLeftPath[1] = PathPlanner.loadPath("Left 4", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
+        autoChooser.addOption("Troll Left", 
+                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, trollLeftPath, Paths.TrollLeft));
 
         // Four Ball Left
         fourBallLeftPath = new PathPlannerTrajectory[3]; 
@@ -170,24 +163,6 @@ public class RobotContainer {
         autoChooser.addOption("Four Ball Left", 
                 new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, fourBallLeftPath, Paths.FourBallLeft));
 
-        // Five Ball Left
-        fiveBallLeftPath = new PathPlannerTrajectory[4]; 
-        fiveBallLeftPath[0] = PathPlanner.loadPath("Left 1", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
-        fiveBallLeftPath[1] = PathPlanner.loadPath("Left 2", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
-        fiveBallLeftPath[2] = PathPlanner.loadPath("Left 3", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
-        fiveBallLeftPath[3] = PathPlanner.loadPath("Left 4", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
-        autoChooser.addOption("Five Ball Left", 
-                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, fiveBallLeftPath, Paths.FiveBallLeft));
-        
-        // Six Ball Left
-        sixBallLeftPath = new PathPlannerTrajectory[4]; 
-        sixBallLeftPath[0] = PathPlanner.loadPath("Left 1", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
-        sixBallLeftPath[1] = PathPlanner.loadPath("Left 2", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
-        sixBallLeftPath[2] = PathPlanner.loadPath("Left 3", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
-        sixBallLeftPath[3] = PathPlanner.loadPath("Left 5", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
-        autoChooser.addOption("Six Ball Left", 
-                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, sixBallLeftPath, Paths.SixBallLeft));
-        
         // Send path options to driver station
         SmartDashboard.putData("Auto Mode", autoChooser);
 

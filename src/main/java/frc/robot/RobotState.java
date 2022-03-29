@@ -118,6 +118,17 @@ public class RobotState {
         return new AimingParameters(turretDirection, targetDistance, feedVelocity);
     }
 
+    public Rotation2d getVehicleToGoal() {
+
+        Pose2d fieldToPredictedVehicle = getPredictedFieldToVehicle(Constants.VisionConstants.targetingLookaheadS.get(), Constants.VisionConstants.targetingAngularLookaheadS.get());
+
+        Translation2d vehicleToTargetTranslation = GeomUtil.poseInverse(fieldToPredictedVehicle)
+            .transformBy(GeomUtil.transformFromTranslation(latestMeasuredFieldToTarget)).getTranslation();
+
+        return GeomUtil.direction(vehicleToTargetTranslation);
+
+    }
+
     public final class AimingParameters {
         
         //Angle of turret on robot

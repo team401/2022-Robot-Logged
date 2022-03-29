@@ -2,6 +2,8 @@ package frc.robot.commands.autonomous;
 
 import com.pathplanner.lib.PathPlannerTrajectory;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -10,6 +12,7 @@ import frc.robot.commands.drive.PathPlannerTrajectoryCommand;
 import frc.robot.commands.intake.Intake;
 import frc.robot.commands.shooter.PrepareToShoot;
 import frc.robot.commands.shooter.Shoot;
+import frc.robot.commands.turret.ForceSetPosition;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.IntakeWheels;
 import frc.robot.subsystems.rotationarms.RotationArms;
@@ -22,8 +25,8 @@ public class AutoRoutines extends ParallelCommandGroup {
     
     public enum Paths {
         TwoBall, 
-        ThreeBallRight, FiveBallRight, SixBallRight,
-        FourBallLeft, FiveBallLeft, SixBallLeft
+        ThreeBallRight, FiveBallRight,
+        TrollLeft, FourBallLeft
     }
 
     public AutoRoutines(Drive drive, RotationArms rotationArms, Shooter shooter, Turret turret, Tower tower, IntakeWheels intake, Vision vision, PathPlannerTrajectory[] path, Paths pathPlan) {
@@ -33,58 +36,47 @@ public class AutoRoutines extends ParallelCommandGroup {
             rotationArms.waitForMove(),
             new Intake(tower, intake, rotationArms)
                 .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[0], true)),
-            rotationArms.moveToStow(),
+            new ForceSetPosition(turret, vision, new Rotation2d()).withTimeout(0.5),
             new Shoot(tower, shooter).withTimeout(1.5)
         );
         
-        if (pathPlan == Paths.ThreeBallRight || pathPlan == Paths.FiveBallRight || pathPlan == Paths.SixBallRight) {
+        if (pathPlan == Paths.ThreeBallRight || pathPlan == Paths.FiveBallRight) {
             sequentialCommands.addCommands(
-                rotationArms.moveToIntake(),
                 new Intake(tower, intake, rotationArms)
                     .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[1], false)),
-                rotationArms.moveToStow(),
                 new Shoot(tower, shooter).withTimeout(1.5)
             );
         }
-        if (pathPlan == Paths.FiveBallRight || pathPlan == Paths.SixBallRight) {
+        if (pathPlan == Paths.FiveBallRight) {
             sequentialCommands.addCommands(
-                rotationArms.moveToIntake(),
                 new Intake(tower, intake, rotationArms)
                     .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[2], false)
                         .andThen(new WaitCommand(2))),
-                rotationArms.moveToStow(),
 
                 new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[3], false),
-                new Shoot(tower, shooter).withTimeout(1.5)
-            );
-        }
-        if (pathPlan == Paths.SixBallRight) {
-            sequentialCommands.addCommands(
-                rotationArms.moveToIntake(),
-                new Intake(tower, intake, rotationArms)
-                    .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[4], false)),
                 rotationArms.moveToStow(),
                 new Shoot(tower, shooter).withTimeout(1.5)
             );
         }
 
-        if (pathPlan == Paths.FourBallLeft || pathPlan == Paths.FiveBallLeft || pathPlan == Paths.SixBallLeft) {
+        if (pathPlan == Paths.TrollLeft) {
             sequentialCommands.addCommands(
-                rotationArms.moveToIntake(),
+                new Intake(tower, intake, rotationArms)
+                    .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[1], false)),
+                rotationArms.moveToStow(),
+                //new InstantCommand(() -> shooter.setSetpoint(1, 1000), shooter),
+                new WaitCommand(2),
+                new Shoot(tower, shooter).withTimeout(5)
+            );
+        }
+
+        if (pathPlan == Paths.FourBallLeft) {
+            sequentialCommands.addCommands(
                 new Intake(tower, intake, rotationArms)
                     .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[1], false)
                         .andThen(new WaitCommand(2))),
-                rotationArms.moveToStow(),
 
                 new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[2], false),
-                new Shoot(tower, shooter).withTimeout(1.5)
-            );
-        }
-        if (pathPlan == Paths.FiveBallLeft || pathPlan == Paths.SixBallLeft) {
-            sequentialCommands.addCommands(
-                rotationArms.moveToIntake(),
-                new Intake(tower, intake, rotationArms)
-                    .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[3], false)),
                 rotationArms.moveToStow(),
                 new Shoot(tower, shooter).withTimeout(1.5)
             );
@@ -94,110 +86,6 @@ public class AutoRoutines extends ParallelCommandGroup {
             new PrepareToShoot(shooter),
             sequentialCommands
         );
-
-       /* switch (pathPlan) {
-
-            case TwoBall:
-                addCommands(
-                    new PrepareToShoot(shooter),
-                    new SequentialCommandGroup(
-                        rotationArms.moveToIntake(),
-                        rotationArms.waitForMove(),
-                        new Intake(tower, intake, rotationArms)
-                            .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[0], true)),
-                        rotationArms.moveToStow(),
-                        new Shoot(tower, shooter).withTimeout(2)
-                    )
-                );
-                break;
-            
-            case ThreeBallRight:
-                addCommands(
-                    new PrepareToShoot(shooter),
-                    new SequentialCommandGroup(
-                        rotationArms.moveToIntake(),
-                        rotationArms.waitForMove(),
-                        // TODO: null pointer here????
-                        new Intake(tower, intake, rotationArms)
-                            .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[0], true)),
-                        rotationArms.moveToStow(),
-                        new Shoot(tower, shooter).withTimeout(2),
-
-                        rotationArms.moveToIntake(),
-                        new Intake(tower, intake, rotationArms)
-                            .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[1], true)),
-                        rotationArms.moveToStow(),
-                        new Shoot(tower, shooter).withTimeout(2)
-                    )
-                );
-                break;
-
-            case FiveBallRight:
-                addCommands(
-                    new PrepareToShoot(shooter),
-                    new SequentialCommandGroup(
-                        rotationArms.moveToIntake(),
-                        rotationArms.waitForMove(),
-                        new Intake(tower, intake, rotationArms)
-                            .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[0], true)),
-                        rotationArms.moveToStow(),
-                        new Shoot(tower, shooter).withTimeout(2),
-
-                        rotationArms.moveToIntake(),
-                        new Intake(tower, intake, rotationArms)
-                            .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[1], true)),
-                        rotationArms.moveToStow(),
-                        new Shoot(tower, shooter).withTimeout(2),
-
-                        rotationArms.moveToIntake(),
-                        new Intake(tower, intake, rotationArms)
-                            .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[2], true)
-                                .andThen(new WaitCommand(3))),
-                        rotationArms.moveToStow(),
-
-                        new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[3], true),
-                        new Shoot(tower, shooter).withTimeout(2)
-                    )
-                );
-                break;
-
-            case SixBallRight:
-                addCommands(
-                    new PrepareToShoot(shooter),
-                    new SequentialCommandGroup(
-                        rotationArms.moveToIntake(),
-                        rotationArms.waitForMove(),
-                        new Intake(tower, intake, rotationArms)
-                            .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[0], true)),
-                        rotationArms.moveToStow(),
-                        new Shoot(tower, shooter).withTimeout(2),
-
-                        rotationArms.moveToIntake(),
-                        new Intake(tower, intake, rotationArms)
-                            .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[1], true)),
-                        rotationArms.moveToStow(),
-                        new Shoot(tower, shooter).withTimeout(2),
-
-                        rotationArms.moveToIntake(),
-                        new Intake(tower, intake, rotationArms)
-                            .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[2], true)
-                                .andThen(new WaitCommand(3))),
-                        rotationArms.moveToStow(),
-
-                        new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[3], true),
-                        new Shoot(tower, shooter).withTimeout(2),
-
-                        rotationArms.moveToIntake(),
-                        new Intake(tower, intake, rotationArms)
-                            .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[4], true)),
-                        rotationArms.moveToStow(),
-                        new Shoot(tower, shooter).withTimeout(2)
-                    )
-                );
-                break;
-
-        }*/
-
     }
 
 }
