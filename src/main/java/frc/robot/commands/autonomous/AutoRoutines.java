@@ -95,7 +95,7 @@ public class AutoRoutines extends ParallelCommandGroup {
                     new WaitCommand(1),
                     new Shoot(tower, shooter).withTimeout(5),
                     new InstantCommand(() -> shooter.stopShooter(), shooter)
-                );
+                )
             );
         }
         else {
