@@ -42,8 +42,8 @@ public class TelescopesSubsystem extends SubsystemBase {
         leftController.setGoal(ClimberConstants.telescopeHomePositionRad);
         rightController.setGoal(ClimberConstants.telescopeHomePositionRad);
 
-        leftController.setTolerance(Units.degreesToRadians(200.0));
-        rightController.setTolerance(Units.degreesToRadians(200.0));
+        leftController.setTolerance(Units.degreesToRadians(300.0));
+        rightController.setTolerance(Units.degreesToRadians(300.0));
     }
 
     @Override
@@ -73,7 +73,7 @@ public class TelescopesSubsystem extends SubsystemBase {
                     homeTimer.reset();
                 }
 
-                if (homeTimer.hasElapsed(ClimberConstants.telescopeHomingTimeS)) {
+                if (homeTimer.hasElapsed(ClimberConstants.homingTimeS)) {
                     homed = true;
                     io.resetEncoders();
                     io.setLeftVolts(0);

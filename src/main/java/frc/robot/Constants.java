@@ -171,7 +171,7 @@ public final class Constants {
 
         // measured offsets
         public static final double leftRotationOffset = 4.9055763070348295;
-        public static final double rightRotationOffset = 5.908454955133876 - 0.165 - 0.03 - 0.191 - 0.129;
+        public static final double rightRotationOffset = 5.908454955133876 - 0.165 - 0.03 - 0.191 - 0.129 - 0.1;
 
         //vertical conversion from rotations
         public static final double linearConversion = 0.625 * Math.PI;
@@ -187,8 +187,11 @@ public final class Constants {
         public static TunableNumber telescopeArmKd = new TunableNumber("TelescopeArm/Kd");
 
         public static final double telescopeHomingThresholdRadPerS = 1;//Units.degreesToRadians(10);
-        public static final double telescopeHomingTimeS = 0.5;
+        public static final double homingTimeS = 0.25;
         public static final double telescopeHomingVolts = -4;
+        public static final double rotationHomingVolts = -1;
+
+        public static final double rotationHomingThresholdRadPerS = Units.degreesToRadians(20);
 
         static {
             rotationArmKp.setDefault(25.0);

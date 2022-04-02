@@ -18,7 +18,7 @@ public class QuickTurn extends CommandBase {
     private final Drive drive;
     private final double desiredAngleRad;
 
-    private final PIDController controller = new PIDController(0, 0, 0);
+    private final PIDController controller = new PIDController(5, 0, 0);
 
     public QuickTurn(Drive drive, double desiredAngleRad) {
         this.drive = drive;
@@ -44,7 +44,7 @@ public class QuickTurn extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return Math.abs(drive.getPose().getRotation().getRadians() - desiredAngleRad) < Units.degreesToRadians(1);
+        return Math.abs(drive.getPose().getRotation().getRadians() - desiredAngleRad) < Units.degreesToRadians(3);
     }
 
 }

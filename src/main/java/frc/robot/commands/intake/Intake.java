@@ -61,8 +61,8 @@ public class Intake extends CommandBase {
         if (!rotationArms.getKilled() && rotationArms.atGoal() && rotationArms.getGoal() == ClimberConstants.intakePositionRad) {
 
             //Need to add ir sensing, should have a (mostly) constant value for no ball, need to check if there is a ball before everything else
-            boolean wrongBall = //(tower.getDetectedColor().red > 60 && DriverStation.getAlliance() == Alliance.Blue) ||
-                                (tower.getDetectedColor().red < 5 && DriverStation.getAlliance() == Alliance.Red);
+            boolean wrongBall = false;//(tower.getDetectedColor().red > 60 && DriverStation.getAlliance() == Alliance.Blue) ||
+                                //(tower.getDetectedColor().red < 5 && DriverStation.getAlliance() == Alliance.Red);
 
             if (wrongBall) {// && lastSensorUpdateTimer.get() < 0.1) {
                 reverseTimer.reset();

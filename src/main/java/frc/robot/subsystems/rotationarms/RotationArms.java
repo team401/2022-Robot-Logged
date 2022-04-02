@@ -10,6 +10,8 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.subsystems.rotationarms.RotationArmsIO.RotationArmsIOInputs;
@@ -32,6 +34,12 @@ public class RotationArms extends SubsystemBase {
         normalConstraints);
 
     private boolean killed = false;
+    private boolean homed = false;
+
+    private double leftLastPositionRad = 0;
+    private double rightLastPositionRad = 0;
+
+    private Timer homeTimer = new Timer();
 
     public RotationArms(RotationArmsIO io) {
         this.io = io;
@@ -43,6 +51,16 @@ public class RotationArms extends SubsystemBase {
 
     @Override
     public void periodic() {
+
+        double leftVelocityRadPerS = (ioInputs.leftPositionRad -  leftLastPositionRad) / 0.02;
+        double rightVelocityRadPerS = (ioInputs.rightPositionRad -  rightLastPositionRad) / 0.02;
+        
+        leftLastPositionRad = ioInputs.leftPositionRad;
+        rightLastPositionRad = ioInputs.rightPositionRad;
+
+        SmartDashboard.putNumber("leftVelocity", leftVelocityRadPerS);
+        SmartDashboard.putNumber("rightVelocity", rightVelocityRadPerS);
+
         io.updateInputs(ioInputs);
         Logger.getInstance().processInputs("RotationArms", ioInputs);
 
@@ -65,25 +83,50 @@ public class RotationArms extends SubsystemBase {
             rightController.setGoal(ClimberConstants.stowPositionRad);
         }
 
+        if (!homed) {
+            if (DriverStation.isEnabled()) {
+                if (Math.abs(leftVelocityRadPerS) < ClimberConstants.rotationHomingThresholdRadPerS
+                        && Math.abs(rightVelocityRadPerS) < ClimberConstants.rotationHomingThresholdRadPerS) {
+                    homeTimer.start();
+                } else {
+                    homeTimer.stop();
+                    homeTimer.reset();
+                }
+
+                if (homeTimer.hasElapsed(ClimberConstants.homingTimeS)) {
+                    homed = true;
+                    io.resetEncoder();
+                    io.setLeftVolts(0);
+                    io.setRightVolts(0);
+                    leftController.reset(ioInputs.leftPositionRad);
+                    rightController.reset(ioInputs.rightPositionRad);
+                } else {
+                    io.setLeftVolts(ClimberConstants.rotationHomingVolts);
+                    io.setRightVolts(ClimberConstants.rotationHomingVolts);
+                }
+            }
+        } else {
+            if (!killed) {
+                double leftOutput = leftController.calculate(leftMod);
+                Logger.getInstance().recordOutput("RotationArms/LeftOutput", leftOutput);
+    
+                double rightOutput = rightController.calculate(rightMod);
+                Logger.getInstance().recordOutput("RotationArms/RightOutput", rightOutput);
+    
+                io.setLeftVolts(leftOutput);
+                io.setRightVolts(rightOutput);
+    
+      
+            } else {
+                io.setLeftVolts(0);
+                io.setRightVolts(0);
+            }
+
+        }
+
         Logger.getInstance().recordOutput("RotationArms/LeftAngleModDeg", Units.radiansToDegrees(leftMod));
         Logger.getInstance().recordOutput("RotationArms/RightAngleModDeg", Units.radiansToDegrees(rightMod));
 
-
-        if (!killed) {
-            double leftOutput = leftController.calculate(leftMod);
-            Logger.getInstance().recordOutput("RotationArms/LeftOutput", leftOutput);
-
-            double rightOutput = rightController.calculate(rightMod);
-            Logger.getInstance().recordOutput("RotationArms/RightOutput", rightOutput);
-
-            io.setLeftVolts(leftOutput);
-            io.setRightVolts(rightOutput);
-
-  
-        } else {
-            io.setLeftVolts(0);
-            io.setRightVolts(0);
-        }
 
         Logger.getInstance().recordOutput("RotationArms/LeftSetpointDeg", Units.radiansToDegrees(leftController.getSetpoint().position));
         Logger.getInstance().recordOutput("RotationArms/RightSetpointDeg", Units.radiansToDegrees(rightController.getSetpoint().position));

@@ -10,12 +10,18 @@ public interface RotationArmsIO {
         public double leftCurrent;
         public double rightCurrent;
 
+        public double leftVelocityRadPerS;
+        public double rightVelocityRadPerS;
+
         @Override
         public void toLog(LogTable table) {
             table.put("LeftPositionRad", leftPositionRad);
             table.put("RightPositionRad", rightPositionRad);
             table.put("LeftCurrent", leftCurrent);
             table.put("RightCurrent", rightCurrent);
+            table.put("RightVelocityRadPerS", rightVelocityRadPerS);
+            table.put("LeftVelocityRadPerS", leftVelocityRadPerS);
+
         }
 
         @Override
@@ -24,6 +30,8 @@ public interface RotationArmsIO {
             rightPositionRad = table.getDouble("RightPositionRad", rightPositionRad);
             leftCurrent = table.getDouble("LeftCurrent", leftCurrent);
             rightCurrent = table.getDouble("RightCurrent", rightCurrent);
+            leftVelocityRadPerS = table.getDouble("LeftVelocityRadPerS", leftVelocityRadPerS);
+            rightVelocityRadPerS = table.getDouble("RightVelocityRadPerS", rightVelocityRadPerS);
         }
     }
 
