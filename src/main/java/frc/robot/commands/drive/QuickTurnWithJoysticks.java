@@ -1,17 +1,18 @@
-/*package frc.robot.commands.drive;
+package frc.robot.commands.drive;
 
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.RobotState;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.drive.DriveWithJoysticks.AxisProcessor;
 
-public class QuickTurn extends CommandBase {
+public class QuickTurnWithJoysticks extends CommandBase {
     
     private final Drive drive;
 
@@ -25,7 +26,7 @@ public class QuickTurn extends CommandBase {
     private final AxisProcessor xProcessor = new AxisProcessor(false);
     private final AxisProcessor yProcessor = new AxisProcessor(false);
 
-    public QuickTurn(Drive drive, DoubleSupplier leftX, DoubleSupplier leftY) {
+    public QuickTurnWithJoysticks(Drive drive, DoubleSupplier leftX, DoubleSupplier leftY) {
         this.drive = drive;
 
         this.leftX = leftX;
@@ -43,7 +44,7 @@ public class QuickTurn extends CommandBase {
 
         double xMPerS = xProcessor.processJoystickInputs(leftX.getAsDouble()) * DriveConstants.maxSpeedMPerS;
         double yMPerS = yProcessor.processJoystickInputs(leftY.getAsDouble()) * DriveConstants.maxSpeedMPerS;
-        double omegaRadPerS = controller.calculate(drive.get, filteredAngle);
+        double omegaRadPerS = controller.calculate(drive.getPose().getRotation().getRadians(), filteredAngle);
     
         //Convert to field relative speeds
         ChassisSpeeds targetSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xMPerS, yMPerS, omegaRadPerS, RobotState.getInstance().getLatestFieldToVehicle().getRotation());
@@ -59,4 +60,3 @@ public class QuickTurn extends CommandBase {
     }
 
 }
-*/
