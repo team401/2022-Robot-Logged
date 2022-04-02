@@ -268,7 +268,7 @@ public final class Constants {
 
         public static final Pose2d vehicleToTurretFixed = GeomUtil.inchesToMeters(new Pose2d(-5.25, 0.0, Rotation2d.fromDegrees(180)));
 
-        public static final double turretEncoderOffsetRad = -1.0631419667728104;//-0.23344302303378667;
+        public static final double turretEncoderOffsetRad = -1.0631419667728104+0.059825250727540004;//-0.23344302303378667;
 
         public static final double turretLimitLower = -Math.PI / 2.0;
         public static final double turretLimitUpper = Math.PI / 2.0;
