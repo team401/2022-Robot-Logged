@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.RobotState;
 import frc.robot.commands.drive.PathPlannerTrajectoryCommand;
-import frc.robot.commands.drive.QuickTurnWithJoysticks;
+import frc.robot.commands.drive.QuickTurn;
 import frc.robot.commands.intake.Intake;
 import frc.robot.commands.shooter.PrepareToShoot;
 import frc.robot.commands.shooter.Shoot;
@@ -91,10 +91,19 @@ public class AutoRoutines extends ParallelCommandGroup {
                 new Intake(tower, intake, rotationArms)
                     .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[1], false)),
                 new WaitCommand(1),
-                new InstantCommand(() -> turret.setPositionGoal(new Rotation2d()), turret)
-                    .raceWith(new Shoot(tower, shooter).withTimeout(3)) 
-            );
+                new QuickTurn(drive, 0),
+                new WaitCommand(3).deadlineWith(
+                    rotationArms.moveToIntake()
+                    .alongWith(new InstantCommand(() -> intake.setPercent(-0.5))
+                    .alongWith(new InstantCommand(() -> tower.setConveyorPercent(-0.5))
+                    .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(-0.5)))))    
+                ), 
+                    rotationArms.moveToStow()
+                .alongWith(new InstantCommand(() -> intake.setPercent(0))
+                .alongWith(new InstantCommand(() -> tower.setConveyorPercent(0))
+                .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(0))))));
         }
+        
 
         addCommands(
             new PrepareToShoot(shooter),
