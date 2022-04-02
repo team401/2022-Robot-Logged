@@ -48,9 +48,10 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOLimelight;
 
 public class RobotContainer {
+
     private final Drive drive;
     private final RotationArms rotationArms;
-    //private final TelescopesSubsystem telescopes;
+    private final TelescopesSubsystem telescopes;
     private final Tower tower;
     private final Turret turret;
     private final Shooter shooter;
@@ -90,7 +91,7 @@ public class RobotContainer {
         intakeWheels = new IntakeWheels(new IntakeWheelsIOComp());
         rotationArms = new RotationArms(new RotationArmsIOComp());
         shooter = new Shooter(new ShooterIOComp());
-        //telescopes = new TelescopesSubsystem(new TelescopesIOComp());
+        telescopes = new TelescopesSubsystem(new TelescopesIOComp());
         tower = new Tower(new TowerIOComp());
         turret = new Turret(new TurretIOComp());
         vision = new Vision(new VisionIOLimelight());
@@ -112,16 +113,19 @@ public class RobotContainer {
         configureButtonBindings();
 
         /*
-        TODO: 
-        auto paths
-        vomit - intake power
+        TODO (Before comp): 
+        fix telescopes after homing
+        full systems test
+        play a few practice teleop matches to see if anything breaks
+
+        TODO (After comp):
         increase rotation speed when climbing
-        intake ball sensor
         turret max rotation
-        rotation arm intake position just so that the intake falls down
-        coprimes CAN stuff
+        coprime CAN stuff
         intake vision webcam
         */
+
+        SmartDashboard.putBoolean("Homed", false);
     }
 
     private void configureAutoPaths() {
@@ -173,14 +177,16 @@ public class RobotContainer {
         /*CLIMBING BUTTONS*/ 
 
         // Telescope Up/Down
-        /*new POVButton(gamepad, 0)
+        new POVButton(gamepad, 0)
                 .whileHeld(new InstantCommand(() -> telescopes.jogUp()));
         new POVButton(gamepad, 180)
                 .whileHeld(new InstantCommand(() -> telescopes.jogDown()));
         
         // Climb Sequence
-        new JoystickButton(gamepad, Button.kX.value)
-                .whenHeld(new ClimbSequence(telescopes, rotationArms, gamepad));*/
+        //new JoystickButton(gamepad, Button.kX.value)
+                //.whenHeld(new ClimbSequence(telescopes, rotationArms, gamepad));
+        //new JoystickButton(gamepad, gamepad.getLeftTriggerAxis() > 0.2 ? 1 : 0)
+                //.whenHeld(new ClimbSequence(telescopes, rotationArms, gamepad));
 
         
         /*INTAKE BUTTONS*/ 
@@ -196,6 +202,23 @@ public class RobotContainer {
                 .whenPressed(rotationArms.moveToIntake())
                 .whenHeld(new Intake(tower, intakeWheels, rotationArms))
                 .whenReleased(rotationArms.moveToStow());
+        
+        // Driver Intake
+        /*new JoystickButton(rightStick, Joystick.ButtonType.kTrigger.value)
+                .whenPressed(rotationArms.moveToIntake())
+                .whenHeld(new Intake(tower, intakeWheels, rotationArms))
+                .whenReleased(rotationArms.moveToStow());*/
+
+        // Driver Reverse Intake
+        /*new JoystickButton(leftStick, Joystick.ButtonType.kTrigger.value)
+                .whenPressed(rotationArms.moveToIntake()
+                        .alongWith(new InstantCommand(() -> intakeWheels.setPercent(-0.5))
+                        .alongWith(new InstantCommand(() -> tower.setConveyorPercent(-0.5))
+                        .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(-0.5))))))
+                .whenReleased(rotationArms.moveToStow()
+                        .alongWith(new InstantCommand(() -> intakeWheels.setPercent(0))
+                        .alongWith(new InstantCommand(() -> tower.setConveyorPercent(0))
+                        .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(0))))));*/
         
         // Reverse Intake
         new JoystickButton(gamepad, Button.kBack.value)
@@ -224,29 +247,36 @@ public class RobotContainer {
                 .whenPressed(new InstantCommand(() -> shooter.incrementRPMOffset(-10)));
         new JoystickButton(leftStick, 4)
                 .whenPressed(new InstantCommand(() -> shooter.incrementRPMOffset(10)));
-        
 
-        /*JOYSTICK BUTTONS*/
+
+        /*OTHERS*/
 
         // Reset Gyro
         new JoystickButton(rightStick, 2)
                 .whenPressed(new InstantCommand(() -> RobotState.getInstance().forceRobotPose(new Pose2d())));
 
-
-        /*FAILSAFE BUTTONS*/ 
-
         // Center Turret
         new JoystickButton(gamepad, Button.kA.value)
                 .whenHeld(new ForceSetPosition(turret, vision, new Rotation2d()));
 
-        // Kill commands
-        new JoystickButton(gamepad, Button.kStart.value)
-                .whenPressed(new InstantCommand(() -> rotationArms.kill()));
+        // Vomit
+        new JoystickButton(gamepad, Button.kX.value)
+                .whenPressed(rotationArms.moveToIntake()
+                        .alongWith(new InstantCommand(() -> intakeWheels.setPercent(1.0))
+                        .alongWith(new InstantCommand(() -> tower.setConveyorPercent(-0.5))
+                        .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(-0.5))))))
+                .whenReleased(rotationArms.moveToStow()
+                        .alongWith(new InstantCommand(() -> intakeWheels.setPercent(0))
+                        .alongWith(new InstantCommand(() -> tower.setConveyorPercent(0))
+                        .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(0))))));
+        
+        // Calibrate Hood
+        //new JoystickButton(gamepad, Button.kStart.value)
+                //.whenPressed(new InstantCommand(() -> shooter.calibrateHood()));
 
-        // Panic Prepare to shoot (flush against the wall into the low hub)
-        new JoystickButton(gamepad, Button.kStart.value)
-                .whenPressed(new InstantCommand(() -> shooter.setSetpoint(0, 1500)))
-                .whenReleased(new InstantCommand(() -> shooter.stopShooter()));
+        // Kill arms
+        //new JoystickButton(gamepad, Button.kLeftBumper.value)
+                //.whenPressed(new InstantCommand(() -> rotationArms.kill()));
 
     }
 

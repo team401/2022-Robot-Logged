@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -60,12 +61,12 @@ public class TelescopesSubsystem extends SubsystemBase {
             rightController.setPID(ClimberConstants.telescopeArmKp.get(), 0, ClimberConstants.telescopeArmKd.get());
         }
 
+        Logger.getInstance().recordOutput("Telescopes/Homed", homed);
 
         if (!homed) {
             if (DriverStation.isEnabled()) {
-                if (Math.abs(ioInputs.leftVelocityRadPerS) < ClimberConstants.telescopeHomingThresholdRadPerS) {
-                        //TODO UN-COMMENT WHEN THE RIGHT CLIMBER IS FIXED
-                        //&& Math.abs(ioInputs.rightVelocityRadPerS) < ClimberConstants.telescopeHomingThresholdRadPerS) {
+                if (Math.abs(ioInputs.leftVelocityRadPerS) < ClimberConstants.telescopeHomingThresholdRadPerS
+                        && Math.abs(ioInputs.rightVelocityRadPerS) < ClimberConstants.telescopeHomingThresholdRadPerS) {
                     homeTimer.start();
                 } else {
                     homeTimer.stop();
@@ -90,8 +91,14 @@ public class TelescopesSubsystem extends SubsystemBase {
 
             double rightOutput = rightController.calculate(ioInputs.rightPositionRad * ClimberConstants.rightTelescopeMultiplier, goalPositionRad);
             io.setRightVolts(rightOutput);
+
+            Logger.getInstance().recordOutput("Telescopes/LeftOutput", leftOutput);
+            Logger.getInstance().recordOutput("Telescopes/RightOutput", rightOutput);
+
         }
 
+
+        Logger.getInstance().recordOutput("Telescopes/GoalPositionRad", goalPositionRad);
         Logger.getInstance().recordOutput("Telescopes/LeftSetpointDeg", Units.radiansToDegrees(leftController.getSetpoint().position));
         Logger.getInstance().recordOutput("Telescopes/RightSetpointDeg", Units.radiansToDegrees(rightController.getSetpoint().position));
         Logger.getInstance().recordOutput("Telescopes/LeftDeg", Units.radiansToDegrees(ioInputs.leftPositionRad * ClimberConstants.leftTelescopeMultiplier));

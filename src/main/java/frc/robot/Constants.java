@@ -171,7 +171,7 @@ public final class Constants {
 
         // measured offsets
         public static final double leftRotationOffset = 4.9055763070348295;
-        public static final double rightRotationOffset = 5.908454955133876;
+        public static final double rightRotationOffset = 5.908454955133876 - 0.165;
 
         //vertical conversion from rotations
         public static final double linearConversion = 0.625 * Math.PI;
@@ -235,21 +235,17 @@ public final class Constants {
             flywheelDesired.setDefault(0);
             hoodDesired.setDefault(hoodMinRad);
 
-            flywheelLookup.put(new InterpolatingDouble(1.732), new InterpolatingDouble(2200.0));
-            flywheelLookup.put(new InterpolatingDouble(2.126), new InterpolatingDouble(2000.0));
-            flywheelLookup.put(new InterpolatingDouble(2.874), new InterpolatingDouble(2100.0));
-            flywheelLookup.put(new InterpolatingDouble(3.141), new InterpolatingDouble(2300.0));
-            flywheelLookup.put(new InterpolatingDouble(3.588), new InterpolatingDouble(2500.0));
-            flywheelLookup.put(new InterpolatingDouble(3.840), new InterpolatingDouble(2650.0));
-            flywheelLookup.put(new InterpolatingDouble(4.221), new InterpolatingDouble(2750.0));
+            flywheelLookup.put(new InterpolatingDouble(1.98), new InterpolatingDouble(2000.0));
+            flywheelLookup.put(new InterpolatingDouble(2.49), new InterpolatingDouble(2050.0));
+            flywheelLookup.put(new InterpolatingDouble(3.35), new InterpolatingDouble(2200.0));
+            flywheelLookup.put(new InterpolatingDouble(4.42), new InterpolatingDouble(2450.0));
+            flywheelLookup.put(new InterpolatingDouble(5.42), new InterpolatingDouble(2600.0));
 
-            hoodLookup.put(new InterpolatingDouble(1.732), new InterpolatingDouble(0.3));
-            hoodLookup.put(new InterpolatingDouble(2.126), new InterpolatingDouble(0.4));
-            hoodLookup.put(new InterpolatingDouble(2.874), new InterpolatingDouble(0.63));
-            hoodLookup.put(new InterpolatingDouble(3.141), new InterpolatingDouble(0.63));
-            hoodLookup.put(new InterpolatingDouble(3.588), new InterpolatingDouble(0.63));
-            hoodLookup.put(new InterpolatingDouble(3.840), new InterpolatingDouble(0.63));
-            hoodLookup.put(new InterpolatingDouble(4.221), new InterpolatingDouble(0.63));
+            hoodLookup.put(new InterpolatingDouble(1.98), new InterpolatingDouble(0.45));
+            hoodLookup.put(new InterpolatingDouble(2.49), new InterpolatingDouble(0.5));
+            hoodLookup.put(new InterpolatingDouble(3.35), new InterpolatingDouble(0.6));
+            hoodLookup.put(new InterpolatingDouble(4.42), new InterpolatingDouble(0.63));
+            hoodLookup.put(new InterpolatingDouble(5.42), new InterpolatingDouble(0.63));
 
         }
 
