@@ -104,11 +104,11 @@ public class AutoRoutines extends SequentialCommandGroup {
                     .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[1], false)),
                 rotationArms.moveToStow(),
                 new InstantCommand(() -> turret.setZeroOverride(true)),
-                //new InstantCommand(() -> shooter.setSetpoint(0.63, Units.rotationsPerMinuteToRadiansPerSecond(1500))),
+                new InstantCommand(() -> shooter.setSetpoint(0.63, Units.rotationsPerMinuteToRadiansPerSecond(1500))),
                 new WaitCommand(1),
                 new Shoot(tower, shooter).withTimeout(3),
                 new InstantCommand(() -> turret.setZeroOverride(false))
-                //new InstantCommand(() -> shooter.stopShooter())
+                new InstantCommand(() -> shooter.stopShooter())
             );
         }
         
