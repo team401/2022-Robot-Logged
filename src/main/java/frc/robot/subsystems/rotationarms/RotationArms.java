@@ -3,6 +3,8 @@ package frc.robot.subsystems.rotationarms;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+
+import org.littletonrobotics.junction.LogTable;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
@@ -35,6 +37,7 @@ public class RotationArms extends SubsystemBase {
 
     private boolean killed = false;
     private boolean homed = false;
+    private boolean hasReset = false;
 
     private double leftLastPositionRad = 0;
     private double rightLastPositionRad = 0;
@@ -46,11 +49,15 @@ public class RotationArms extends SubsystemBase {
 
         leftController.setTolerance(ClimberConstants.rotationPositionToleranceRad);
         rightController.setTolerance(ClimberConstants.rotationPositionToleranceRad);
-
     }
 
     @Override
     public void periodic() {
+
+        if (!hasReset) {
+            io.resetEncoder();
+            hasReset = true;
+        }
 
         double leftVelocityRadPerS = (ioInputs.leftPositionRad -  leftLastPositionRad) / 0.02;
         double rightVelocityRadPerS = (ioInputs.rightPositionRad -  rightLastPositionRad) / 0.02;
@@ -95,11 +102,17 @@ public class RotationArms extends SubsystemBase {
 
                 if (homeTimer.hasElapsed(ClimberConstants.homingTimeS)) {
                     homed = true;
+
+                    SmartDashboard.putNumber("currentLeftPosition", ioInputs.leftPositionRad);
+                    SmartDashboard.putNumber("currentRightPosition", ioInputs.rightPositionRad);
+
                     io.resetEncoder();
                     io.setLeftVolts(0);
                     io.setRightVolts(0);
+                   
                     leftController.reset(ioInputs.leftPositionRad);
                     rightController.reset(ioInputs.rightPositionRad);
+
                 } else {
                     io.setLeftVolts(ClimberConstants.rotationHomingVolts);
                     io.setRightVolts(ClimberConstants.rotationHomingVolts);
@@ -124,6 +137,7 @@ public class RotationArms extends SubsystemBase {
 
         }
 
+        Logger.getInstance().recordOutput("RotationArms/isHomed", homed);
         Logger.getInstance().recordOutput("RotationArms/LeftAngleModDeg", Units.radiansToDegrees(leftMod));
         Logger.getInstance().recordOutput("RotationArms/RightAngleModDeg", Units.radiansToDegrees(rightMod));
 

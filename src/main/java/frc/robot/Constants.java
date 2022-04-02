@@ -170,8 +170,8 @@ public final class Constants {
         public static final double telescopeAcceleration = telescopeCruiseVelocity * 4;
 
         // measured offsets
-        public static final double leftRotationOffset = 4.9055763070348295;
-        public static final double rightRotationOffset = 5.908454955133876 - 0.165 - 0.03 - 0.191 - 0.129 - 0.1;
+        public static final double leftRotationOffset = 0.14;//4.9055763070348295;
+        public static final double rightRotationOffset = 0.14;//5.908454955133876 - 0.165 - 0.03 - 0.191 - 0.129 - 0.1;
 
         //vertical conversion from rotations
         public static final double linearConversion = 0.625 * Math.PI;
@@ -189,9 +189,9 @@ public final class Constants {
         public static final double telescopeHomingThresholdRadPerS = 1;//Units.degreesToRadians(10);
         public static final double homingTimeS = 0.25;
         public static final double telescopeHomingVolts = -4;
-        public static final double rotationHomingVolts = -1;
+        public static final double rotationHomingVolts = -2.50000000;
 
-        public static final double rotationHomingThresholdRadPerS = Units.degreesToRadians(20);
+        public static final double rotationHomingThresholdRadPerS = 0.1;
 
         static {
             rotationArmKp.setDefault(25.0);

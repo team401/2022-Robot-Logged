@@ -101,7 +101,9 @@ public class AutoRoutines extends ParallelCommandGroup {
                     rotationArms.moveToStow()
                 .alongWith(new InstantCommand(() -> intake.setPercent(0))
                 .alongWith(new InstantCommand(() -> tower.setConveyorPercent(0))
-                .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(0))))));
+                .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(0))))),
+                
+                new QuickTurn(drive, 0));
         }
 
         addCommands(
