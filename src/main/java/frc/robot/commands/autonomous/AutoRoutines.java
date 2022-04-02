@@ -32,11 +32,13 @@ public class AutoRoutines extends ParallelCommandGroup {
     public AutoRoutines(Drive drive, RotationArms rotationArms, Shooter shooter, Turret turret, Tower tower, IntakeWheels intake, Vision vision, PathPlannerTrajectory[] path, Paths pathPlan) {
         
         SequentialCommandGroup sequentialCommands = new SequentialCommandGroup(
+            new InstantCommand(() -> vision.turnOnLeds()),
             rotationArms.moveToIntake(),
             rotationArms.waitForMove(),
             new Intake(tower, intake, rotationArms)
                 .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[0], true)),
-            new ForceSetPosition(turret, vision, new Rotation2d()).withTimeout(0.5),
+            //new ForceSetPosition(turret, vision, new Rotation2d()).withTimeout(0.5),
+            new InstantCommand(() -> vision.turnOnLeds()),
             new Shoot(tower, shooter).withTimeout(1.5)
         );
         
@@ -51,7 +53,7 @@ public class AutoRoutines extends ParallelCommandGroup {
             sequentialCommands.addCommands(
                 new Intake(tower, intake, rotationArms)
                     .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[2], false)
-                        .andThen(new WaitCommand(2))),
+                        .andThen(new WaitCommand(1))),
 
                 new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[3], false),
                 rotationArms.moveToStow(),
@@ -63,7 +65,7 @@ public class AutoRoutines extends ParallelCommandGroup {
             sequentialCommands.addCommands(
                 new Intake(tower, intake, rotationArms)
                     .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[1], false)
-                        .andThen(new WaitCommand(2))),
+                        .andThen(new WaitCommand(1))),
 
                 new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[2], false),
                 rotationArms.moveToStow(),
@@ -75,7 +77,7 @@ public class AutoRoutines extends ParallelCommandGroup {
             sequentialCommands.addCommands(
                 new Intake(tower, intake, rotationArms)
                     .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[1], false)
-                        .andThen(new WaitCommand(2))),
+                        .andThen(new WaitCommand(1))),
 
                 new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[2], false),
                 rotationArms.moveToStow(),
@@ -88,12 +90,13 @@ public class AutoRoutines extends ParallelCommandGroup {
                 new SequentialCommandGroup(
                     new PrepareToShoot(shooter)
                         .raceWith(sequentialCommands),
-                    new InstantCommand(() -> shooter.setSetpoint(1, 1000), shooter),
-                    new Intake(tower, intake, rotationArms)
-                        .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[1], false)),
+                    new InstantCommand(() -> shooter.setSetpoint(.63, 1500), shooter),
                     rotationArms.moveToStow(),
+                    /*new Intake(tower, intake, rotationArms)
+                        .raceWith(*/new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[1], false),//),
                     new WaitCommand(1),
-                    new Shoot(tower, shooter).withTimeout(5),
+                    new ForceSetPosition(turret, vision, new Rotation2d())
+                        .raceWith(new Shoot(tower, shooter).withTimeout(3)),
                     new InstantCommand(() -> shooter.stopShooter(), shooter)
                 )
             );

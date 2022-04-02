@@ -171,7 +171,7 @@ public final class Constants {
 
         // measured offsets
         public static final double leftRotationOffset = 4.9055763070348295;
-        public static final double rightRotationOffset = 5.908454955133876 - 0.165 - 0.03;
+        public static final double rightRotationOffset = 5.908454955133876 - 0.165 - 0.03 - 0.191;
 
         //vertical conversion from rotations
         public static final double linearConversion = 0.625 * Math.PI;
