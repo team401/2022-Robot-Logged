@@ -107,7 +107,7 @@ public class AutoRoutines extends SequentialCommandGroup {
                 new InstantCommand(() -> shooter.setSetpoint(0.63, Units.rotationsPerMinuteToRadiansPerSecond(1500))),
                 new WaitCommand(1),
                 new Shoot(tower, shooter).withTimeout(3),
-                new InstantCommand(() -> turret.setZeroOverride(false))
+                new InstantCommand(() -> turret.setZeroOverride(false)),
                 new InstantCommand(() -> shooter.stopShooter())
             );
         }
