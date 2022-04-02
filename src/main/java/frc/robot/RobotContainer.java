@@ -170,6 +170,8 @@ public class RobotContainer {
         // Send path options to driver station
         SmartDashboard.putData("Auto Mode", autoChooser);
 
+        SmartDashboard.putBoolean("Homed", false);
+
     }
 
     private void configureButtonBindings() {
@@ -183,12 +185,11 @@ public class RobotContainer {
                 .whileHeld(new InstantCommand(() -> telescopes.jogDown()));
         
         // Climb Sequence
-        //new JoystickButton(gamepad, Button.kX.value)
-                //.whenHeld(new ClimbSequence(telescopes, rotationArms, gamepad));
+        new JoystickButton(gamepad, Button.kX.value)
+                .whenHeld(new ClimbSequence(telescopes, rotationArms, gamepad));
         //new JoystickButton(gamepad, gamepad.getLeftTriggerAxis() > 0.2 ? 1 : 0)
                 //.whenHeld(new ClimbSequence(telescopes, rotationArms, gamepad));
 
-        
         /*INTAKE BUTTONS*/ 
 
         // Rotation Arms Intake/Stow (Without running ball tower)
@@ -260,7 +261,7 @@ public class RobotContainer {
                 .whenHeld(new ForceSetPosition(turret, vision, new Rotation2d()));
 
         // Vomit
-        new JoystickButton(gamepad, Button.kX.value)
+        /*new JoystickButton(gamepad, Button.kX.value)
                 .whenPressed(rotationArms.moveToIntake()
                         .alongWith(new InstantCommand(() -> intakeWheels.setPercent(1.0))
                         .alongWith(new InstantCommand(() -> tower.setConveyorPercent(-0.5))
@@ -268,7 +269,9 @@ public class RobotContainer {
                 .whenReleased(rotationArms.moveToStow()
                         .alongWith(new InstantCommand(() -> intakeWheels.setPercent(0))
                         .alongWith(new InstantCommand(() -> tower.setConveyorPercent(0))
-                        .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(0))))));
+                        .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(0))))));*/
+
+        
         
         // Calibrate Hood
         //new JoystickButton(gamepad, Button.kStart.value)

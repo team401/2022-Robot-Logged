@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.rotationarms.RotationArms;
 import frc.robot.subsystems.telescopes.TelescopesSubsystem;
@@ -21,6 +22,7 @@ public class ClimbSequence extends SequentialCommandGroup {
             // To High Bar
             .andThen(telescopes.moveToPop()) // Move the telescopes up a bit to clear them off the rung
             .andThen(telescopes.waitForMove())
+            .andThen(new WaitCommand(0.5))
             .andThen(rotationArms.moveToClimbSwing()) // Swing rotation arms to behind the high bar
             .andThen(rotationArms.waitForMove())
             .andThen(telescopes.moveToFull()) // Extend the telescopes to full
@@ -35,10 +37,11 @@ public class ClimbSequence extends SequentialCommandGroup {
             .andThen(telescopes.waitForMove()) //
             .andThen(rotationArms.moveToClimbGrab()) // Move the rotation arms to above the high bar
             .andThen(rotationArms.waitForMove())
-            .andThen(new WaitUntilCommand(() -> gamepad.getLeftBumperPressed())) // Wait for left bumper press to continue
             // To Traverse Bar
+            .andThen(new WaitUntilCommand(() -> gamepad.getLeftBumperPressed())) // Wait for left bumper press to continue
             .andThen(telescopes.moveToPop()) // Move the telescopes up a bit to clear them off the rung
             .andThen(telescopes.waitForMove())
+            .andThen(new WaitCommand(0.5))
             .andThen(rotationArms.moveToClimbSwing()) // Swing rotation arms to behind the high bar
             .andThen(rotationArms.waitForMove())
             .andThen(telescopes.moveToFull()) // Extend the telescopes to full

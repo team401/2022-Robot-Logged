@@ -150,20 +150,20 @@ public final class Constants {
         public static final double climbGrabPositionRad = Units.degreesToRadians(2);
         public static final double intakePositionRad = Units.degreesToRadians(25);
         public static final double climbSwingPositionRad = Units.degreesToRadians(30);
-        public static final double rotationLatchRad = Units.degreesToRadians(17.5);
+        public static final double rotationLatchRad = Units.degreesToRadians(22);
 
 
         public static final double telescopeHomePositionRad = Units.degreesToRadians(200);
         public static final double telescopePullPositionRad = Units.degreesToRadians(50);
         public static final double telescopeMaxPositionRad = Units.rotationsToRadians(14);
-        public static final double telescopePopAboveRungRad = Units.degreesToRadians(700);
+        public static final double telescopePopAboveRungRad = Units.degreesToRadians(950);
         public static final double telescopeLatchRad = Units.degreesToRadians(4750);
         public static final double telescopeRotationSafePositionRad = Units.degreesToRadians(2500);
 
 
         // Multipliers applied to encoders to account for inconsistent spooling
-        public static final double leftTelescopeMultiplier = 0.95;
-        public static final double rightTelescopeMultiplier = 1.0;
+        public static final double leftTelescopeMultiplier = 0.96;
+        public static final double rightTelescopeMultiplier = 0.95;
 
 
         public static final double telescopeCruiseVelocity = 4 * 2 * Math.PI;
@@ -171,7 +171,7 @@ public final class Constants {
 
         // measured offsets
         public static final double leftRotationOffset = 4.9055763070348295;
-        public static final double rightRotationOffset = 5.908454955133876 - 0.165;
+        public static final double rightRotationOffset = 5.908454955133876 - 0.165 - 0.03;
 
         //vertical conversion from rotations
         public static final double linearConversion = 0.625 * Math.PI;
@@ -186,7 +186,7 @@ public final class Constants {
         public static TunableNumber telescopeArmKp = new TunableNumber("TelescopeArm/Kp");
         public static TunableNumber telescopeArmKd = new TunableNumber("TelescopeArm/Kd");
 
-        public static final double telescopeHomingThresholdRadPerS = Units.degreesToRadians(10);
+        public static final double telescopeHomingThresholdRadPerS = 1;//Units.degreesToRadians(10);
         public static final double telescopeHomingTimeS = 0.5;
         public static final double telescopeHomingVolts = -4;
 

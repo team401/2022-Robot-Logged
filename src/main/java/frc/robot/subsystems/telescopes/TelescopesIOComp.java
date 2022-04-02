@@ -23,7 +23,7 @@ public class TelescopesIOComp implements TelescopesIO {
         rightMotor = new CANSparkMax(CANDevices.rightTelescopingMotorID, MotorType.kBrushed);
 
         leftMotor.setInverted(false);
-        rightMotor.setInverted(false);
+        rightMotor.setInverted(true);
 
         leftEncoder = leftMotor.getEncoder(Type.kQuadrature, 4096);
         rightEncoder = rightMotor.getEncoder(Type.kQuadrature, 4096);

@@ -42,8 +42,8 @@ public class TelescopesSubsystem extends SubsystemBase {
         leftController.setGoal(ClimberConstants.telescopeHomePositionRad);
         rightController.setGoal(ClimberConstants.telescopeHomePositionRad);
 
-        leftController.setTolerance(Units.degreesToRadians(50.0));
-        rightController.setTolerance(Units.degreesToRadians(50.0));
+        leftController.setTolerance(Units.degreesToRadians(200.0));
+        rightController.setTolerance(Units.degreesToRadians(200.0));
     }
 
     @Override
