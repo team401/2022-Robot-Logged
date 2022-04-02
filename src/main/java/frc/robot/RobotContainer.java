@@ -258,7 +258,11 @@ public class RobotContainer {
 
         // Center Turret
         new JoystickButton(gamepad, Button.kA.value)
-                .whenHeld(new ForceSetPosition(turret, vision, new Rotation2d()));
+                .whenPressed(new InstantCommand(() -> turret.setZeroOverride(true)))
+                .whenReleased(new InstantCommand(() -> turret.setZeroOverride(false)));
+                //.whenHeld(new ForceSetPosition(turret, vision, new Rotation2d()));
+
+                
 
         // Vomit
         /*new JoystickButton(gamepad, Button.kX.value)

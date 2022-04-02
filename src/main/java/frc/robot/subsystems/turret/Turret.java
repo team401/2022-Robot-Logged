@@ -22,8 +22,8 @@ public class Turret extends SubsystemBase {
 
     private double encoderOffset = 0;
     private int setupCycleCount = 0;
-
-    //private boolean hasReset = false;
+    
+    private boolean zeroOverride = false;
 
     public Turret(TurretIO io) {
         this.io = io;
@@ -70,7 +70,7 @@ public class Turret extends SubsystemBase {
         Logger.getInstance().recordOutput("Turret/VelocityFFDegPerSec", Units.radiansToDegrees(velocityGoal));
 
         //PID control - equivalent of our old setdesiredpositionclosedloop methods continuously
-        double output = positionController.calculate(turretRotation, goalPosition.getRadians());
+        double output = positionController.calculate(turretRotation, zeroOverride ? 0 : goalPosition.getRadians());
         // Only add feed velocity if we are not at our hard stops
         if (goalPosition.getRadians() > TurretConstants.turretLimitLower && goalPosition.getRadians() < TurretConstants.turretLimitUpper) {
             output += TurretConstants.turretModel.calculate(velocityGoal);
@@ -109,18 +109,11 @@ public class Turret extends SubsystemBase {
     public boolean atGoal() {
 
         return positionController.atSetpoint();
-        //return Math.abs(inputs.positionRad-goalPosition.getRadians()) < Units.degreesToRadians(1);
 
     }
 
-    /*public void reset() {
-
-        if (!hasReset) {
-            io.resetEncoder();
-            encoderOffset = MathUtil.angleModulus(inputs.absolutePositionRad);
-            hasReset = true;
-        }
-
-    }*/
+    public void setZeroOverride(boolean zero) {
+        zeroOverride = zero;
+    }
 
 }
