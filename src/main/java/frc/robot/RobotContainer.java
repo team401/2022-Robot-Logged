@@ -17,8 +17,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.POVButton;
+import edu.wpi.first.wpilibj2.command.button.*;
+
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.DriveConstants;
@@ -61,6 +61,7 @@ public class RobotContainer {
     private final Joystick leftStick = new Joystick(0);
     private final Joystick rightStick = new Joystick(1);
     private final XboxController gamepad = new XboxController(2);
+    private final HumanControllers humanControllers = new HumanControllers(leftStick, rightStick, gamepad);
 
     private final DriveWithJoysticks driveWithJoysticks;
 
@@ -236,12 +237,19 @@ public class RobotContainer {
         /*SHOOTING BUTTONS*/ 
         
         // Prepare to shoot
-        new JoystickButton(gamepad, Button.kRightBumper.value)
-                .whenHeld(new PrepareToShoot(shooter));
+        //new JoystickButton(gamepad, Button.kRightBumper.value)
+                //.whenHeld(new PrepareToShoot(shooter));
                         
         // Shoot
         new JoystickButton(gamepad, Button.kY.value)
                 .whenHeld(new Shoot(tower, shooter));
+
+        new Trigger(() -> (gamepad.getRightTriggerAxis() > 0.3))
+                .whenActive(new PrepareToShoot(shooter))
+                .whenInactive(new InstantCommand(() -> shooter.stopShooter(), shooter));
+
+        //new JoystickButton(gamepad, humanControllers.getRightTriggerValue())
+                //.whenHeld(new PrepareToShoot(shooter));
 
         // Shooter RPM Offset (Makes minor adjustments during a game)
         new JoystickButton(leftStick, 3)
@@ -262,8 +270,7 @@ public class RobotContainer {
                 .whenReleased(new InstantCommand(() -> turret.setZeroOverride(false)));
                 //.whenHeld(new ForceSetPosition(turret, vision, new Rotation2d()));
 
-                
-
+        
         // Vomit
         /*new JoystickButton(gamepad, Button.kX.value)
                 .whenPressed(rotationArms.moveToIntake()
@@ -274,8 +281,6 @@ public class RobotContainer {
                         .alongWith(new InstantCommand(() -> intakeWheels.setPercent(0))
                         .alongWith(new InstantCommand(() -> tower.setConveyorPercent(0))
                         .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(0))))));*/
-
-        
         
         // Calibrate Hood
         //new JoystickButton(gamepad, Button.kStart.value)
@@ -284,6 +289,10 @@ public class RobotContainer {
         // Kill arms
         //new JoystickButton(gamepad, Button.kLeftBumper.value)
                 //.whenPressed(new InstantCommand(() -> rotationArms.kill()));
+
+        // Stop Climb Sequence
+        new JoystickButton(leftStick, 11)
+                .whenPressed(new InstantCommand(() -> telescopes.setVoltage(0), telescopes));
 
     }
 

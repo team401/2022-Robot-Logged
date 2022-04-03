@@ -13,6 +13,8 @@ public class ClimbSequence extends SequentialCommandGroup {
 
     public ClimbSequence(TelescopesSubsystem telescopes, RotationArms rotationArms, XboxController gamepad) {
 
+        addRequirements(telescopes, rotationArms);
+
         addCommands( 
             // To Mid Bar
             telescopes.moveToPull().alongWith(rotationArms.moveToStow()) // Start moving hooks down and make sure rotation arms are out of the way

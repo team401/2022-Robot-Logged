@@ -5,10 +5,16 @@ import edu.wpi.first.wpilibj.XboxController;
 
 public class HumanControllers {
     
-    private final Joystick leftStick = new Joystick(0);
-    private final Joystick rightStick = new Joystick(1);
-    private final XboxController gamepad = new XboxController(2);
+    private final Joystick leftStick;
+    private final Joystick rightStick;
+    private final XboxController gamepad;
 
+    public HumanControllers(Joystick left, Joystick right, XboxController gamepad) {
+
+        this.leftStick = left;
+        this.rightStick = right;
+        this.gamepad = gamepad;
+    }
 
     public int getRightTriggerValue() {
 

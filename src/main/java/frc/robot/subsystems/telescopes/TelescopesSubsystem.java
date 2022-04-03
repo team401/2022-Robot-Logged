@@ -140,6 +140,11 @@ public class TelescopesSubsystem extends SubsystemBase {
                 ioInputs.leftPositionRad <= ClimberConstants.telescopeRotationSafePositionRad;
     }
 
+    public void setVoltage(double volts) {
+        io.setLeftVolts(volts);
+        io.setRightVolts(volts);
+    }
+
     // Commands
     public final Command waitForMove() { return new WaitUntilCommand(this::atGoal); }
     public final Command waitForRotationSafePosition() { return new WaitUntilCommand(this::passedRotationSafePosition); }
@@ -150,7 +155,7 @@ public class TelescopesSubsystem extends SubsystemBase {
     public final Command moveToPull() { return new InstantCommand(() -> setDesiredPosition(ClimberConstants.telescopePullPositionRad), this); }
 
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         Pose2d fieldToVehicle = new Pose2d(10, 10, Rotation2d.fromDegrees(90));
         Pose2d fieldToTarget = new Pose2d(5, 1, new Rotation2d());
 
@@ -162,6 +167,6 @@ public class TelescopesSubsystem extends SubsystemBase {
         Twist2d velocity = new Twist2d(0.0, 10.0, 0.0);
 
         System.out.println(velocity.dx * vehicleToTargetDirection.getSin() - velocity.dy * vehicleToTargetDirection.getCos());
-    }
+    }*/
 
 }
