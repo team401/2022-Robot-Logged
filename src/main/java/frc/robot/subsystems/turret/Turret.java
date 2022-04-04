@@ -38,6 +38,7 @@ public class Turret extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.getInstance().processInputs("Turret", inputs);
 
+        
         if (setupCycleCount == TurretConstants.setupCycleCount) {
             io.resetEncoder();
             encoderOffset = MathUtil.angleModulus(inputs.absolutePositionRad);
@@ -46,25 +47,26 @@ public class Turret extends SubsystemBase {
         else {
             setupCycleCount++;
         }
-
+        
         if (!DriverStation.isEnabled()) {
             io.setNeutralMode(NeutralMode.Coast);
         }
         else {
             io.setNeutralMode(NeutralMode.Brake);
         }
-
+        
         // Update gains if they have changed
         if (TurretConstants.positionKp.hasChanged() || TurretConstants.positionKd.hasChanged()) {
             positionController.setP(TurretConstants.positionKp.get());
             positionController.setD(TurretConstants.positionKd.get());
         }
-
+        
         if (TurretConstants.velocityKp.hasChanged() || TurretConstants.velocityKd.hasChanged()) {
             io.setVelocityPD(TurretConstants.velocityKp.get(), TurretConstants.velocityKd.get());
         }
-
+        
         double turretRotation = inputs.positionRad + encoderOffset;
+        Logger.getInstance().recordOutput("Turret/Beyond Boundaries", Math.abs(turretRotation) > TurretConstants.turretLimitUpper);
         Logger.getInstance().recordOutput("Turret/RotationDeg", Units.radiansToDegrees(turretRotation));
         Logger.getInstance().recordOutput("Turret/SetpointDeg", goalPosition.getDegrees());
         Logger.getInstance().recordOutput("Turret/VelocityFFDegPerSec", Units.radiansToDegrees(velocityGoal));
@@ -76,7 +78,7 @@ public class Turret extends SubsystemBase {
             output += TurretConstants.turretModel.calculate(velocityGoal);
         }
         Logger.getInstance().recordOutput("Turret/Output", output);
-        if (setupCycleCount > TurretConstants.setupCycleCount) {}
+        if (setupCycleCount > TurretConstants.setupCycleCount)
             io.setVoltage(output);
 
         RobotState.getInstance().recordTurretObservations(new Rotation2d(turretRotation), inputs.velocityRadPerS);

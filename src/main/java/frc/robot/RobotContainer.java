@@ -61,7 +61,6 @@ public class RobotContainer {
     private final Joystick leftStick = new Joystick(0);
     private final Joystick rightStick = new Joystick(1);
     private final XboxController gamepad = new XboxController(2);
-    private final HumanControllers humanControllers = new HumanControllers(leftStick, rightStick, gamepad);
 
     private final DriveWithJoysticks driveWithJoysticks;
 
@@ -114,11 +113,6 @@ public class RobotContainer {
         configureButtonBindings();
 
         /*
-        TODO (Before comp): 
-        fix telescopes after homing
-        full systems test
-        play a few practice teleop matches to see if anything breaks
-
         TODO (After comp):
         increase rotation speed when climbing
         turret max rotation
@@ -237,16 +231,16 @@ public class RobotContainer {
         /*SHOOTING BUTTONS*/ 
         
         // Prepare to shoot
-        //new JoystickButton(gamepad, Button.kRightBumper.value)
-                //.whenHeld(new PrepareToShoot(shooter));
+        new JoystickButton(gamepad, Button.kRightBumper.value)
+                .whenHeld(new PrepareToShoot(shooter));
                         
         // Shoot
         new JoystickButton(gamepad, Button.kY.value)
                 .whenHeld(new Shoot(tower, shooter));
 
-        new Trigger(() -> (gamepad.getRightTriggerAxis() > 0.3))
+        /*new Trigger(() -> (gamepad.getRightTriggerAxis() > 0.3))
                 .whenActive(new PrepareToShoot(shooter))
-                .whenInactive(new InstantCommand(() -> shooter.stopShooter(), shooter));
+                .whenInactive(new InstantCommand(() -> shooter.stopShooter(), shooter));*/
 
         //new JoystickButton(gamepad, humanControllers.getRightTriggerValue())
                 //.whenHeld(new PrepareToShoot(shooter));
@@ -270,7 +264,20 @@ public class RobotContainer {
                 .whenReleased(new InstantCommand(() -> turret.setZeroOverride(false)));
                 //.whenHeld(new ForceSetPosition(turret, vision, new Rotation2d()));
 
-        
+        new Trigger(() -> (gamepad.getRightTriggerAxis() > 0.3))
+                .whenActive(rotationArms.moveToIntake()
+                        .alongWith(new InstantCommand(() -> intakeWheels.setPercent(1.0))
+                        .alongWith(new InstantCommand(() -> tower.setConveyorPercent(-0.5))
+                        .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(-0.5))))))
+                .whenInactive(rotationArms.moveToIntake()
+                        .alongWith(new InstantCommand(() -> intakeWheels.setPercent(0.0))
+                        .alongWith(new InstantCommand(() -> tower.setConveyorPercent(0.0))
+                        .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(0.0))))));
+
+        new Trigger(() -> (gamepad.getLeftTriggerAxis() > 0.3))
+                .whenActive(new InstantCommand(() -> rotationArms.home())
+                                .alongWith(new InstantCommand(() -> telescopes.home())));
+
         // Vomit
         /*new JoystickButton(gamepad, Button.kX.value)
                 .whenPressed(rotationArms.moveToIntake()

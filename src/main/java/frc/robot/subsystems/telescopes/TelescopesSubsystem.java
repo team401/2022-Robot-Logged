@@ -145,6 +145,12 @@ public class TelescopesSubsystem extends SubsystemBase {
         io.setRightVolts(volts);
     }
 
+    public void home() {
+        homed = false;
+        homeTimer.reset();
+        homeTimer.start();
+    }
+
     // Commands
     public final Command waitForMove() { return new WaitUntilCommand(this::atGoal); }
     public final Command waitForRotationSafePosition() { return new WaitUntilCommand(this::passedRotationSafePosition); }

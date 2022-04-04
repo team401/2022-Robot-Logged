@@ -186,6 +186,12 @@ public class RotationArms extends SubsystemBase {
         return leftController.getGoal().position;
     }
 
+    public void home() {
+        homed = false;
+        homeTimer.reset();
+        homeTimer.start();
+    }
+
 
     // Commands
     public final Command waitForMove() { return new WaitUntilCommand(this::atGoal); }
