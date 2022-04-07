@@ -38,8 +38,8 @@ public class AutoRoutines extends SequentialCommandGroup {
             rotationArms.moveToIntake(),
             rotationArms.waitForMove(),
             new Intake(tower, intake, rotationArms)
-                .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[0], true)),
-            //new ForceSetPosition(turret, vision, new Rotation2d()).withTimeout(0.5),
+                .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[0], true)
+                    .andThen(new WaitCommand(0.25))),
             new InstantCommand(() -> vision.turnOnLeds()),
             new Shoot(tower, shooter).withTimeout(1.5)
         );
@@ -53,7 +53,8 @@ public class AutoRoutines extends SequentialCommandGroup {
         if (pathPlan == Paths.ThreeBallRight || pathPlan == Paths.FiveBallRight) {
             sequentialCommands.addCommands(
                 new Intake(tower, intake, rotationArms)
-                    .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[1], false)),
+                    .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[1], false)
+                        .andThen(new WaitCommand(0.25))),
                 new Shoot(tower, shooter).withTimeout(1.5)
             );
         }
