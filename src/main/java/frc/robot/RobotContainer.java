@@ -101,7 +101,8 @@ public class RobotContainer {
                 drive,
                 () -> -leftStick.getRawAxis(1),
                 () -> -leftStick.getRawAxis(0),
-                () -> -rightStick.getRawAxis(0)
+                () -> -rightStick.getRawAxis(0),
+                true
         );
 
         // set default commands
@@ -167,9 +168,14 @@ public class RobotContainer {
 
         SmartDashboard.putBoolean("Homed", false);
 
+        SmartDashboard.putNumber("Desired RPM Test", 0);
+        SmartDashboard.putNumber("Desired Hood Test", 0.27);
+
     }
 
     private void configureButtonBindings() {
+
+        // intake cam http://wpilibpi.local:1181/stream.mjpg
 
         /*CLIMBING BUTTONS*/ 
 
@@ -264,30 +270,21 @@ public class RobotContainer {
                 .whenReleased(new InstantCommand(() -> turret.setZeroOverride(false)));
                 //.whenHeld(new ForceSetPosition(turret, vision, new Rotation2d()));
 
+        // Vomit
         new Trigger(() -> (gamepad.getRightTriggerAxis() > 0.3))
                 .whenActive(rotationArms.moveToIntake()
                         .alongWith(new InstantCommand(() -> intakeWheels.setPercent(1.0))
                         .alongWith(new InstantCommand(() -> tower.setConveyorPercent(-0.5))
                         .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(-0.5))))))
-                .whenInactive(rotationArms.moveToIntake()
+                .whenInactive(rotationArms.moveToStow()
                         .alongWith(new InstantCommand(() -> intakeWheels.setPercent(0.0))
                         .alongWith(new InstantCommand(() -> tower.setConveyorPercent(0.0))
                         .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(0.0))))));
 
+        // Home
         new Trigger(() -> (gamepad.getLeftTriggerAxis() > 0.3))
                 .whenActive(new InstantCommand(() -> rotationArms.home())
                                 .alongWith(new InstantCommand(() -> telescopes.home())));
-
-        // Vomit
-        /*new JoystickButton(gamepad, Button.kX.value)
-                .whenPressed(rotationArms.moveToIntake()
-                        .alongWith(new InstantCommand(() -> intakeWheels.setPercent(1.0))
-                        .alongWith(new InstantCommand(() -> tower.setConveyorPercent(-0.5))
-                        .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(-0.5))))))
-                .whenReleased(rotationArms.moveToStow()
-                        .alongWith(new InstantCommand(() -> intakeWheels.setPercent(0))
-                        .alongWith(new InstantCommand(() -> tower.setConveyorPercent(0))
-                        .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(0))))));*/
         
         // Calibrate Hood
         //new JoystickButton(gamepad, Button.kStart.value)
@@ -300,6 +297,42 @@ public class RobotContainer {
         // Stop Climb Sequence
         new JoystickButton(leftStick, 11)
                 .whenPressed(new InstantCommand(() -> telescopes.setVoltage(0), telescopes));
+
+        // Manual Shooting
+        new JoystickButton(gamepad, Button.kStart.value)
+                .whenPressed(new InstantCommand(() -> shooter.setSetpoint(
+                        SmartDashboard.getNumber("Desired Hood Test", 0.27), 
+                        Units.rotationsPerMinuteToRadiansPerSecond(SmartDashboard.getNumber("Desired RPM Test", 0)))))
+                .whenReleased(new InstantCommand(() -> shooter.stopShooter()));
+
+        new JoystickButton(leftStick, Joystick.ButtonType.kTrigger.value)
+                .whenHeld(new DriveWithJoysticks(
+                        drive,
+                        () -> -leftStick.getRawAxis(1),
+                        () -> -leftStick.getRawAxis(0),
+                        () -> -rightStick.getRawAxis(0),
+                        false
+                ));
+
+        /*new JoystickButton(leftStick, 7)
+                .whenPressed(new InstantCommand(() -> rotationArms.setLeftPercent(0.25), rotationArms))
+                .whenReleased(new InstantCommand(() -> rotationArms.setLeftPercent(0), rotationArms));
+        
+        new JoystickButton(leftStick, 9)
+                .whenPressed(new InstantCommand(() -> rotationArms.setLeftPercent(-0.25), rotationArms))
+                .whenReleased(new InstantCommand(() -> rotationArms.setLeftPercent(0), rotationArms));
+
+
+        new JoystickButton(leftStick, 6)
+                .whenPressed(new InstantCommand(() -> rotationArms.setRightPercent(0.25), rotationArms))
+                .whenReleased(new InstantCommand(() -> rotationArms.setRightPercent(0), rotationArms));
+
+        new JoystickButton(leftStick, 10)
+                .whenPressed(new InstantCommand(() -> rotationArms.setRightPercent(0.25), rotationArms))
+                .whenReleased(new InstantCommand(() -> rotationArms.setRightPercent(0), rotationArms));
+
+        new JoystickButton(rightStick, 5)
+                .whenPressed(new InstantCommand(() -> rotationArms.setZero()));*/
 
     }
 

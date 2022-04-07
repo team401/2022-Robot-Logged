@@ -20,17 +20,19 @@ public class DriveWithJoysticks extends CommandBase {
   private final DoubleSupplier xPercent;
   private final DoubleSupplier yPercent;
   private final DoubleSupplier omegaPercent;
+  private final boolean fieldRelative;
 
   private final AxisProcessor xProcessor = new AxisProcessor(false);
   private final AxisProcessor yProcessor = new AxisProcessor(false);
   private final AxisProcessor omegaProcessor = new AxisProcessor(true);
 
   /** Creates a new DriveWithJoysticks. */
-  public DriveWithJoysticks(Drive drive, DoubleSupplier xPercent, DoubleSupplier yPercent, DoubleSupplier omegaPercent) {
+  public DriveWithJoysticks(Drive drive, DoubleSupplier xPercent, DoubleSupplier yPercent, DoubleSupplier omegaPercent, boolean fieldRelative) {
     this.drive = drive;
     this.xPercent = xPercent;
     this.yPercent = yPercent;
     this.omegaPercent = omegaPercent;
+    this.fieldRelative = fieldRelative;
 
     addRequirements(drive);
   }
@@ -54,11 +56,11 @@ public class DriveWithJoysticks extends CommandBase {
     Logger.getInstance().recordOutput("DriveWithJoysticks/OmegaRadPerS", omegaRadPerS);
 
     //Convert to field relative speeds
-    ChassisSpeeds targetSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xMPerS, yMPerS, omegaRadPerS, RobotState.getInstance().getLatestFieldToVehicle().getRotation());
-    //ChassisSpeeds targetSpeeds = new ChassisSpeeds(xMPerS, yMPerS, omegaRadPerS);
+    ChassisSpeeds targetSpeeds = fieldRelative
+      ? ChassisSpeeds.fromFieldRelativeSpeeds(xMPerS, yMPerS, omegaRadPerS, RobotState.getInstance().getLatestFieldToVehicle().getRotation()) 
+      : new ChassisSpeeds(xMPerS, yMPerS, omegaRadPerS);
 
     drive.setGoalChassisSpeeds(targetSpeeds);
-
   }
 
   // Called once the command ends or is interrupted.

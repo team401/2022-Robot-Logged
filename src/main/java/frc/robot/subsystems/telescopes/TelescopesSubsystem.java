@@ -122,12 +122,12 @@ public class TelescopesSubsystem extends SubsystemBase {
     }
 
     public void jogUp() {
-        goalPositionRad += 0.02 * ClimberConstants.telescopeCruiseVelocity;
+        goalPositionRad += 0.02 * ClimberConstants.telescopeCruiseVelocity * 2;
         if (goalPositionRad > ClimberConstants.telescopeMaxPositionRad) goalPositionRad = ClimberConstants.telescopeMaxPositionRad;
     }
 
     public void jogDown() {
-        goalPositionRad -= 0.02 * ClimberConstants.telescopeCruiseVelocity;
+        goalPositionRad -= 0.02 * ClimberConstants.telescopeCruiseVelocity * 2;
         if (goalPositionRad < ClimberConstants.telescopeHomePositionRad) goalPositionRad = ClimberConstants.telescopeHomePositionRad;
     }
 

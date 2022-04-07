@@ -192,6 +192,15 @@ public class RotationArms extends SubsystemBase {
         homeTimer.start();
     }
 
+    public void setZero() {
+        io.resetEncoder();
+        io.setLeftVolts(0);
+        io.setRightVolts(0);
+       
+        leftController.reset(ioInputs.leftPositionRad);
+        rightController.reset(ioInputs.rightPositionRad);
+    }
+
 
     // Commands
     public final Command waitForMove() { return new WaitUntilCommand(this::atGoal); }
