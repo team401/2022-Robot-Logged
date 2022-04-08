@@ -65,9 +65,9 @@ public final class Constants {
         public static final int leftRotationArmEncoder = 2;
         public static final int rightRotationArmEncoder = 3;
 
-        public static final int turretEncoderPulse = 4;
-        public static final int turretEncoderA = 5;
-        public static final int turretEncoderB = 6;
+        public static final int turretEncoderPulse = 7;
+        public static final int turretEncoderA = 8;
+        public static final int turretEncoderB = 9;
 
     }
     
@@ -162,8 +162,8 @@ public final class Constants {
 
 
         // Multipliers applied to encoders to account for inconsistent spooling
-        public static final double leftTelescopeMultiplier = 1.04;
-        public static final double rightTelescopeMultiplier = 1.00;
+        public static final double leftTelescopeMultiplier = 1.00;
+        public static final double rightTelescopeMultiplier = 1.05;
 
 
         public static final double telescopeCruiseVelocity = 4 * 2 * Math.PI;

@@ -122,12 +122,12 @@ public class TelescopesSubsystem extends SubsystemBase {
     }
 
     public void jogUp() {
-        goalPositionRad += 0.02 * ClimberConstants.telescopeCruiseVelocity * 2;
+        goalPositionRad += 0.02 * ClimberConstants.telescopeCruiseVelocity;
         if (goalPositionRad > ClimberConstants.telescopeMaxPositionRad) goalPositionRad = ClimberConstants.telescopeMaxPositionRad;
     }
 
     public void jogDown() {
-        goalPositionRad -= 0.02 * ClimberConstants.telescopeCruiseVelocity * 2;
+        goalPositionRad -= 0.02 * ClimberConstants.telescopeCruiseVelocity;
         if (goalPositionRad < ClimberConstants.telescopeHomePositionRad) goalPositionRad = ClimberConstants.telescopeHomePositionRad;
     }
 
@@ -149,6 +149,10 @@ public class TelescopesSubsystem extends SubsystemBase {
         homed = false;
         homeTimer.reset();
         homeTimer.start();
+    }
+
+    public void stop() {
+        setDesiredPosition(ioInputs.leftPositionRad);
     }
 
     // Commands

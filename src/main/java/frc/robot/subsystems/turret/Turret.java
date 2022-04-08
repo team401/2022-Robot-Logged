@@ -5,6 +5,9 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -22,6 +25,10 @@ public class Turret extends SubsystemBase {
 
     private double encoderOffset = 0;
     private int setupCycleCount = 0;
+
+    private boolean killed = false;
+    private double lastUpdateValue = 0;
+    private Timer lastUpdateTimer = new Timer();
     
     private boolean zeroOverride = false;
 
@@ -43,6 +50,9 @@ public class Turret extends SubsystemBase {
             io.resetEncoder();
             encoderOffset = MathUtil.angleModulus(inputs.absolutePositionRad);
             setupCycleCount++;
+            lastUpdateTimer.reset();
+            lastUpdateTimer.start();
+            lastUpdateValue = inputs.positionRad + encoderOffset;
         }
         else {
             setupCycleCount++;
@@ -70,6 +80,17 @@ public class Turret extends SubsystemBase {
         Logger.getInstance().recordOutput("Turret/RotationDeg", Units.radiansToDegrees(turretRotation));
         Logger.getInstance().recordOutput("Turret/SetpointDeg", goalPosition.getDegrees());
         Logger.getInstance().recordOutput("Turret/VelocityFFDegPerSec", Units.radiansToDegrees(velocityGoal));
+        Logger.getInstance().recordOutput("Turret/Killed", killed);
+        SmartDashboard.putNumber("Turret Rotation", turretRotation);
+
+        if (turretRotation != lastUpdateValue) {
+            lastUpdateTimer.reset();
+            lastUpdateTimer.start();
+        }
+        lastUpdateValue = turretRotation;
+
+        //if (lastUpdateTimer.get() > 0.25 || Math.abs(turretRotation) > TurretConstants.turretLimitUpper + Math.PI/2)// && DriverStation.isEnabled()
+            //killed = true;
 
         //PID control - equivalent of our old setdesiredpositionclosedloop methods continuously
         double output = positionController.calculate(turretRotation, zeroOverride ? 0 : goalPosition.getRadians());
@@ -78,7 +99,7 @@ public class Turret extends SubsystemBase {
             output += TurretConstants.turretModel.calculate(velocityGoal);
         }
         Logger.getInstance().recordOutput("Turret/Output", output);
-        if (setupCycleCount > TurretConstants.setupCycleCount)
+        if (setupCycleCount > TurretConstants.setupCycleCount && !killed)
             io.setVoltage(output);
 
         RobotState.getInstance().recordTurretObservations(new Rotation2d(turretRotation), inputs.velocityRadPerS);
@@ -116,6 +137,14 @@ public class Turret extends SubsystemBase {
 
     public void setZeroOverride(boolean zero) {
         zeroOverride = zero;
+    }
+
+    public void kill() {
+        killed = true;
+    }
+
+    public void unkill() {
+        killed = false;
     }
 
 }

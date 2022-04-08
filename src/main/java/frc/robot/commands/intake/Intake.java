@@ -60,7 +60,7 @@ public class Intake extends CommandBase {
 
         if (!rotationArms.getKilled() && rotationArms.atGoal() && rotationArms.getGoal() == ClimberConstants.intakePositionRad) {
 
-            //Need to add ir sensing, should have a (mostly) constant value for no ball, need to check if there is a ball before everything else
+            /*//Need to add ir sensing, should have a (mostly) constant value for no ball, need to check if there is a ball before everything else
             boolean wrongBall = false;//(tower.getDetectedColor().red > 60 && DriverStation.getAlliance() == Alliance.Blue) ||
                                 //(tower.getDetectedColor().red < 5 && DriverStation.getAlliance() == Alliance.Red);
 
@@ -68,7 +68,6 @@ public class Intake extends CommandBase {
                 reverseTimer.reset();
                 reverseTimer.start();
             }
-
             if (reverseTimer.get() > 0 && reverseTimer.get() < 50) {
                 tower.setConveyorPercent(-BallConstants.towerPower);
                 tower.setIndexWheelsPercent(-BallConstants.towerPower);
@@ -82,7 +81,13 @@ public class Intake extends CommandBase {
                 tower.setIndexWheelsPercent(BallConstants.towerPower);
                 intake.setPercent(BallConstants.intakePower.get());
 
-            }
+            }*/
+
+            if (!tower.getTopSensor()) tower.setConveyorPercent(BallConstants.towerPower);
+            else tower.setConveyorPercent(0.0);
+    
+            tower.setIndexWheelsPercent(BallConstants.towerPower);
+            intake.setPercent(BallConstants.intakePower.get());
 
         } else {
             intake.setPercent(0);

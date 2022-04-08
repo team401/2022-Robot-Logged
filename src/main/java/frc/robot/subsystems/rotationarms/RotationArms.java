@@ -213,12 +213,18 @@ public class RotationArms extends SubsystemBase {
 
     public void overrideLeftPercent(double percent) {
         setLeftPercent(percent);
+        SmartDashboard.putNumber("Left Percent", percent);
         leftOverride = true;
     }
 
     public void overrideRightPercent(double percent) {
         setRightPercent(percent);
+        SmartDashboard.putNumber("Right Percent", percent);
         rightOverride = true;
+    }
+
+    public void stop() {
+        setDesiredPosition(ioInputs.leftPositionRad);
     }
 
 
