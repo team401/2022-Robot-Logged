@@ -314,25 +314,25 @@ public class RobotContainer {
                         false
                 ));
 
-        /*new JoystickButton(leftStick, 7)
-                .whenPressed(new InstantCommand(() -> rotationArms.setLeftPercent(0.25), rotationArms))
-                .whenReleased(new InstantCommand(() -> rotationArms.setLeftPercent(0), rotationArms));
+        // Rotation Arm Overrides
+        new JoystickButton(leftStick, 7)
+                .whenPressed(new InstantCommand(() -> rotationArms.overrideLeftPercent(0.25), rotationArms))
+                .whenReleased(new InstantCommand(() -> rotationArms.overrideLeftPercent(0), rotationArms));
         
         new JoystickButton(leftStick, 9)
-                .whenPressed(new InstantCommand(() -> rotationArms.setLeftPercent(-0.25), rotationArms))
-                .whenReleased(new InstantCommand(() -> rotationArms.setLeftPercent(0), rotationArms));
-
+                .whenPressed(new InstantCommand(() -> rotationArms.overrideLeftPercent(-0.25), rotationArms))
+                .whenReleased(new InstantCommand(() -> rotationArms.overrideLeftPercent(0), rotationArms));
 
         new JoystickButton(leftStick, 6)
-                .whenPressed(new InstantCommand(() -> rotationArms.setRightPercent(0.25), rotationArms))
-                .whenReleased(new InstantCommand(() -> rotationArms.setRightPercent(0), rotationArms));
+                .whenPressed(new InstantCommand(() -> rotationArms.overrideRightPercent(0.25), rotationArms))
+                .whenReleased(new InstantCommand(() -> rotationArms.overrideRightPercent(0), rotationArms));
 
         new JoystickButton(leftStick, 10)
-                .whenPressed(new InstantCommand(() -> rotationArms.setRightPercent(0.25), rotationArms))
-                .whenReleased(new InstantCommand(() -> rotationArms.setRightPercent(0), rotationArms));
+                .whenPressed(new InstantCommand(() -> rotationArms.overrideRightPercent(-0.25), rotationArms))
+                .whenReleased(new InstantCommand(() -> rotationArms.overrideRightPercent(0), rotationArms));
 
         new JoystickButton(rightStick, 5)
-                .whenPressed(new InstantCommand(() -> rotationArms.setZero()));*/
+                .whenPressed(new InstantCommand(() -> rotationArms.setZero()));
 
     }
 

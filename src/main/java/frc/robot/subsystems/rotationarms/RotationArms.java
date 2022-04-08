@@ -39,6 +39,9 @@ public class RotationArms extends SubsystemBase {
     private boolean homed = false;
     private boolean hasReset = false;
 
+    private boolean leftOverride = false;
+    private boolean rightOverride = false;
+
     private double leftLastPositionRad = 0;
     private double rightLastPositionRad = 0;
 
@@ -126,13 +129,17 @@ public class RotationArms extends SubsystemBase {
                 double rightOutput = rightController.calculate(rightMod);
                 Logger.getInstance().recordOutput("RotationArms/RightOutput", rightOutput);
     
-                io.setLeftVolts(leftOutput);
-                io.setRightVolts(rightOutput);
+                if (!leftOverride)
+                    io.setLeftVolts(leftOutput);
+                if (!rightOverride)
+                    io.setRightVolts(rightOutput);
     
       
             } else {
-                io.setLeftVolts(0);
-                io.setRightVolts(0);
+                if (!leftOverride)
+                    io.setLeftVolts(0);
+                if (!rightOverride)
+                    io.setRightVolts(0);
             }
 
         }
@@ -199,6 +206,19 @@ public class RotationArms extends SubsystemBase {
        
         leftController.reset(ioInputs.leftPositionRad);
         rightController.reset(ioInputs.rightPositionRad);
+
+        leftOverride = false;
+        rightOverride = false;
+    }
+
+    public void overrideLeftPercent(double percent) {
+        setLeftPercent(percent);
+        leftOverride = true;
+    }
+
+    public void overrideRightPercent(double percent) {
+        setRightPercent(percent);
+        rightOverride = true;
     }
 
 
