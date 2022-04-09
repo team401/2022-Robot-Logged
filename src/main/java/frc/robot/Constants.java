@@ -150,20 +150,21 @@ public final class Constants {
         public static final double climbGrabPositionRad = Units.degreesToRadians(2);
         public static final double intakePositionRad = Units.degreesToRadians(25);
         public static final double climbSwingPositionRad = Units.degreesToRadians(30);
-        public static final double rotationLatchRad = Units.degreesToRadians(22);
+        public static final double rotationLatchRad = Units.degreesToRadians(21);
 
 
         public static final double telescopeHomePositionRad = Units.degreesToRadians(200);
         public static final double telescopePullPositionRad = Units.degreesToRadians(50);
-        public static final double telescopeMaxPositionRad = Units.rotationsToRadians(15);
+        public static final double telescopeMaxPositionRad = Units.rotationsToRadians(15.5);
         public static final double telescopePopAboveRungRad = Units.degreesToRadians(950);
         public static final double telescopeLatchRad = Units.degreesToRadians(4750);
         public static final double telescopeRotationSafePositionRad = Units.degreesToRadians(2500);
 
 
         // Multipliers applied to encoders to account for inconsistent spooling
+        // multiplier backwards change pls
         public static final double leftTelescopeMultiplier = 1.00;
-        public static final double rightTelescopeMultiplier = 1.05;
+        public static final double rightTelescopeMultiplier = 0.95;
 
 
         public static final double telescopeCruiseVelocity = 4 * 2 * Math.PI;

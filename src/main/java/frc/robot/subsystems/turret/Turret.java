@@ -28,7 +28,8 @@ public class Turret extends SubsystemBase {
 
     private boolean killed = false;
     private double lastUpdateValue = 0;
-    private Timer lastUpdateTimer = new Timer();
+    //private Timer lastUpdateTimer = new Timer();
+    private long lastUpdateTimeMS = System.currentTimeMillis();
     
     private boolean zeroOverride = false;
 
@@ -38,20 +39,23 @@ public class Turret extends SubsystemBase {
         io.resetEncoder();
 
         positionController.setTolerance(Units.degreesToRadians(3));
+
+        lastUpdateTimeMS = System.currentTimeMillis();
+        //lastUpdateTimer.reset();
+        //lastUpdateTimer.stop();
     }
 
     @Override
     public void periodic() {
         io.updateInputs(inputs);
         Logger.getInstance().processInputs("Turret", inputs);
-
         
         if (setupCycleCount == TurretConstants.setupCycleCount) {
             io.resetEncoder();
             encoderOffset = MathUtil.angleModulus(inputs.absolutePositionRad);
             setupCycleCount++;
-            lastUpdateTimer.reset();
-            lastUpdateTimer.start();
+            //lastUpdateTimer.reset();
+            //lastUpdateTimer.start();
             lastUpdateValue = inputs.positionRad + encoderOffset;
         }
         else {
@@ -81,16 +85,21 @@ public class Turret extends SubsystemBase {
         Logger.getInstance().recordOutput("Turret/SetpointDeg", goalPosition.getDegrees());
         Logger.getInstance().recordOutput("Turret/VelocityFFDegPerSec", Units.radiansToDegrees(velocityGoal));
         Logger.getInstance().recordOutput("Turret/Killed", killed);
+        //Logger.getInstance().recordOutput("Turret/KillTimer", lastUpdateTimer.get());
         SmartDashboard.putNumber("Turret Rotation", turretRotation);
 
-        if (turretRotation != lastUpdateValue) {
-            lastUpdateTimer.reset();
-            lastUpdateTimer.start();
+        if (inputs.absolutePositionRad != lastUpdateValue) {
+            lastUpdateTimeMS = System.currentTimeMillis();
+            //lastUpdateTimer.reset();
+            //lastUpdateTimer.start();
         }
-        lastUpdateValue = turretRotation;
+        lastUpdateValue = inputs.absolutePositionRad;
 
-        //if (lastUpdateTimer.get() > 0.25 || Math.abs(turretRotation) > TurretConstants.turretLimitUpper + Math.PI/2)// && DriverStation.isEnabled()
-            //killed = true;
+        if (System.currentTimeMillis()-lastUpdateTimeMS > 500 && setupCycleCount > TurretConstants.setupCycleCount && DriverStation.isEnabled())//if (lastUpdateTimer.get() > 0.5)// && DriverStation.isEnabled())
+            killed = true;
+        
+        if (Math.abs(turretRotation) > TurretConstants.turretLimitUpper + Math.PI/2)
+            killed = true;
 
         //PID control - equivalent of our old setdesiredpositionclosedloop methods continuously
         double output = positionController.calculate(turretRotation, zeroOverride ? 0 : goalPosition.getRadians());
@@ -101,6 +110,8 @@ public class Turret extends SubsystemBase {
         Logger.getInstance().recordOutput("Turret/Output", output);
         if (setupCycleCount > TurretConstants.setupCycleCount && !killed)
             io.setVoltage(output);
+        else
+            io.setVoltage(0);
 
         RobotState.getInstance().recordTurretObservations(new Rotation2d(turretRotation), inputs.velocityRadPerS);
     }
@@ -145,6 +156,8 @@ public class Turret extends SubsystemBase {
 
     public void unkill() {
         killed = false;
+        io.resetEncoder();
+        encoderOffset = MathUtil.angleModulus(inputs.absolutePositionRad);
     }
 
 }

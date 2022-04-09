@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.ShooterConstants;
 
-import frc.robot.commands.shooter.Shoot;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -28,7 +27,7 @@ public class Shooter extends SubsystemBase {
     private final double flywheelToleranceRadPerS = Units.rotationsPerMinuteToRadiansPerSecond(150);
     private final double hoodToleranceRad = Units.rotationsToRadians(0.25);
 
-    private double rpmOffset = 0;
+    private double rpmOffset = 70;
 
     public Shooter(ShooterIO io) {
         this.io = io;
@@ -141,6 +140,10 @@ public class Shooter extends SubsystemBase {
 
     public void incrementRPMOffset(int offset) {
         rpmOffset += offset;
+    }
+
+    public void setHoodVoltage(int volts) {
+        io.setHoodVoltage(volts);
     }
     
 }

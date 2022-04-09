@@ -163,9 +163,14 @@ public class RobotContainer {
         autoChooser.addOption("Four Ball Left", 
                 new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, fourBallLeftPath, Paths.FourBallLeft));
 
-        autoChooser.setDefaultOption("-Five Ball Right-", 
-                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, fiveBallRightPath, Paths.FiveBallRight));
-                // Send path options to driver station
+        //autoChooser.setDefaultOption("-Five Ball Right-", 
+                //new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, fiveBallRightPath, Paths.FiveBallRight));
+        //autoChooser.setDefaultOption("-Troll Left-", 
+                //new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, trollLeftPath, Paths.TrollLeft));
+        autoChooser.setDefaultOption("-Two Ball-", 
+                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, twoBallPath, Paths.TwoBall));
+
+        // Send path options to driver station
         SmartDashboard.putData("Auto Mode", autoChooser);
 
         SmartDashboard.putBoolean("Homed", false);
@@ -253,7 +258,7 @@ public class RobotContainer {
 
         // Un Kill Turret
         new JoystickButton(leftStick, 10)
-                .whenPressed(new InstantCommand(() -> turret.unkill()));
+                .whileHeld(new InstantCommand(() -> turret.unkill()));
 
         // Stop Climb Sequence
         new JoystickButton(leftStick, 8)
@@ -290,6 +295,17 @@ public class RobotContainer {
         new JoystickButton(rightStick, 10)
                 .whenPressed(new InstantCommand(() -> rotationArms.setZero()));
 
+        new JoystickButton(leftStick, 7)
+                .whenPressed(new InstantCommand(() -> rotationArms.setGoalOverride(true))
+                .andThen(new InstantCommand(() -> rotationArms.setGoalOverride(false))));
+
+        new JoystickButton(leftStick, 6)
+                .whenPressed(new InstantCommand(() -> telescopes.setGoalOverride(true))
+                .andThen(new InstantCommand(() -> telescopes.setGoalOverride(false))));
+
+        new JoystickButton(rightStick, 5)
+                .whenPressed(new InstantCommand(() -> shooter.setHoodVoltage(-8)))
+                .whenPressed(new InstantCommand(() -> shooter.setHoodVoltage(0)));
     }
 
     public Command getAutonomousCommand() {

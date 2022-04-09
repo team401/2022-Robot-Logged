@@ -44,18 +44,18 @@ public class ClimbSequence extends SequentialCommandGroup {
             .andThen(telescopes.moveToPop()) // Move the telescopes up a bit to clear them off the rung
             .andThen(telescopes.waitForMove())
             .andThen(new WaitCommand(0.5))
-            .andThen(rotationArms.moveToClimbSwing()) // Swing rotation arms to behind the high bar
+            .andThen(rotationArms.moveToClimbSwing()) // Swing rotation arms to behind the traverse bar
             .andThen(rotationArms.waitForMove())
             .andThen(telescopes.moveToFull()) // Extend the telescopes to full
             .andThen(telescopes.waitForMove()) 
-            .andThen(rotationArms.latchRotation()) // Move rotation arms to contact the high bar
+            .andThen(rotationArms.latchRotation()) // Move rotation arms to contact the traverse bar
             .andThen(rotationArms.waitForMove())
-            .andThen(telescopes.moveToPop()) // Retract telescopes to just below high bar
-            .andThen(telescopes.waitForRotationSafePosition() // Wait for when the rotation arms have cleared the high bar
+            .andThen(telescopes.moveToPop()) // Retract telescopes to just below traverse bar
+            .andThen(telescopes.waitForRotationSafePosition() // Wait for when the rotation arms have cleared the traverse bar
                 .andThen(rotationArms.moveToStow() // Move the rotation arms to the back position
                 .andThen(rotationArms.waitForMove())))
             .andThen(telescopes.waitForMove()) 
-            .andThen(telescopes.moveToPull()) // Fully retract telescopes to be on high bar
+            .andThen(telescopes.moveToPull()) // Fully retract telescopes to be on traverse bar
             .andThen(telescopes.waitForMove())
         );
     }

@@ -47,6 +47,8 @@ public class RotationArms extends SubsystemBase {
 
     private Timer homeTimer = new Timer();
 
+    private boolean atGoalOverride = false;
+
     public RotationArms(RotationArmsIO io) {
         this.io = io;
 
@@ -151,6 +153,8 @@ public class RotationArms extends SubsystemBase {
 
         Logger.getInstance().recordOutput("RotationArms/LeftSetpointDeg", Units.radiansToDegrees(leftController.getSetpoint().position));
         Logger.getInstance().recordOutput("RotationArms/RightSetpointDeg", Units.radiansToDegrees(rightController.getSetpoint().position));
+    
+        SmartDashboard.putBoolean("Rotation At Goal", atGoal());
     }
 
     public void setLeftPercent(double percent) {
@@ -176,7 +180,7 @@ public class RotationArms extends SubsystemBase {
     }
 
     public boolean atGoal() {
-        return leftController.atGoal() && rightController.atGoal();
+        return (leftController.atGoal() && rightController.atGoal()) || atGoalOverride;
     }
 
     public void kill() {
@@ -225,6 +229,10 @@ public class RotationArms extends SubsystemBase {
 
     public void stop() {
         setDesiredPosition(ioInputs.leftPositionRad);
+    }
+
+    public void setGoalOverride(boolean override) {
+        atGoalOverride = override;
     }
 
 

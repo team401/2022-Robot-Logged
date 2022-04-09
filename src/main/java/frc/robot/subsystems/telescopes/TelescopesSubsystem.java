@@ -26,6 +26,8 @@ public class TelescopesSubsystem extends SubsystemBase {
     private boolean homed = false;
     private final Timer homeTimer = new Timer();
 
+    private boolean atGoalOverride = false;
+
     private double goalPositionRad = ClimberConstants.telescopeHomePositionRad;
 
     private final ProfiledPIDController leftController = new ProfiledPIDController(
@@ -103,6 +105,8 @@ public class TelescopesSubsystem extends SubsystemBase {
         Logger.getInstance().recordOutput("Telescopes/RightSetpointDeg", Units.radiansToDegrees(rightController.getSetpoint().position));
         Logger.getInstance().recordOutput("Telescopes/LeftDeg", Units.radiansToDegrees(ioInputs.leftPositionRad * ClimberConstants.leftTelescopeMultiplier));
         Logger.getInstance().recordOutput("Telescopes/RightDeg", Units.radiansToDegrees(ioInputs.rightPositionRad * ClimberConstants.rightTelescopeMultiplier));
+    
+        SmartDashboard.putBoolean("Telescopes At Goal", atGoal());
     }
 
     public void resetEncoders() {
@@ -132,7 +136,7 @@ public class TelescopesSubsystem extends SubsystemBase {
     }
 
     public boolean atGoal() {
-        return leftController.atGoal() && rightController.atGoal();
+        return (leftController.atGoal() && rightController.atGoal()) || atGoalOverride;
     }
 
     public boolean passedRotationSafePosition() {
@@ -153,6 +157,10 @@ public class TelescopesSubsystem extends SubsystemBase {
 
     public void stop() {
         setDesiredPosition(ioInputs.leftPositionRad);
+    }
+
+    public void setGoalOverride(boolean override) {
+        atGoalOverride = override;
     }
 
     // Commands
