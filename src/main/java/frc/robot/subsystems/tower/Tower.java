@@ -6,6 +6,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.tower.TowerIO.TowerIOInputs;
 import frc.robot.util.PicoColorSensor.RawColor;
 
+/**
+ * Does stuff with tower
+ */
 public class Tower extends SubsystemBase {
 
     private final TowerIO io;
