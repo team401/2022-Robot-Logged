@@ -65,6 +65,9 @@ public final class Constants {
         public static final int leftRotationArmEncoder = 2;
         public static final int rightRotationArmEncoder = 3;
 
+        public static final int leftLEDPort = 4;
+        public static final int rightLEDPort = 5;
+
         public static final int turretEncoderPulse = 7;
         public static final int turretEncoderA = 8;
         public static final int turretEncoderB = 9;
@@ -152,13 +155,14 @@ public final class Constants {
         public static final double climbSwingPositionRad = Units.degreesToRadians(30);
         public static final double rotationLatchRad = Units.degreesToRadians(21);
 
-
         public static final double telescopeHomePositionRad = Units.degreesToRadians(200);
         public static final double telescopePullPositionRad = Units.degreesToRadians(50);
         public static final double telescopeMaxPositionRad = Units.rotationsToRadians(15.5);
         public static final double telescopePopAboveRungRad = Units.degreesToRadians(950);
         public static final double telescopeLatchRad = Units.degreesToRadians(4750);
         public static final double telescopeRotationSafePositionRad = Units.degreesToRadians(2500);
+        // TODO: SET POSITION TO HAVE TELESCOPES JUST BELOW NEXT BAR
+        public static final double telescopeSwingPositionRad = Units.degreesToRadians(0); 
 
 
         // Multipliers applied to encoders to account for inconsistent spooling
@@ -442,6 +446,10 @@ public final class Constants {
     public static final class AutoConstants {
         public static final double kMaxVelocityMetersPerSecond = 4.0;
         public static final double kMaxAccelerationMetersPerSecondSquared = 4.0;
+    }
+
+    public static final class LEDConstants {
+        public static final int stipLength = 60;
     }
 
 }

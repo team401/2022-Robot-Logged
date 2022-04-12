@@ -166,25 +166,10 @@ public class TelescopesSubsystem extends SubsystemBase {
     // Commands
     public final Command waitForMove() { return new WaitUntilCommand(this::atGoal); }
     public final Command waitForRotationSafePosition() { return new WaitUntilCommand(this::passedRotationSafePosition); }
-    //public final Command moveToStow() { return new InstantCommand(() -> setDesiredPosition(ClimberConstants.telescopeHomePositionRad), this); }
     public final Command moveToPop() { return new InstantCommand(() -> setDesiredPosition(ClimberConstants.telescopePopAboveRungRad), this); }
     public final Command moveToFull() { return new InstantCommand(() -> setDesiredPosition(ClimberConstants.telescopeMaxPositionRad), this); }
     public final Command moveToLatch() { return new InstantCommand(() -> setDesiredPosition(ClimberConstants.telescopeLatchRad), this); }
     public final Command moveToPull() { return new InstantCommand(() -> setDesiredPosition(ClimberConstants.telescopePullPositionRad), this); }
-
-
-    /*public static void main(String[] args) {
-        Pose2d fieldToVehicle = new Pose2d(10, 10, Rotation2d.fromDegrees(90));
-        Pose2d fieldToTarget = new Pose2d(5, 1, new Rotation2d());
-
-        Pose2d vehicleToTarget = GeomUtil.poseInverse(fieldToVehicle).transformBy(GeomUtil.poseToTransform(fieldToTarget));
-        Rotation2d vehicleToTargetDirection = GeomUtil.direction(vehicleToTarget.getTranslation());
-
-        System.out.println(vehicleToTargetDirection);
-
-        Twist2d velocity = new Twist2d(0.0, 10.0, 0.0);
-
-        System.out.println(velocity.dx * vehicleToTargetDirection.getSin() - velocity.dy * vehicleToTargetDirection.getCos());
-    }*/
+    public final Command moveToSwing() {return new InstantCommand(() -> setDesiredPosition(ClimberConstants.telescopeSwingPositionRad), this); }
 
 }

@@ -114,14 +114,17 @@ public class RobotContainer {
         configureButtonBindings();
 
         /*
-        TODO (After comp):
-        increase rotation speed when climbing
-        turret max rotation
-        coprime CAN stuff
-        intake vision webcam
+        TODO:
+        Shooting reverse indexing
+        Limelight anti-glare
+        Turret aiming check
+        Climb sequence telescope swing position
+        Increase rotation climb speed
+        Test Climb sequence
+        Rotation arm home error detection
+        Turret max rotation
+        INTAKE CAMERA!!!1!!1!1!
         */
-
-        SmartDashboard.putBoolean("Homed", false);
     }
 
     private void configureAutoPaths() {
@@ -172,8 +175,6 @@ public class RobotContainer {
 
         // Send path options to driver station
         SmartDashboard.putData("Auto Mode", autoChooser);
-
-        SmartDashboard.putBoolean("Homed", false);
 
     }
 

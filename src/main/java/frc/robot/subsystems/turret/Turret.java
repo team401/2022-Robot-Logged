@@ -28,7 +28,6 @@ public class Turret extends SubsystemBase {
 
     private boolean killed = false;
     private double lastUpdateValue = 0;
-    //private Timer lastUpdateTimer = new Timer();
     private long lastUpdateTimeMS = System.currentTimeMillis();
     
     private boolean zeroOverride = false;
@@ -41,8 +40,6 @@ public class Turret extends SubsystemBase {
         positionController.setTolerance(Units.degreesToRadians(3));
 
         lastUpdateTimeMS = System.currentTimeMillis();
-        //lastUpdateTimer.reset();
-        //lastUpdateTimer.stop();
     }
 
     @Override
@@ -54,8 +51,6 @@ public class Turret extends SubsystemBase {
             io.resetEncoder();
             encoderOffset = MathUtil.angleModulus(inputs.absolutePositionRad);
             setupCycleCount++;
-            //lastUpdateTimer.reset();
-            //lastUpdateTimer.start();
             lastUpdateValue = inputs.positionRad + encoderOffset;
         }
         else {
@@ -85,13 +80,10 @@ public class Turret extends SubsystemBase {
         Logger.getInstance().recordOutput("Turret/SetpointDeg", goalPosition.getDegrees());
         Logger.getInstance().recordOutput("Turret/VelocityFFDegPerSec", Units.radiansToDegrees(velocityGoal));
         Logger.getInstance().recordOutput("Turret/Killed", killed);
-        //Logger.getInstance().recordOutput("Turret/KillTimer", lastUpdateTimer.get());
         SmartDashboard.putNumber("Turret Rotation", turretRotation);
 
         if (inputs.absolutePositionRad != lastUpdateValue) {
             lastUpdateTimeMS = System.currentTimeMillis();
-            //lastUpdateTimer.reset();
-            //lastUpdateTimer.start();
         }
         lastUpdateValue = inputs.absolutePositionRad;
 
@@ -156,8 +148,6 @@ public class Turret extends SubsystemBase {
 
     public void unkill() {
         killed = false;
-        io.resetEncoder();
-        encoderOffset = MathUtil.angleModulus(inputs.absolutePositionRad);
     }
 
 }

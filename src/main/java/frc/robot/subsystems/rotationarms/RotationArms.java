@@ -25,7 +25,7 @@ public class RotationArms extends SubsystemBase {
     // Speed and acceleration for regular moves
     private final TrapezoidProfile.Constraints normalConstraints = new TrapezoidProfile.Constraints(2 * Math.PI / 2, 10);
     // Speed and acceleration for slower climb moves
-    private final TrapezoidProfile.Constraints climbConstraints = new TrapezoidProfile.Constraints(0.15 * Math.PI , 0.75*2);//(0.15 * Math.PI / 2, 0.75)
+    private final TrapezoidProfile.Constraints climbConstraints = new TrapezoidProfile.Constraints(0.15 * Math.PI , 0.75*2);
 
     private final ProfiledPIDController leftController = new ProfiledPIDController(
         ClimberConstants.rotationArmKp.get(), 0, ClimberConstants.rotationArmKd.get(), 
@@ -58,6 +58,15 @@ public class RotationArms extends SubsystemBase {
 
     @Override
     public void periodic() {
+
+
+        /*
+        If the change in position between when home started and home finished (before resetting) is greater than (pi/2?) rad,
+        then we know that the mechanical offset has not worked and it has gone all the way back.
+
+        If rotation arm haven't homed correctly try and fix it, if we can't then fix it
+        just send it positive velocity for n seconds to get them into the intake position, then kill it
+        */
 
         if (!hasReset) {
             io.resetEncoder();
@@ -234,7 +243,6 @@ public class RotationArms extends SubsystemBase {
     public void setGoalOverride(boolean override) {
         atGoalOverride = override;
     }
-
 
     // Commands
     public final Command waitForMove() { return new WaitUntilCommand(this::atGoal); }

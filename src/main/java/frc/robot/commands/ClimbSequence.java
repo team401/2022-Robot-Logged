@@ -1,8 +1,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -16,13 +14,81 @@ public class ClimbSequence extends SequentialCommandGroup {
         addRequirements(telescopes, rotationArms);
 
         addCommands( 
-            // To Mid Bar
+            // TO MID BAR
+            // Pull up to mid bar
+            telescopes.moveToPull(),
+            rotationArms.moveToStow(),
+            rotationArms.waitForMove(),
+            telescopes.waitForMove(),
+            // Rotation arms above mid bar
+            rotationArms.moveToClimbGrab(),
+            rotationArms.waitForMove(),
+            // Telescopes up a bit to clear them off the high bar
+            telescopes.moveToPop(),
+            telescopes.waitForMove(),
+            new WaitCommand(0.5),
+
+
+            // TO HIGH BAR
+            // Telescopes extend while rotation arms move back to catch high bar
+            rotationArms.moveToClimbSwing(),
+            telescopes.moveToSwing(),
+            rotationArms.waitForMove(),
+            // Telescopes up to above high bar
+            telescopes.moveToFull(),
+            telescopes.waitForMove(),
+            // Rotation arms to contact the high bar with telescopes
+            rotationArms.latchRotation(),
+            rotationArms.waitForMove(),
+            // Telescopes pull up to just below high bar and rotation arms to behind the high bar
+            telescopes.moveToPop(),
+            telescopes.waitForRotationSafePosition(),
+            rotationArms.moveToStow(),
+            rotationArms.waitForMove(),
+            telescopes.waitForMove(), 
+            // Pull up to high bar
+            telescopes.moveToPull(),
+            telescopes.waitForMove(),
+            // Rotation arms above high bar
+            rotationArms.moveToClimbGrab(),
+            rotationArms.waitForMove(),
+            // Telescopes up a bit to clear them off the high bar
+            telescopes.moveToPop(),
+            telescopes.waitForMove(),
+            new WaitCommand(0.5),
+
+
+            // TO TRAVERSAL BAR
+            // Wait for button press
+            new WaitUntilCommand(() -> gamepad.getLeftBumperPressed()),
+            // Telescopes extend while rotation arms move back to catch traversal bar
+            rotationArms.moveToClimbSwing(),
+            telescopes.moveToSwing(),
+            rotationArms.waitForMove(),
+            // Telescopes up to above traversal bar
+            telescopes.moveToFull(),
+            telescopes.waitForMove(),
+            // Rotation arms to contact the traversal bar with telescopes
+            rotationArms.latchRotation(),
+            rotationArms.waitForMove(),
+            // Telescopes pull up to just below traversal bar and rotation arms to behind the traversal bar
+            telescopes.moveToPop(),
+            telescopes.waitForRotationSafePosition(),
+            rotationArms.moveToStow(),
+            rotationArms.waitForMove(),
+            telescopes.waitForMove(), 
+            // Pull up to traversal bar
+            telescopes.moveToPull(),
+            telescopes.waitForMove()
+
+    
+            /*// To Mid Bar
             telescopes.moveToPull().alongWith(rotationArms.moveToStow()) // Start moving hooks down and make sure rotation arms are out of the way
             .andThen(telescopes.waitForMove())
-            .andThen(rotationArms.moveToClimbGrab()) // Move the rotation arms into the position above the rung
+            .andThen(rotationArms.moveToClimbGrab()) // Move the rotation arms into the position above the bar
             .andThen(rotationArms.waitForMove())
             // To High Bar
-            .andThen(telescopes.moveToPop()) // Move the telescopes up a bit to clear them off the rung
+            .andThen(telescopes.moveToPop()) // Move the telescopes up a bit to clear them off the bar
             .andThen(telescopes.waitForMove())
             .andThen(new WaitCommand(0.5))
             .andThen(rotationArms.moveToClimbSwing()) // Swing rotation arms to behind the high bar
@@ -41,7 +107,7 @@ public class ClimbSequence extends SequentialCommandGroup {
             .andThen(rotationArms.waitForMove())
             // To Traverse Bar
             .andThen(new WaitUntilCommand(() -> gamepad.getLeftBumperPressed())) // Wait for left bumper press to continue
-            .andThen(telescopes.moveToPop()) // Move the telescopes up a bit to clear them off the rung
+            .andThen(telescopes.moveToPop()) // Move the telescopes up a bit to clear them off the bar
             .andThen(telescopes.waitForMove())
             .andThen(new WaitCommand(0.5))
             .andThen(rotationArms.moveToClimbSwing()) // Swing rotation arms to behind the traverse bar
@@ -56,7 +122,7 @@ public class ClimbSequence extends SequentialCommandGroup {
                 .andThen(rotationArms.waitForMove())))
             .andThen(telescopes.waitForMove()) 
             .andThen(telescopes.moveToPull()) // Fully retract telescopes to be on traverse bar
-            .andThen(telescopes.waitForMove())
+            .andThen(telescopes.waitForMove())*/
         );
     }
 }
