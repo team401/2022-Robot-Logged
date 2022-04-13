@@ -12,6 +12,8 @@ public class Shoot extends CommandBase {
 
     private final Timer timer = new Timer();
 
+    
+
     public Shoot(Tower tower, Shooter shooter) {
 
         this.shooter = shooter;
