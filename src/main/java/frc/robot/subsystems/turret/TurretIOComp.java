@@ -92,7 +92,13 @@ public class TurretIOComp implements TurretIO {
         turretMotor.config_kD(0, d, 1000);
     }
 
+    @Override
+    public double getCurrent() {
+        return turretMotor.getStatorCurrent();
+    }
+
     public void setNeutralMode(NeutralMode mode) {
         turretMotor.setNeutralMode(mode);
     }
+
 }

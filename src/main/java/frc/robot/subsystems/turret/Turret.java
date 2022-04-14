@@ -105,6 +105,10 @@ public class Turret extends SubsystemBase {
         else
             io.setVoltage(0);
 
+        if (io.getCurrent() > 40) {
+            killed = true;
+        }
+
         RobotState.getInstance().recordTurretObservations(new Rotation2d(turretRotation), inputs.velocityRadPerS);
     }
 

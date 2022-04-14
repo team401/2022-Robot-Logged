@@ -38,6 +38,8 @@ public interface TurretIO {
 
     void setVelocityPD(double p, double d);
 
+    double getCurrent();
+
     public void setNeutralMode(NeutralMode mode);
     
 }
