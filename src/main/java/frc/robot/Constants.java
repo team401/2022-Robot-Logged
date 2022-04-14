@@ -60,6 +60,8 @@ public final class Constants {
 
     public static final class DIOChannels {
 
+        // TODO: if turret not work check wire
+
         public static final int topBannerPort = 1;
 
         public static final int leftRotationArmEncoder = 2;
