@@ -8,7 +8,7 @@ import org.littletonrobotics.junction.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VisionIOLimelight implements VisionIO {
+public class VisionIOComp implements VisionIO {
     private double captureTimestamp = 0.0;
     private double[] cornerX = new double[] {};
     private double[] cornerY = new double[] {};
@@ -26,7 +26,7 @@ public class VisionIOLimelight implements VisionIO {
     private final NetworkTableEntry simpleAngleEntry =
             NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx");
 
-    public VisionIOLimelight() {
+    public VisionIOComp() {
         latencyEntry.addListener(event -> {
             double timestamp = Logger.getInstance().getRealTimestamp()
                     - (latencyEntry.getDouble(0.0) / 1000.0);
@@ -45,7 +45,7 @@ public class VisionIOLimelight implements VisionIO {
                 }
             }
 
-            synchronized (VisionIOLimelight.this) {
+            synchronized (VisionIOComp.this) {
                 captureTimestamp = timestamp;
                 cornerX =
                         cornerXList.stream().mapToDouble(Double::doubleValue).toArray();
@@ -70,5 +70,10 @@ public class VisionIOLimelight implements VisionIO {
     @Override
     public void setLeds(boolean enabled) {
         ledEntry.forceSetDouble(enabled ? 3.0 : 1.0);
+    }
+
+    @Override
+    public double getSimpleAngle() {
+        return simpleAngle;
     }
 }

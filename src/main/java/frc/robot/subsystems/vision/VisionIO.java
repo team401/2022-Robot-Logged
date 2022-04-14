@@ -34,4 +34,6 @@ public interface VisionIO {
 
     /** Enabled or disabled vision LEDs. */
     public default void setLeds(boolean enabled) {}
+
+    public default double getSimpleAngle() { return 0; }
 }
