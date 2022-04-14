@@ -19,10 +19,12 @@ import frc.robot.RobotState;
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.turret.Turret;
+import frc.robot.subsystems.intakevision.IntakeVision;
 
 public class PathPlannerTrajectoryCommand extends CommandBase {
+
     private final Drive drive;
+    private final IntakeVision vision;
     private Pose2d latestFieldToVehicle;
     private final RobotState robotState;
     private final PathPlannerTrajectory trajectory;
@@ -41,18 +43,16 @@ public class PathPlannerTrajectoryCommand extends CommandBase {
     //private final PPSwerveControllerCommand trajectoryController;
     private final PathPlannerState pathState;
 
-    private final Turret turret;
-    
     private final Timer timer = new Timer();
 
     private final boolean shouldReset;
 
-    public  PathPlannerTrajectoryCommand(Drive drive, RobotState robotState, Turret turret,  PathPlannerTrajectory trajectory, boolean shouldReset) {
+    public  PathPlannerTrajectoryCommand(Drive drive, IntakeVision vision, RobotState robotState, PathPlannerTrajectory trajectory, boolean shouldReset) {
         
         this.drive = drive;
+        this.vision = vision;
         this.robotState = robotState;
         this.trajectory = trajectory;
-        this.turret = turret;
 
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
         this.controller  = new HolonomicDriveController(xController, yController, thetaController);
@@ -60,18 +60,6 @@ public class PathPlannerTrajectoryCommand extends CommandBase {
         pathState = trajectory.getInitialState();
 
         this.shouldReset = shouldReset;
-
-        /*trajectoryController = 
-            new PPSwerveControllerCommand(
-                trajectory,
-                drive::getPose,
-                DriveConstants.kinematics,
-                xController,
-                yController,
-                thetaController,
-                drive::setGoalModuleStates,
-                drive
-            );*/
 
         addRequirements(drive);
 
@@ -118,9 +106,18 @@ public class PathPlannerTrajectoryCommand extends CommandBase {
         Logger.getInstance().recordOutput("Auto/actualY", drive.getPose().getY());
         Logger.getInstance().recordOutput("Auto/actualRotation", drive.getPose().getRotation().getDegrees());
 
-
-        ChassisSpeeds adjustedSpeeds = controller.calculate(
-            latestFieldToVehicle, desiredState, desiredState.holonomicRotation);
+        ChassisSpeeds adjustedSpeeds = new ChassisSpeeds();
+        if (timer.get() / trajectory.getTotalTimeSeconds() >= 0.75 && vision.hasTarget()) {
+            double xOut = xController.calculate(vision.getTX(), 0);
+            desiredState.poseMeters = new Pose2d(xOut, desiredState.poseMeters.getY(), desiredState.poseMeters.getRotation());
+            adjustedSpeeds = controller.calculate(
+                latestFieldToVehicle, desiredState, desiredState.holonomicRotation);
+            
+        }
+        else {
+            adjustedSpeeds = controller.calculate(
+                latestFieldToVehicle, desiredState, desiredState.holonomicRotation);
+        }
 
         drive.setGoalChassisSpeeds(adjustedSpeeds);
     }

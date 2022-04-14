@@ -34,6 +34,8 @@ import frc.robot.commands.turret.ForceSetPosition;
 import frc.robot.commands.turret.Tracking;
 import frc.robot.subsystems.drive.*;
 import frc.robot.subsystems.intake.IntakeWheelsIOComp;
+import frc.robot.subsystems.intakevision.IntakeVision;
+import frc.robot.subsystems.intakevision.IntakeVisionIOComp;
 import frc.robot.subsystems.intake.IntakeWheels;
 import frc.robot.subsystems.rotationarms.*;
 import frc.robot.subsystems.shooter.ShooterIOComp;
@@ -45,7 +47,7 @@ import frc.robot.subsystems.tower.Tower;
 import frc.robot.subsystems.turret.Turret;
 import frc.robot.subsystems.turret.TurretIOComp;
 import frc.robot.subsystems.vision.Vision;
-import frc.robot.subsystems.vision.VisionIOLimelight;
+import frc.robot.subsystems.vision.VisionIOComp;
 
 public class RobotContainer {
 
@@ -57,6 +59,7 @@ public class RobotContainer {
     private final Shooter shooter;
     private final IntakeWheels intakeWheels;
     private final Vision vision;
+    private final IntakeVision intakeVision;
 
     private final Joystick leftStick = new Joystick(0);
     private final Joystick rightStick = new Joystick(1);
@@ -94,7 +97,8 @@ public class RobotContainer {
         telescopes = new TelescopesSubsystem(new TelescopesIOComp());
         tower = new Tower(new TowerIOComp());
         turret = new Turret(new TurretIOComp());
-        vision = new Vision(new VisionIOLimelight());
+        vision = new Vision(new VisionIOComp());
+        intakeVision = new IntakeVision(new IntakeVisionIOComp());
 
         // Create commands  
         driveWithJoysticks = new DriveWithJoysticks(
@@ -115,13 +119,12 @@ public class RobotContainer {
 
         /*
         TODO:
-        Shooting reverse indexing
+        Shooting reverse indexing (hopefully done)
         Limelight anti-glare
         Turret aiming check
         Climb sequence telescope swing position
         Increase rotation climb speed
         Test Climb sequence
-        Rotation arm home error detection
         Turret max rotation
         INTAKE CAMERA!!!1!!1!1!
         */
@@ -133,14 +136,14 @@ public class RobotContainer {
         twoBallPath = new PathPlannerTrajectory[1];
         twoBallPath[0] = PathPlanner.loadPath("Right 1", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
         autoChooser.addOption("Two Ball", 
-                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, twoBallPath, Paths.TwoBall));
+                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, twoBallPath, Paths.TwoBall));
 
         // Three Ball Right
         threeBallRightPath = new PathPlannerTrajectory[2];
         threeBallRightPath[0] = PathPlanner.loadPath("Right 1", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
         threeBallRightPath[1] = PathPlanner.loadPath("Right 2", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
         autoChooser.addOption("Three Ball Right", 
-                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, threeBallRightPath, Paths.ThreeBallRight));
+                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, threeBallRightPath, Paths.ThreeBallRight));
         
         // Five Ball Right
         fiveBallRightPath = new PathPlannerTrajectory[4];
@@ -149,14 +152,14 @@ public class RobotContainer {
         fiveBallRightPath[2] = PathPlanner.loadPath("Right 3", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
         fiveBallRightPath[3] = PathPlanner.loadPath("Right 4", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
         autoChooser.addOption("Five Ball Right", 
-                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, fiveBallRightPath, Paths.FiveBallRight));
+                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, fiveBallRightPath, Paths.FiveBallRight));
         
         // Troll Left
         trollLeftPath = new PathPlannerTrajectory[2];
         trollLeftPath[0] = PathPlanner.loadPath("Left 1", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
         trollLeftPath[1] = PathPlanner.loadPath("Left 4", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
         autoChooser.addOption("Troll Left", 
-                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, trollLeftPath, Paths.TrollLeft));
+                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, trollLeftPath, Paths.TrollLeft));
 
         // Four Ball Left
         fourBallLeftPath = new PathPlannerTrajectory[3]; 
@@ -164,14 +167,14 @@ public class RobotContainer {
         fourBallLeftPath[1] = PathPlanner.loadPath("Left 2", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
         fourBallLeftPath[2] = PathPlanner.loadPath("Left 3", AutoConstants.kMaxVelocityMetersPerSecond, AutoConstants.kMaxAccelerationMetersPerSecondSquared);
         autoChooser.addOption("Four Ball Left", 
-                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, fourBallLeftPath, Paths.FourBallLeft));
+                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, fourBallLeftPath, Paths.FourBallLeft));
 
         //autoChooser.setDefaultOption("-Five Ball Right-", 
                 //new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, fiveBallRightPath, Paths.FiveBallRight));
         //autoChooser.setDefaultOption("-Troll Left-", 
                 //new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, trollLeftPath, Paths.TrollLeft));
         autoChooser.setDefaultOption("-Two Ball-", 
-                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, twoBallPath, Paths.TwoBall));
+                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, twoBallPath, Paths.TwoBall));
 
         // Send path options to driver station
         SmartDashboard.putData("Auto Mode", autoChooser);
@@ -180,6 +183,7 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
 
+        // photonvision.local:5800 
         // intake cam http://wpilibpi.local:1181/stream.mjpg
 
         /*CLIMBING BUTTONS*/ 

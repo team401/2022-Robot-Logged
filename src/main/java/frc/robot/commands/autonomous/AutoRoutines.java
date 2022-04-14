@@ -17,6 +17,7 @@ import frc.robot.commands.shooter.Shoot;
 import frc.robot.commands.turret.ForceSetPosition;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.IntakeWheels;
+import frc.robot.subsystems.intakevision.IntakeVision;
 import frc.robot.subsystems.rotationarms.RotationArms;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.tower.Tower;
@@ -31,14 +32,14 @@ public class AutoRoutines extends SequentialCommandGroup {
         TrollLeft, FourBallLeft
     }
 
-    public AutoRoutines(Drive drive, RotationArms rotationArms, Shooter shooter, Turret turret, Tower tower, IntakeWheels intake, Vision vision, PathPlannerTrajectory[] path, Paths pathPlan) {
+    public AutoRoutines(Drive drive, RotationArms rotationArms, Shooter shooter, Turret turret, Tower tower, IntakeWheels intake, IntakeVision intakeVision, Vision vision, PathPlannerTrajectory[] path, Paths pathPlan) {
         
         SequentialCommandGroup sequentialCommands = new SequentialCommandGroup(
             new InstantCommand(() -> vision.turnOnLeds()),
             rotationArms.moveToIntake(),
             rotationArms.waitForMove(),
             new Intake(tower, intake, rotationArms)
-                .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[0], true)
+                .raceWith(new PathPlannerTrajectoryCommand(drive, intakeVision, RobotState.getInstance(), path[0], true)
                     .andThen(new WaitCommand(0.25))),
             new InstantCommand(() -> vision.turnOnLeds()),
             new Shoot(tower, shooter).withTimeout(1.5)
@@ -53,7 +54,7 @@ public class AutoRoutines extends SequentialCommandGroup {
         if (pathPlan == Paths.ThreeBallRight || pathPlan == Paths.FiveBallRight) {
             sequentialCommands.addCommands(
                 new Intake(tower, intake, rotationArms)
-                    .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[1], false)
+                    .raceWith(new PathPlannerTrajectoryCommand(drive, intakeVision, RobotState.getInstance(), path[1], false)
                         .andThen(new WaitCommand(0.25))),
                 new Shoot(tower, shooter).withTimeout(1.5)
             );
@@ -61,10 +62,10 @@ public class AutoRoutines extends SequentialCommandGroup {
         if (pathPlan == Paths.FiveBallRight) {
             sequentialCommands.addCommands(
                 new Intake(tower, intake, rotationArms)
-                    .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[2], false)
+                    .raceWith(new PathPlannerTrajectoryCommand(drive, intakeVision, RobotState.getInstance(), path[2], false)
                         .andThen(new WaitCommand(1))),
 
-                new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[3], false),
+                new PathPlannerTrajectoryCommand(drive, intakeVision, RobotState.getInstance(), path[3], false),
                 rotationArms.moveToStow(),
                 new Shoot(tower, shooter).withTimeout(1.5)
             );
@@ -73,10 +74,10 @@ public class AutoRoutines extends SequentialCommandGroup {
         if (pathPlan == Paths.FourBallLeft) {
             sequentialCommands.addCommands(
                 new Intake(tower, intake, rotationArms)
-                    .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[1], false)
+                    .raceWith(new PathPlannerTrajectoryCommand(drive, intakeVision, RobotState.getInstance(), path[1], false)
                         .andThen(new WaitCommand(1))),
 
-                new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[2], false),
+                new PathPlannerTrajectoryCommand(drive, intakeVision, RobotState.getInstance(), path[2], false),
                 rotationArms.moveToStow(),
                 new Shoot(tower, shooter).withTimeout(1.5)
             );
@@ -85,10 +86,10 @@ public class AutoRoutines extends SequentialCommandGroup {
         if (pathPlan == Paths.FourBallLeft) {
             sequentialCommands.addCommands(
                 new Intake(tower, intake, rotationArms)
-                    .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[1], false)
+                    .raceWith(new PathPlannerTrajectoryCommand(drive, intakeVision, RobotState.getInstance(), path[1], false)
                         .andThen(new WaitCommand(1))),
 
-                new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[2], false),
+                new PathPlannerTrajectoryCommand(drive, intakeVision, RobotState.getInstance(), path[2], false),
                 rotationArms.moveToStow(),
                 new Shoot(tower, shooter).withTimeout(1.5)
             );
@@ -102,7 +103,7 @@ public class AutoRoutines extends SequentialCommandGroup {
         if (pathPlan == Paths.TrollLeft) {
             addCommands(
                 new Intake(tower, intake, rotationArms)
-                    .raceWith(new PathPlannerTrajectoryCommand(drive, RobotState.getInstance(), turret, path[1], false)),
+                    .raceWith(new PathPlannerTrajectoryCommand(drive, intakeVision, RobotState.getInstance(), path[1], false)),
                 rotationArms.moveToStow(),
                 new InstantCommand(() -> turret.setZeroOverride(true)),
                 new InstantCommand(() -> shooter.setSetpoint(0.63, Units.rotationsPerMinuteToRadiansPerSecond(1500))),
