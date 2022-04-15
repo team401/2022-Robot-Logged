@@ -108,11 +108,10 @@ public class PathPlannerTrajectoryCommand extends CommandBase {
 
         ChassisSpeeds adjustedSpeeds = new ChassisSpeeds();
         if (timer.get() / trajectory.getTotalTimeSeconds() >= 0.75 && vision.hasTarget()) {
-            double xOut = xController.calculate(vision.getTX(), 0);
-            desiredState.poseMeters = new Pose2d(xOut, desiredState.poseMeters.getY(), desiredState.poseMeters.getRotation());
+            double omegaOut = xController.calculate(vision.getTX(), 0);
+            desiredState.poseMeters = new Pose2d(0, desiredState.poseMeters.getY(), new Rotation2d(omegaOut));
             adjustedSpeeds = controller.calculate(
                 latestFieldToVehicle, desiredState, desiredState.holonomicRotation);
-            
         }
         else {
             adjustedSpeeds = controller.calculate(

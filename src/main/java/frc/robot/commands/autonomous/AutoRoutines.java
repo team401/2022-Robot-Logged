@@ -96,7 +96,7 @@ public class AutoRoutines extends SequentialCommandGroup {
         }
 
         addCommands(
-            new PrepareToShoot(shooter)
+            new PrepareToShoot(shooter, tower)
                 .raceWith(sequentialCommands)
         );
 

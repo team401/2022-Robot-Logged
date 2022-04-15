@@ -26,8 +26,8 @@ public class Tower extends SubsystemBase {
     private double lastConveyorPercent = 0;
     private double lastWheelPercent = 0;
 
-    private BallType topBall = BallType.None;
-    private BallType bottomBall = BallType.None;
+    private static BallType topBall = BallType.None;
+    private static BallType bottomBall = BallType.None;
 
     private int ballCount = 1;
 
@@ -106,15 +106,6 @@ public class Tower extends SubsystemBase {
 
         prevTopSensorState = currentTopSensorState;
         prevBottomSensorState = currentBottomSensorState;
-
-        /**
-         * FORMAT:
-         * byte - field relative rotation (deg)
-         * byte - top ball (0=none, 1=blue, 2=red)
-         * byte - bottom ball (same as above)
-         * byte - lock (0=no, 1=yes)
-         * byte - error (0=no, 1=yes)
-         */
         
         byte[] data = {
             (byte)(RobotState.getInstance().getLatestFieldToVehicle().getRotation().getDegrees()/10),
@@ -153,11 +144,11 @@ public class Tower extends SubsystemBase {
         return ioInputs.detectedColor;
     }
 
-    public BallType getTopBall() {
+    public static BallType getTopBall() {
         return topBall;
     }
 
-    public BallType getBottomBall() {
+    public static BallType getBottomBall() {
         return bottomBall;
     }
 

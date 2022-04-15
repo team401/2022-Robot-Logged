@@ -29,6 +29,8 @@ public class Shooter extends SubsystemBase {
 
     private double rpmOffset = 70;
 
+    private static boolean atGoal = false;
+
     public Shooter(ShooterIO io) {
         this.io = io;
     }
@@ -85,6 +87,8 @@ public class Shooter extends SubsystemBase {
                io.setFlywheelVoltage(0);
             }
         }
+
+        atGoal = atGoal();
 
     }
 
@@ -144,6 +148,10 @@ public class Shooter extends SubsystemBase {
 
     public void setHoodVoltage(int volts) {
         io.setHoodVoltage(volts);
+    }
+
+    public static boolean atGoalStatic() {
+        return atGoal;
     }
     
 }

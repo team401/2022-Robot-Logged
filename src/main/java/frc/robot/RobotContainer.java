@@ -35,7 +35,6 @@ import frc.robot.commands.turret.Tracking;
 import frc.robot.subsystems.drive.*;
 import frc.robot.subsystems.intake.IntakeWheelsIOComp;
 import frc.robot.subsystems.intakevision.IntakeVision;
-import frc.robot.subsystems.intakevision.IntakeVisionIOComp;
 import frc.robot.subsystems.intake.IntakeWheels;
 import frc.robot.subsystems.rotationarms.*;
 import frc.robot.subsystems.shooter.ShooterIOComp;
@@ -98,7 +97,7 @@ public class RobotContainer {
         tower = new Tower(new TowerIOComp());
         turret = new Turret(new TurretIOComp());
         vision = new Vision(new VisionIOComp());
-        intakeVision = new IntakeVision(new IntakeVisionIOComp());
+        intakeVision = new IntakeVision();
 
         // Create commands  
         driveWithJoysticks = new DriveWithJoysticks(
@@ -122,7 +121,6 @@ public class RobotContainer {
         Intake photon vision (in progress)
         Auto strafing (hopefully done)
         Shooting reverse indexing (hopefully done)
-        Limelight anti-glare (with lens)
         Climb sequence telescope swing position (have to get value)
         */
     }
@@ -225,7 +223,7 @@ public class RobotContainer {
         
         // Prepare to shoot
         new JoystickButton(gamepad, Button.kRightBumper.value)
-                .whenHeld(new PrepareToShoot(shooter));
+                .whenHeld(new PrepareToShoot(shooter, tower));
                         
         // Shoot
         new JoystickButton(gamepad, Button.kY.value)

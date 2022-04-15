@@ -36,12 +36,11 @@ public class VisionIntake extends CommandBase {
     @Override
     public void initialize(){
         yProcessor.reset(yPercent.getAsDouble());
-        intakeVision.turnOn();
     }
 
     @Override
     public void execute() {
-        
+
         if (DriveConstants.intakeVisionKP.hasChanged())
             controller.setP(DriveConstants.intakeVisionKP.get());
         if (DriveConstants.intakeVisionKD.hasChanged())
@@ -51,16 +50,11 @@ public class VisionIntake extends CommandBase {
             double omegaOutput = controller.calculate(-intakeVision.getTX(), 0);
             double yOutput = yProcessor.processJoystickInputs(yPercent.getAsDouble()) * DriveConstants.maxSpeedMPerS;
             ChassisSpeeds targetSpeeds = new ChassisSpeeds(0, yOutput, omegaOutput);
-        
+
             drive.setGoalChassisSpeeds(targetSpeeds);
 
         }
 
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-        intakeVision.turnOff();
     }
     
 }
