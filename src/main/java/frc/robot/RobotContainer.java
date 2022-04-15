@@ -119,14 +119,11 @@ public class RobotContainer {
 
         /*
         TODO:
+        Intake photon vision (in progress)
+        Auto strafing (hopefully done)
         Shooting reverse indexing (hopefully done)
-        Limelight anti-glare
-        Turret aiming check
-        Climb sequence telescope swing position
-        Increase rotation climb speed
-        Test Climb sequence
-        Turret max rotation
-        INTAKE CAMERA!!!1!!1!1!
+        Limelight anti-glare (with lens)
+        Climb sequence telescope swing position (have to get value)
         */
     }
 
@@ -300,6 +297,7 @@ public class RobotContainer {
         new JoystickButton(rightStick, 10)
                 .whenPressed(new InstantCommand(() -> rotationArms.setZero()));
 
+        // Climbing Overrides
         new JoystickButton(leftStick, 7)
                 .whenPressed(new InstantCommand(() -> rotationArms.setGoalOverride(true))
                 .andThen(new InstantCommand(() -> rotationArms.setGoalOverride(false))));
@@ -308,6 +306,7 @@ public class RobotContainer {
                 .whenPressed(new InstantCommand(() -> telescopes.setGoalOverride(true))
                 .andThen(new InstantCommand(() -> telescopes.setGoalOverride(false))));
 
+        // Hood override
         new JoystickButton(rightStick, 5)
                 .whenPressed(new InstantCommand(() -> shooter.setHoodVoltage(-8)))
                 .whenPressed(new InstantCommand(() -> shooter.setHoodVoltage(0)));

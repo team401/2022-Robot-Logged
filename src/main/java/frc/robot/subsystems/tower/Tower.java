@@ -1,25 +1,24 @@
 package frc.robot.subsystems.tower;
 
-import java.util.ArrayList;
-
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.tower.TowerIO.TowerIOInputs;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.util.PicoColorSensor.RawColor;
+import frc.robot.RobotState;
 
 public class Tower extends SubsystemBase {
 
     public enum BallType {
-        None, Red, Blue
+        None, Red, Blue;
+
+        public static byte toByte(BallType type) { return (byte)(type == BallType.None ? 0 : type == BallType.Blue ? 1 : 2); }
     }
 
-    private SPI spi;
+    private SPI spi = new SPI(Port.kMXP);
 
     private final TowerIO io;
     private final TowerIOInputs ioInputs = new TowerIOInputs();
@@ -45,8 +44,6 @@ public class Tower extends SubsystemBase {
     public Tower(TowerIO io) {
 
         this.io = io;
-
-        spi = new SPI(Port.kMXP);
 
     }
 
@@ -103,6 +100,10 @@ public class Tower extends SubsystemBase {
             ballCount++;
         }
 
+        Logger.getInstance().recordOutput("Tower/TopBall", BallType.toByte(topBall));
+        Logger.getInstance().recordOutput("Tower/BottomBall", BallType.toByte(bottomBall));
+        Logger.getInstance().recordOutput("Tower/BallCount", (byte)ballCount);
+
         prevTopSensorState = currentTopSensorState;
         prevBottomSensorState = currentBottomSensorState;
 
@@ -116,18 +117,22 @@ public class Tower extends SubsystemBase {
          */
         
         byte[] data = {
-            (byte)(frc.robot.RobotState.getInstance().getLatestFieldToVehicle().getRotation().getDegrees()/10),
-            (byte)(topBall == BallType.None ? 0 : topBall == BallType.Blue ? 1 : 2),
-            (byte)(bottomBall == BallType.None ? 0 : bottomBall == BallType.Blue ? 1 : 2),
+            (byte)(RobotState.getInstance().getLatestFieldToVehicle().getRotation().getDegrees()/10),
+            BallType.toByte(topBall),
+            BallType.toByte(bottomBall),
             (byte)(Math.abs(Vision.getTX()) < 1 ? 1 : 0),
             (byte)(error ? 1 : 0)
         };
-        spi.transaction(data, null, data.length);
+        spi.write(data, data.length);
 
     }
-
+    
     private BallType getBottomSensorColor() {
-        return BallType.None; // TODO: CHANGE
+        if (ioInputs.detectedColor.red > 60)
+            return BallType.Red;
+        if (ioInputs.detectedColor.red < 5)
+            return BallType.Blue;
+        return BallType.None;
     }
 
     public void setConveyorPercent(double percent) {

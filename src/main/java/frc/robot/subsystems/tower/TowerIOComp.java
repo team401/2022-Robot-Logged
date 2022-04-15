@@ -42,7 +42,6 @@ public class TowerIOComp implements TowerIO {
 
     @Override
     public void updateInputs(TowerIOInputs inputs) {
-        inputs.bottomSensor = false;
         inputs.topSensor = !topBanner.get();
         inputs.conveyorCurrent = conveyorMotor.getOutputCurrent();
         inputs.indexCurrent = indexMotor.getOutputCurrent();
