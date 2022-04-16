@@ -18,7 +18,7 @@ public class Tower extends SubsystemBase {
         public static byte toByte(BallType type) { return (byte)(type == BallType.None ? 0 : type == BallType.Blue ? 1 : 2); }
     }
 
-    private SPI spi = new SPI(Port.kMXP);
+    //private SPI spi = new SPI(Port.kMXP);
 
     private final TowerIO io;
     private final TowerIOInputs ioInputs = new TowerIOInputs();
@@ -39,7 +39,7 @@ public class Tower extends SubsystemBase {
 
     private BallType lastShotColor = BallType.None;
 
-    private static boolean error = false;
+    //private static boolean error = false;
 
     public Tower(TowerIO io) {
 
@@ -107,14 +107,14 @@ public class Tower extends SubsystemBase {
         prevTopSensorState = currentTopSensorState;
         prevBottomSensorState = currentBottomSensorState;
         
-        byte[] data = {
+        /*byte[] data = {
             (byte)(RobotState.getInstance().getLatestFieldToVehicle().getRotation().getDegrees()/10),
             BallType.toByte(topBall),
             BallType.toByte(bottomBall),
             (byte)(Math.abs(Vision.getTX()) < 1 ? 1 : 0),
             (byte)(error ? 1 : 0)
         };
-        spi.write(data, data.length);
+        spi.write(data, data.length);*/
 
     }
     
@@ -162,8 +162,8 @@ public class Tower extends SubsystemBase {
         bottomBall = BallType.None;
     }
 
-    public static void setError(boolean e) {
+    /*public static void setError(boolean e) {
         error = e;
-    }
+    }*/
     
 }
