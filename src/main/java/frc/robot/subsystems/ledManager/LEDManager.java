@@ -54,7 +54,7 @@ public class LEDManager extends SubsystemBase {
         if (DriverStation.isEnabled())
             updateStrips();
         else
-            rainbowClimbers();
+            rainbowArms();
         
         leftLed.setData(leftBuffer);
         rightLed.setData(rightBuffer);
@@ -118,11 +118,12 @@ public class LEDManager extends SubsystemBase {
 
     }
 
-    private void rainbowClimbers() {
+    private void rainbowArms() {
         for (int i = 0; i < ledArmCount; i++) {
-            int hue = (rainbowFirstPixelHue + (i * 180 / ledArmCount)) % 180;
-            leftBuffer.setHSV(i, hue, 255, 128);
-            rightBuffer.setHSV(i, hue, 255, 128);
+            int leftHue = (rainbowFirstPixelHue + (i * 180 / ledArmCount)) % 180;
+            int rightHue = (rainbowFirstPixelHue + 90 + (i * 180 / ledArmCount)) % 180;
+            leftBuffer.setHSV(i, leftHue, 255, 128);
+            rightBuffer.setHSV(i, rightHue, 255, 128);
         }
         rainbowFirstPixelHue += 3;
         rainbowFirstPixelHue %= 180;

@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.button.*;
 
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.CANDevices;
+import frc.robot.Constants.DIOChannels;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.ClimbSequence;
 import frc.robot.commands.MeasureKs;
@@ -35,6 +36,7 @@ import frc.robot.commands.turret.Tracking;
 import frc.robot.subsystems.drive.*;
 import frc.robot.subsystems.intake.IntakeWheelsIOComp;
 import frc.robot.subsystems.intakevision.IntakeVision;
+import frc.robot.subsystems.ledManager.LEDManager;
 import frc.robot.subsystems.intake.IntakeWheels;
 import frc.robot.subsystems.rotationarms.*;
 import frc.robot.subsystems.shooter.ShooterIOComp;
@@ -59,6 +61,7 @@ public class RobotContainer {
     private final IntakeWheels intakeWheels;
     private final Vision vision;
     private final IntakeVision intakeVision;
+    private final LEDManager ledManager;
 
     private final Joystick leftStick = new Joystick(0);
     private final Joystick rightStick = new Joystick(1);
@@ -98,6 +101,7 @@ public class RobotContainer {
         turret = new Turret(new TurretIOComp());
         vision = new Vision(new VisionIOComp());
         intakeVision = new IntakeVision();
+        ledManager = new LEDManager(DIOChannels.leftLEDPort, DIOChannels.rightLEDPort);
 
         // Create commands  
         driveWithJoysticks = new DriveWithJoysticks(
@@ -304,10 +308,6 @@ public class RobotContainer {
                 .whenPressed(new InstantCommand(() -> telescopes.setGoalOverride(true))
                 .andThen(new InstantCommand(() -> telescopes.setGoalOverride(false))));
 
-        // Hood override
-        new JoystickButton(rightStick, 5)
-                .whenPressed(new InstantCommand(() -> shooter.setHoodVoltage(-8)))
-                .whenPressed(new InstantCommand(() -> shooter.setHoodVoltage(0)));
     }
 
     public Command getAutonomousCommand() {
