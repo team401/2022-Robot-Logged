@@ -101,7 +101,7 @@ public class RobotContainer {
         turret = new Turret(new TurretIOComp());
         vision = new Vision(new VisionIOComp());
         intakeVision = new IntakeVision();
-        ledManager = new LEDManager(DIOChannels.leftLEDPort, DIOChannels.rightLEDPort);
+        ledManager = new LEDManager();
 
         // Create commands  
         driveWithJoysticks = new DriveWithJoysticks(
@@ -122,10 +122,10 @@ public class RobotContainer {
 
         /*
         TODO:
-        Intake photon vision (in progress)
-        Auto strafing (hopefully done)
-        Shooting reverse indexing (hopefully done)
         Climb sequence telescope swing position (have to get value)
+        Shooting reverse indexing (hopefully done)
+        Intake photon vision (in progress)
+        Auto balling (hopefully done)
         */
     }
 

@@ -60,15 +60,12 @@ public final class Constants {
 
     public static final class DIOChannels {
 
-        // TODO: if turret not work check wire
-
         public static final int topBannerPort = 1;
 
         public static final int leftRotationArmEncoder = 2;
         public static final int rightRotationArmEncoder = 3;
 
-        public static final int leftLEDPort = 4;
-        public static final int rightLEDPort = 5;
+        public static final int ledPort = 4;
 
         public static final int turretEncoderPulse = 7;
         public static final int turretEncoderA = 8;
@@ -149,18 +146,22 @@ public final class Constants {
         public static final double rotationPositionToleranceRad = Units.degreesToRadians(5.0);
 
         public static final double rotationMax = Units.degreesToRadians(50);
-        public static final double rotationMin = -0.14;
+        public static final double rotationMin = -0.245;
 
         public static final double stowPositionRad = rotationMin;
         public static final double climbGrabPositionRad = Units.degreesToRadians(2);
-        public static final double intakePositionRad = Units.degreesToRadians(25);
+        public static final double intakePositionRad = Units.degreesToRadians(20);
         public static final double climbSwingPositionRad = Units.degreesToRadians(30);
         public static final double rotationLatchRad = Units.degreesToRadians(21);
 
-        public static final double telescopeHomePositionRad = Units.degreesToRadians(200);
-        public static final double telescopePullPositionRad = Units.degreesToRadians(50);
-        public static final double telescopeMaxPositionRad = Units.rotationsToRadians(15.5);
-        public static final double telescopePopAboveRungRad = Units.degreesToRadians(950);
+        // prev 5580 deg
+        // current 30940 deg
+        // 5.54480286738
+        public static final double telescopeMaxPositionRad = 540;
+        public static final double telescopeDefaultPositionRad = Units.degreesToRadians(300);
+        public static final double telescopeHomePositionRad = Units.degreesToRadians(100);
+        public static final double telescopePullPositionRad = Units.degreesToRadians(1200);
+        public static final double telescopePopAboveRungRad = Units.degreesToRadians(6200);
         public static final double telescopeLatchRad = Units.degreesToRadians(4750);
         public static final double telescopeRotationSafePositionRad = Units.degreesToRadians(2500);
         // TODO: SET POSITION TO HAVE TELESCOPES JUST BELOW NEXT BAR
@@ -169,19 +170,16 @@ public final class Constants {
 
         // Multipliers applied to encoders to account for inconsistent spooling
         // multiplier backwards change pls
-        public static final double leftTelescopeMultiplier = 1.00;
-        public static final double rightTelescopeMultiplier = 0.95;
+        public static final double leftTelescopeMultiplier = 1.06;
+        public static final double rightTelescopeMultiplier = 1.00;
 
 
-        public static final double telescopeCruiseVelocity = 4 * 2 * Math.PI;
+        public static final double telescopeCruiseVelocity = 32 * 2 * Math.PI;
         public static final double telescopeAcceleration = telescopeCruiseVelocity * 4;
 
         // measured offsets
-        public static final double leftRotationOffset = 0.14;//4.9055763070348295;
-        public static final double rightRotationOffset = 0.14;//5.908454955133876 - 0.165 - 0.03 - 0.191 - 0.129 - 0.1;
-
-        //vertical conversion from rotations
-        public static final double linearConversion = 0.625 * Math.PI;
+        public static final double leftRotationOffset = 0.246;
+        public static final double rightRotationOffset = 0.243;
 
         public static final double maxHeightMeters = 0.971;
 
@@ -196,14 +194,14 @@ public final class Constants {
         public static final double telescopeHomingThresholdRadPerS = 1;//Units.degreesToRadians(10);
         public static final double homingTimeS = 0.25;
         public static final double telescopeHomingVolts = -4;
-        public static final double rotationHomingVolts = -2.50000000;
+        public static final double rotationHomingVolts = -4;
 
         public static final double rotationHomingThresholdRadPerS = 0.1;
 
         static {
             rotationArmKp.setDefault(25.0);
             rotationArmKd.setDefault(0.5);
-            telescopeArmKp.setDefault(10.0);
+            telescopeArmKp.setDefault(0.1);
             telescopeArmKd.setDefault(0.0);
         }
 

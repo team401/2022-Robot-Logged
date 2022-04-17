@@ -90,7 +90,7 @@ public class Turret extends SubsystemBase {
         if (System.currentTimeMillis()-lastUpdateTimeMS > 500 && setupCycleCount > TurretConstants.setupCycleCount && DriverStation.isEnabled())//if (lastUpdateTimer.get() > 0.5)// && DriverStation.isEnabled())
             killed = true;
         
-        if (Math.abs(turretRotation) > TurretConstants.turretLimitUpper + Math.PI/2)
+        if (Math.abs(turretRotation) > TurretConstants.turretLimitUpper + Math.PI/2 && setupCycleCount > TurretConstants.setupCycleCount)
             killed = true;
 
         //PID control - equivalent of our old setdesiredpositionclosedloop methods continuously

@@ -4,9 +4,11 @@ import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotState;
+import frc.robot.Constants.DIOChannels;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.tower.Tower;
 import frc.robot.subsystems.tower.Tower.BallType;
@@ -16,48 +18,44 @@ public class LEDManager extends SubsystemBase {
 
     private static boolean error = false;
 
-    private AddressableLED leftLed;
-    private AddressableLED rightLed;
+    private AddressableLED led;
 
-    private AddressableLEDBuffer leftBuffer;
-    private AddressableLEDBuffer rightBuffer;
+    private AddressableLEDBuffer buffer;
 
+    // left first
     private final int ledCountPerSide = 34;
     private final int ledArmCount = 22;
 
     private int rainbowFirstPixelHue = 0;
 
-    public LEDManager(int leftPort, int rightPort) {
+    public LEDManager() {
 
-        leftLed = new AddressableLED(leftPort);
-        rightLed = new AddressableLED(rightPort);
+        led = new AddressableLED(DIOChannels.ledPort);
 
-        leftBuffer = new AddressableLEDBuffer(ledCountPerSide);
-        rightBuffer = new AddressableLEDBuffer(ledCountPerSide);
+        buffer = new AddressableLEDBuffer(ledCountPerSide*2);
 
-        leftLed.setLength(leftBuffer.getLength());
-        rightLed.setLength(rightBuffer.getLength());
+        led.setLength(buffer.getLength());
 
-        leftLed.start();
-        rightLed.start();
+        led.setData(buffer);
+
+        led.start();
     }
 
     @Override
     public void periodic() {
 
         // Blank buffers
-        for (int i = 0; i < leftBuffer.getLength(); i++)
-            leftBuffer.setRGB(i, 0, 0, 0);
-        for (int i = 0; i < rightBuffer.getLength(); i++)
-            rightBuffer.setRGB(i, 0, 0, 0);
+        for (int i = 0; i < buffer.getLength(); i++)
+            buffer.setRGB(i, 50, 0, 0);
         
-        if (DriverStation.isEnabled())
+        /*if (DriverStation.isEnabled())
             updateStrips();
         else
-            rainbowArms();
+            rainbowArms();*/
+
+        //rainbowArms();
         
-        leftLed.setData(leftBuffer);
-        rightLed.setData(rightBuffer);
+        led.setData(buffer);
 
     }
 
@@ -66,22 +64,22 @@ public class LEDManager extends SubsystemBase {
         double deg = RobotState.getInstance().getLatestFieldToVehicle().getRotation().getDegrees();
 
         if (deg > 67.5 || deg < -112.5) // Left front
-            updateStrip(leftBuffer, ledArmCount);
+            updateStrip(buffer, ledArmCount);
 		if (deg > 22.5 || deg < -157.5) // Left mid front
-            updateStrip(leftBuffer, ledArmCount+3);
+            updateStrip(buffer, ledArmCount+3);
 		if (deg > -22.5 && deg < 157.5) // Left mid back
-            updateStrip(leftBuffer, ledArmCount+6);
+            updateStrip(buffer, ledArmCount+6);
 		if (deg > -67.5 && deg < 112.5) // Left back
-            updateStrip(leftBuffer, ledArmCount+9);
+            updateStrip(buffer, ledArmCount+9);
         
 		if (deg > 112.5 || deg < -67.5) // Right front
-            updateStrip(rightBuffer, ledArmCount);
+            updateStrip(buffer, ledArmCount+ledCountPerSide);
 		if (deg > 157.5 || deg < -22.5) // Right mid front
-            updateStrip(rightBuffer, ledArmCount+3);
+            updateStrip(buffer, ledArmCount+ledCountPerSide+3);
 		if (deg > -157.5 && deg < 22.5) // Right mid back
-            updateStrip(rightBuffer, ledArmCount+6);
+            updateStrip(buffer, ledArmCount+ledCountPerSide+6);
 		if (deg > -112.5 && deg < 67.5) // Right back
-            updateStrip(rightBuffer, ledArmCount+9);
+            updateStrip(buffer, ledArmCount+ledCountPerSide+9);
 
     }
 
@@ -119,11 +117,9 @@ public class LEDManager extends SubsystemBase {
     }
 
     private void rainbowArms() {
-        for (int i = 0; i < ledArmCount; i++) {
-            int leftHue = (rainbowFirstPixelHue + (i * 180 / ledArmCount)) % 180;
-            int rightHue = (rainbowFirstPixelHue + 90 + (i * 180 / ledArmCount)) % 180;
-            leftBuffer.setHSV(i, leftHue, 255, 128);
-            rightBuffer.setHSV(i, rightHue, 255, 128);
+        for (int i = 0; i < buffer.getLength(); i++) {
+            int hue = (rainbowFirstPixelHue + 90 + (i * 180 / ledArmCount)) % 180;
+            buffer.setHSV(i, hue, 255, 128);
         }
         rainbowFirstPixelHue += 3;
         rainbowFirstPixelHue %= 180;

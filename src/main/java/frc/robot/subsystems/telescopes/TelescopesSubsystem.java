@@ -28,7 +28,7 @@ public class TelescopesSubsystem extends SubsystemBase {
 
     private boolean atGoalOverride = false;
 
-    private double goalPositionRad = ClimberConstants.telescopeHomePositionRad;
+    private double goalPositionRad = ClimberConstants.telescopeDefaultPositionRad;
 
     private final ProfiledPIDController leftController = new ProfiledPIDController(
             ClimberConstants.telescopeArmKp.get(), 0, ClimberConstants.telescopeArmKd.get(),
@@ -85,20 +85,30 @@ public class TelescopesSubsystem extends SubsystemBase {
                 } else {
                     io.setLeftVolts(ClimberConstants.telescopeHomingVolts);
                     io.setRightVolts(ClimberConstants.telescopeHomingVolts);
+                    /*if (Math.abs(ioInputs.leftVelocityRadPerS) >= ClimberConstants.telescopeHomingThresholdRadPerS)
+                        io.setLeftVolts(ClimberConstants.telescopeHomingVolts);
+                    else
+                        io.setLeftVolts(0);
+                    
+                    if (Math.abs(ioInputs.rightVelocityRadPerS) < ClimberConstants.telescopeHomingThresholdRadPerS)
+                        io.setRightVolts(ClimberConstants.telescopeHomingVolts);
+                    else
+                        io.setRightVolts(0);*/
                 }
             }
         } else {
             double leftOutput = leftController.calculate(ioInputs.leftPositionRad * ClimberConstants.leftTelescopeMultiplier, goalPositionRad);
+            leftOutput -= leftOutput < 0 ? 1.5 : 0;
             io.setLeftVolts(leftOutput);
 
             double rightOutput = rightController.calculate(ioInputs.rightPositionRad * ClimberConstants.rightTelescopeMultiplier, goalPositionRad);
+            rightOutput -= rightOutput < 0 ? 1.5 : 0;
             io.setRightVolts(rightOutput);
 
             Logger.getInstance().recordOutput("Telescopes/LeftOutput", leftOutput);
             Logger.getInstance().recordOutput("Telescopes/RightOutput", rightOutput);
 
         }
-
 
         Logger.getInstance().recordOutput("Telescopes/GoalPositionRad", goalPositionRad);
         Logger.getInstance().recordOutput("Telescopes/LeftSetpointDeg", Units.radiansToDegrees(leftController.getSetpoint().position));

@@ -32,8 +32,8 @@ public class ClimbSequence extends SequentialCommandGroup {
             // TO HIGH BAR
             // Telescopes extend while rotation arms move back to catch high bar
             rotationArms.moveToClimbSwing(),
-            telescopes.moveToSwing(),
-            rotationArms.waitForMove(),
+            //telescopes.moveToSwing(),
+            rotationArms.waitForMove()/*,
             // Telescopes up to above high bar
             telescopes.moveToFull(),
             telescopes.waitForMove(),
@@ -79,7 +79,7 @@ public class ClimbSequence extends SequentialCommandGroup {
             telescopes.waitForMove(), 
             // Pull up to traversal bar
             telescopes.moveToPull(),
-            telescopes.waitForMove()
+            telescopes.waitForMove()*/
 
     
             /*// To Mid Bar

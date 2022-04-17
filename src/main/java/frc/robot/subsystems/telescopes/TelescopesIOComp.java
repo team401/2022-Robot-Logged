@@ -5,10 +5,14 @@ import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.SparkMaxRelativeEncoder.Type;
+//import com.revrobotics.SparkMaxRelativeEncoder.Type;
+import com.revrobotics.SparkMaxAlternateEncoder;
+import com.revrobotics.SparkMaxAlternateEncoder.Type;
 
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.ClimberConstants;
+
+import org.littletonrobotics.junction.Logger;
 
 public class TelescopesIOComp implements TelescopesIO {
 
@@ -19,19 +23,20 @@ public class TelescopesIOComp implements TelescopesIO {
     private final RelativeEncoder rightEncoder;
 
     public TelescopesIOComp() {
-        leftMotor = new CANSparkMax(CANDevices.leftTelescopingMotorID, MotorType.kBrushed);
-        rightMotor = new CANSparkMax(CANDevices.rightTelescopingMotorID, MotorType.kBrushed);
+        leftMotor = new CANSparkMax(CANDevices.leftTelescopingMotorID, MotorType.kBrushless);
+        rightMotor = new CANSparkMax(CANDevices.rightTelescopingMotorID, MotorType.kBrushless);
 
-        leftMotor.setInverted(false);
+        leftMotor.setInverted(true);
         rightMotor.setInverted(true);
 
-        leftEncoder = leftMotor.getEncoder(Type.kQuadrature, 4096);
-        rightEncoder = rightMotor.getEncoder(Type.kQuadrature, 4096);
+        leftEncoder = leftMotor.getEncoder();
+        rightEncoder = rightMotor.getEncoder();
 
-        leftEncoder.setInverted(true);
+        //leftEncoder.setPositionConversionFactor(1 / 5 * 42);
+        //leftEncoder.setPositionConversionFactor(factor);
 
-        leftMotor.setSmartCurrentLimit(40);
-        rightMotor.setSmartCurrentLimit(40);
+        leftMotor.setSmartCurrentLimit(80);
+        rightMotor.setSmartCurrentLimit(80);
 
         leftMotor.setIdleMode(IdleMode.kBrake);
         rightMotor.setIdleMode(IdleMode.kBrake);
@@ -49,6 +54,7 @@ public class TelescopesIOComp implements TelescopesIO {
         inputs.rightVelocityRadPerS = rightEncoder.getVelocity() * 2.0 * Math.PI / 60.0;
         inputs.leftCurrent = leftMotor.getOutputCurrent();
         inputs.rightCurrent = rightMotor.getOutputCurrent();
+        Logger.getInstance().recordOutput("Telescopes/CurrentDraw", leftMotor.getOutputCurrent());
     }
 
     @Override
