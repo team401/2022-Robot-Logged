@@ -26,7 +26,6 @@ public class ClimbSequence extends SequentialCommandGroup {
             // Telescopes up a bit to clear them off the high bar
             telescopes.moveToPop(),
             telescopes.waitForMove(),
-            new WaitCommand(0.5),
 
 
             // TO HIGH BAR
@@ -55,17 +54,15 @@ public class ClimbSequence extends SequentialCommandGroup {
             // Telescopes up a bit to clear them off the high bar
             telescopes.moveToPop(),
             telescopes.waitForMove(),
-            new WaitCommand(0.5),
 
 
             // TO TRAVERSAL BAR
-            // Wait for button press
-            new WaitUntilCommand(() -> gamepad.getLeftBumperPressed()),
             // Telescopes extend while rotation arms move back to catch traversal bar
             rotationArms.moveToClimbSwing(),
             telescopes.moveToSwing(),
             rotationArms.waitForMove(),
             // Telescopes up to above traversal bar
+            new WaitUntilCommand(() -> gamepad.getLeftBumperPressed()),
             telescopes.moveToFull(),
             telescopes.waitForMove(),
             // Rotation arms to contact the traversal bar with telescopes

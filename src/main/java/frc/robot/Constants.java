@@ -152,7 +152,7 @@ public final class Constants {
         public static final double climbGrabPositionRad = Units.degreesToRadians(2);
         public static final double intakePositionRad = Units.degreesToRadians(20);
         public static final double climbSwingPositionRad = Units.degreesToRadians(30);
-        public static final double rotationLatchRad = Units.degreesToRadians(21);
+        public static final double rotationLatchRad = Units.degreesToRadians(17);
 
         public static final double telescopeMaxPositionRad = 1230;
         public static final double telescopeDefaultPositionRad = 100;
