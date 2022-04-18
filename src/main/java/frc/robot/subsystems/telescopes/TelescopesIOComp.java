@@ -58,8 +58,12 @@ public class TelescopesIOComp implements TelescopesIO {
     }
 
     @Override
-    public void resetEncoders() {
-        leftEncoder.setPosition(0);
+    public void resetLeftEncoder() {
+        leftEncoder.setPosition(0);      
+    }
+
+    @Override
+    public void resetRightEncoder() {
         rightEncoder.setPosition(0);        
     }
 

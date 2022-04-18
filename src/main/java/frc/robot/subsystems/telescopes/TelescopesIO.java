@@ -36,7 +36,8 @@ public interface TelescopesIO {
 
     void updateInputs(TelescopesIOInputs inputs);
 
-    void resetEncoders();
+    void resetLeftEncoder();
+    void resetRightEncoder();
 
     void setLeftVolts(double volts);
     void setRightVolts(double volts);

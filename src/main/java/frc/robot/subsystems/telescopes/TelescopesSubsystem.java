@@ -23,8 +23,11 @@ public class TelescopesSubsystem extends SubsystemBase {
     private final TelescopesIO io;
     private final TelescopesIOInputs ioInputs = new TelescopesIOInputs();
 
-    private boolean homed = false;
-    private final Timer homeTimer = new Timer();
+    //private boolean homed = false;
+    private boolean leftHomed = false;
+    private boolean rightHomed = false;
+    private final Timer leftHomeTimer = new Timer();
+    private final Timer rightHomeTimer = new Timer();
 
     private boolean atGoalOverride = false;
 
@@ -63,46 +66,54 @@ public class TelescopesSubsystem extends SubsystemBase {
             rightController.setPID(ClimberConstants.telescopeArmKp.get(), 0, ClimberConstants.telescopeArmKd.get());
         }
 
-        Logger.getInstance().recordOutput("Telescopes/Homed", homed);
+        Logger.getInstance().recordOutput("Telescopes/Homed", leftHomed && rightHomed);
 
-        if (!homed) {
+        if (!leftHomed || !rightHomed) {
             if (DriverStation.isEnabled()) {
-                if (Math.abs(ioInputs.leftVelocityRadPerS) < ClimberConstants.telescopeHomingThresholdRadPerS
-                        && Math.abs(ioInputs.rightVelocityRadPerS) < ClimberConstants.telescopeHomingThresholdRadPerS) {
-                    homeTimer.start();
-                } else {
-                    homeTimer.stop();
-                    homeTimer.reset();
+                // Left
+                if (Math.abs(ioInputs.leftVelocityRadPerS) < ClimberConstants.telescopeHomingThresholdRadPerS) {
+                    leftHomeTimer.start();
+                }
+                else {
+                    leftHomeTimer.stop();
+                    leftHomeTimer.reset();
+                }
+                if (leftHomeTimer.hasElapsed(ClimberConstants.homingTimeS)) {
+                    leftHomed = true;
+                    io.resetLeftEncoder();
+                    io.setLeftVolts(0);
+                    leftController.reset(ioInputs.leftPositionRad * ClimberConstants.leftTelescopeMultiplier);
+                }
+                else {
+                    io.setLeftVolts(ClimberConstants.telescopeHomingVolts);
+                }
+                // Right
+                if (Math.abs(ioInputs.rightVelocityRadPerS) < ClimberConstants.telescopeHomingThresholdRadPerS) {
+                    rightHomeTimer.start();
+                }
+                else {
+                    rightHomeTimer.stop();
+                    rightHomeTimer.reset();
+                }
+                if (rightHomeTimer.hasElapsed(ClimberConstants.homingTimeS)) {
+                    rightHomed = true;
+                    io.resetRightEncoder();
+                    io.setRightVolts(0);
+                    rightController.reset(ioInputs.rightPositionRad * ClimberConstants.rightTelescopeMultiplier);
+                }
+                else {
+                    io.setRightVolts(ClimberConstants.telescopeHomingVolts);
                 }
 
-                if (homeTimer.hasElapsed(ClimberConstants.homingTimeS)) {
-                    homed = true;
-                    io.resetEncoders();
-                    io.setLeftVolts(0);
-                    io.setRightVolts(0);
-                    leftController.reset(ioInputs.leftPositionRad * ClimberConstants.leftTelescopeMultiplier);
-                    rightController.reset(ioInputs.rightPositionRad * ClimberConstants.rightTelescopeMultiplier);
-                } else {
-                    io.setLeftVolts(ClimberConstants.telescopeHomingVolts);
-                    io.setRightVolts(ClimberConstants.telescopeHomingVolts);
-                    /*if (Math.abs(ioInputs.leftVelocityRadPerS) >= ClimberConstants.telescopeHomingThresholdRadPerS)
-                        io.setLeftVolts(ClimberConstants.telescopeHomingVolts);
-                    else
-                        io.setLeftVolts(0);
-                    
-                    if (Math.abs(ioInputs.rightVelocityRadPerS) < ClimberConstants.telescopeHomingThresholdRadPerS)
-                        io.setRightVolts(ClimberConstants.telescopeHomingVolts);
-                    else
-                        io.setRightVolts(0);*/
-                }
+
             }
         } else {
             double leftOutput = leftController.calculate(ioInputs.leftPositionRad * ClimberConstants.leftTelescopeMultiplier, goalPositionRad);
-            leftOutput -= leftOutput < 0 ? 1.5 : 0;
+            leftOutput -= leftOutput < 0 ? 0.7 : 0;
             io.setLeftVolts(leftOutput);
 
             double rightOutput = rightController.calculate(ioInputs.rightPositionRad * ClimberConstants.rightTelescopeMultiplier, goalPositionRad);
-            rightOutput -= rightOutput < 0 ? 1.5 : 0;
+            rightOutput -= rightOutput < 0 ? 0.7 : 0;
             io.setRightVolts(rightOutput);
 
             Logger.getInstance().recordOutput("Telescopes/LeftOutput", leftOutput);
@@ -120,7 +131,8 @@ public class TelescopesSubsystem extends SubsystemBase {
     }
 
     public void resetEncoders() {
-        io.resetEncoders();
+        io.resetLeftEncoder();
+        io.resetRightEncoder();
     }
 
     public void setLeftPercent(double percent) {
@@ -160,9 +172,12 @@ public class TelescopesSubsystem extends SubsystemBase {
     }
 
     public void home() {
-        homed = false;
-        homeTimer.reset();
-        homeTimer.start();
+        leftHomed = false;
+        rightHomed = false;
+        leftHomeTimer.reset();
+        leftHomeTimer.start();
+        rightHomeTimer.reset();
+        rightHomeTimer.start();
     }
 
     public void stop() {

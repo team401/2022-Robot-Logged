@@ -26,7 +26,7 @@ public class Turret extends SubsystemBase {
     private double encoderOffset = 0;
     private int setupCycleCount = 0;
 
-    private boolean killed = false;
+    private boolean killed = true;
     private double lastUpdateValue = 0;
     private long lastUpdateTimeMS = System.currentTimeMillis();
     

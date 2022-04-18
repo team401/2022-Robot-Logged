@@ -25,7 +25,7 @@ public class RotationArms extends SubsystemBase {
     // Speed and acceleration for regular moves
     private final TrapezoidProfile.Constraints normalConstraints = new TrapezoidProfile.Constraints(2 * Math.PI / 2, 10);
     // Speed and acceleration for slower climb moves
-    private final TrapezoidProfile.Constraints climbConstraints = new TrapezoidProfile.Constraints(0.15 * Math.PI , 0.75*2);
+    private final TrapezoidProfile.Constraints climbConstraints = new TrapezoidProfile.Constraints(1 * Math.PI , 5);
 
     private final ProfiledPIDController leftController = new ProfiledPIDController(
         ClimberConstants.rotationArmKp.get(), 0, ClimberConstants.rotationArmKd.get(), 
