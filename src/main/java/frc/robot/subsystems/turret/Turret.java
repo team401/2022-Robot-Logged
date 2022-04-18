@@ -26,11 +26,13 @@ public class Turret extends SubsystemBase {
     private double encoderOffset = 0;
     private int setupCycleCount = 0;
 
-    private boolean killed = true;
+    private boolean killed = false;
     private double lastUpdateValue = 0;
     private long lastUpdateTimeMS = System.currentTimeMillis();
     
     private boolean zeroOverride = false;
+
+    private final Timer overdrawTimer = new Timer();
 
     public Turret(TurretIO io) {
         this.io = io;
@@ -80,6 +82,7 @@ public class Turret extends SubsystemBase {
         Logger.getInstance().recordOutput("Turret/SetpointDeg", goalPosition.getDegrees());
         Logger.getInstance().recordOutput("Turret/VelocityFFDegPerSec", Units.radiansToDegrees(velocityGoal));
         Logger.getInstance().recordOutput("Turret/Killed", killed);
+        Logger.getInstance().recordOutput("Turret/Current Draw", io.getCurrent());
         SmartDashboard.putNumber("Turret Rotation", turretRotation);
 
         if (inputs.absolutePositionRad != lastUpdateValue) {
@@ -87,12 +90,19 @@ public class Turret extends SubsystemBase {
         }
         lastUpdateValue = inputs.absolutePositionRad;
 
-        if (System.currentTimeMillis()-lastUpdateTimeMS > 500 && setupCycleCount > TurretConstants.setupCycleCount && DriverStation.isEnabled())//if (lastUpdateTimer.get() > 0.5)// && DriverStation.isEnabled())
+        if (System.currentTimeMillis()-lastUpdateTimeMS > 500 && setupCycleCount > TurretConstants.setupCycleCount && DriverStation.isEnabled())
             killed = true;
         
-        if (Math.abs(turretRotation) > TurretConstants.turretLimitUpper + Math.PI/2 && setupCycleCount > TurretConstants.setupCycleCount)
+        if (Math.abs(turretRotation) > TurretConstants.turretLimitUpper + Math.PI/2 && setupCycleCount > TurretConstants.setupCycleCount && DriverStation.isEnabled())
             killed = true;
 
+        if (io.getCurrent() < 40 || !DriverStation.isEnabled()) {
+            overdrawTimer.reset();
+            overdrawTimer.start();
+        }
+        if (overdrawTimer.get() > 0.2)
+            killed = true;
+        
         //PID control - equivalent of our old setdesiredpositionclosedloop methods continuously
         double output = positionController.calculate(turretRotation, zeroOverride ? 0 : goalPosition.getRadians());
         // Only add feed velocity if we are not at our hard stops
@@ -104,10 +114,6 @@ public class Turret extends SubsystemBase {
             io.setVoltage(output);
         else
             io.setVoltage(0);
-
-        if (io.getCurrent() > 40) {
-            killed = true;
-        }
 
         RobotState.getInstance().recordTurretObservations(new Rotation2d(turretRotation), inputs.velocityRadPerS);
     }

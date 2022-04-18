@@ -23,6 +23,8 @@ public class TelescopesSubsystem extends SubsystemBase {
     private final TelescopesIO io;
     private final TelescopesIOInputs ioInputs = new TelescopesIOInputs();
 
+    private final double dt = 0.02;
+
     //private boolean homed = false;
     private boolean leftHomed = false;
     private boolean rightHomed = false;
@@ -148,12 +150,12 @@ public class TelescopesSubsystem extends SubsystemBase {
     }
 
     public void jogUp() {
-        goalPositionRad += 0.02 * ClimberConstants.telescopeCruiseVelocity;
+        goalPositionRad += dt * ClimberConstants.telescopeCruiseVelocity;
         if (goalPositionRad > ClimberConstants.telescopeMaxPositionRad) goalPositionRad = ClimberConstants.telescopeMaxPositionRad;
     }
 
     public void jogDown() {
-        goalPositionRad -= 0.02 * ClimberConstants.telescopeCruiseVelocity;
+        goalPositionRad -= dt * ClimberConstants.telescopeCruiseVelocity;
         if (goalPositionRad < ClimberConstants.telescopeHomePositionRad) goalPositionRad = ClimberConstants.telescopeHomePositionRad;
     }
 
