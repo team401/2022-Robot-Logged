@@ -69,6 +69,7 @@ public class ClimbSequence extends SequentialCommandGroup {
             rotationArms.latchRotation(),
             rotationArms.waitForMove(),
             // Telescopes pull up to just below traversal bar and rotation arms to behind the traversal bar
+            new WaitUntilCommand(() -> gamepad.getLeftBumperPressed()),
             telescopes.moveToPop(),
             telescopes.waitForRotationSafePosition(),
             rotationArms.moveToStow(),

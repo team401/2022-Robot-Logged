@@ -2,7 +2,9 @@ package frc.robot.subsystems.tower;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.tower.TowerIO.TowerIOInputs;
@@ -39,11 +41,11 @@ public class Tower extends SubsystemBase {
 
     private BallType lastShotColor = BallType.None;
 
-    //private static boolean error = false;
-
     public Tower(TowerIO io) {
 
         this.io = io;
+
+        topBall = DriverStation.getAlliance() == Alliance.Red ? BallType.Red : BallType.Blue;
 
     }
 
@@ -106,22 +108,13 @@ public class Tower extends SubsystemBase {
 
         prevTopSensorState = currentTopSensorState;
         prevBottomSensorState = currentBottomSensorState;
-        
-        /*byte[] data = {
-            (byte)(RobotState.getInstance().getLatestFieldToVehicle().getRotation().getDegrees()/10),
-            BallType.toByte(topBall),
-            BallType.toByte(bottomBall),
-            (byte)(Math.abs(Vision.getTX()) < 1 ? 1 : 0),
-            (byte)(error ? 1 : 0)
-        };
-        spi.write(data, data.length);*/
 
     }
     
     private BallType getBottomSensorColor() {
-        if (ioInputs.detectedColor.red > 60)
+        if (ioInputs.detectedColor.red > 110)
             return BallType.Red;
-        if (ioInputs.detectedColor.red < 5)
+        if (ioInputs.detectedColor.green > 35)
             return BallType.Blue;
         return BallType.None;
     }

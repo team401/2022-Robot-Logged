@@ -8,8 +8,6 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
@@ -21,17 +19,14 @@ import edu.wpi.first.wpilibj2.command.button.*;
 
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.CANDevices;
-import frc.robot.Constants.DIOChannels;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.ClimbSequence;
-import frc.robot.commands.MeasureKs;
 import frc.robot.commands.autonomous.AutoRoutines;
 import frc.robot.commands.autonomous.AutoRoutines.Paths;
 import frc.robot.commands.drive.DriveWithJoysticks;
 import frc.robot.commands.intake.Intake;
 import frc.robot.commands.shooter.PrepareToShoot;
 import frc.robot.commands.shooter.Shoot;
-import frc.robot.commands.turret.ForceSetPosition;
 import frc.robot.commands.turret.Tracking;
 import frc.robot.subsystems.drive.*;
 import frc.robot.subsystems.intake.IntakeWheelsIOComp;
@@ -122,7 +117,6 @@ public class RobotContainer {
 
         /*
         TODO:
-        Climb sequence telescope swing position (have to get value)
         Shooting reverse indexing (hopefully done)
         Intake photon vision (in progress)
         Auto balling (hopefully done)

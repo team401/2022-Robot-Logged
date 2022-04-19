@@ -47,15 +47,6 @@ public class Intake extends CommandBase {
     @Override
     public void execute() {
 
-        /*SmartDashboard.putNumber("Reverse Timer", reverseTimer.get());
-
-        if (tower.getDetectedColor().red != lastSensorRed) {
-            lastSensorUpdateTimer.reset();
-            lastSensorUpdateTimer.start();
-        }
-            
-        lastSensorRed = tower.getDetectedColor().red;*/
-
         if (!tower.getTopSensor()) tower.setConveyorPercent(BallConstants.towerPower);
         else tower.setConveyorPercent(0.0);
 

@@ -51,7 +51,7 @@ public final class Constants {
         public static final int hoodMotorID = 19;
         public static final int turretEncoderID = 30;
 
-        public static final int intakeMotorID = 22; 
+        public static final int intakeMotorID = 22;
         public static final int conveyorMotorID = 23;
         public static final int indexMotorID = 24; 
 
@@ -65,7 +65,7 @@ public final class Constants {
         public static final int leftRotationArmEncoder = 2;
         public static final int rightRotationArmEncoder = 3;
 
-        public static final int ledPort = 4;
+        public static final int ledPort = 5;
 
         public static final int turretEncoderPulse = 7;
         public static final int turretEncoderA = 8;
@@ -161,9 +161,7 @@ public final class Constants {
         public static final double telescopePopAboveRungRad = 250;
         public static final double telescopeLatchRad = 1200;
         public static final double telescopeRotationSafePositionRad = 600;
-        public static final double telescopeSwingPositionRad = 750; 
-
-
+        public static final double telescopeSwingPositionRad = 700; 
 
         // Multipliers applied to encoders to account for inconsistent spooling
         // multiplier backwards change pls

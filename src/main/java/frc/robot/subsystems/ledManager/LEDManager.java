@@ -31,11 +31,9 @@ public class LEDManager extends SubsystemBase {
     public LEDManager() {
 
         led = new AddressableLED(DIOChannels.ledPort);
-
         buffer = new AddressableLEDBuffer(ledCountPerSide*2);
 
         led.setLength(buffer.getLength());
-
         led.setData(buffer);
 
         led.start();
@@ -51,9 +49,9 @@ public class LEDManager extends SubsystemBase {
         /*if (DriverStation.isEnabled())
             updateStrips();
         else
-            rainbowArms();*/
+            rainbow();*/
 
-        //rainbowArms();
+        rainbow();
         
         led.setData(buffer);
 
@@ -116,13 +114,18 @@ public class LEDManager extends SubsystemBase {
 
     }
 
-    private void rainbowArms() {
+    private void rainbow() {
         for (int i = 0; i < buffer.getLength(); i++) {
             int hue = (rainbowFirstPixelHue + 90 + (i * 180 / ledArmCount)) % 180;
             buffer.setHSV(i, hue, 255, 128);
         }
         rainbowFirstPixelHue += 3;
         rainbowFirstPixelHue %= 180;
+
+        for (int i = 0; i < buffer.getLength(); i++) {
+            Color color = buffer.getLED(i);
+            buffer.setRGB(i, (int)(color.red*50), (int)(color.green*50), (int)(color.blue*50));
+        }
     }
 
     public static void setError(boolean e) {
