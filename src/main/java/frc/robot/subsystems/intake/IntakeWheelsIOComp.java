@@ -12,7 +12,7 @@ public class IntakeWheelsIOComp implements IntakeWheelsIO {
 
     public IntakeWheelsIOComp() {
         intakeMotor = new CANSparkMax(CANDevices.intakeMotorID, MotorType.kBrushed);
-        intakeMotor.setIdleMode(IdleMode.kBrake);
+        intakeMotor.setIdleMode(IdleMode.kCoast);
         intakeMotor.setInverted(false);
     }
 

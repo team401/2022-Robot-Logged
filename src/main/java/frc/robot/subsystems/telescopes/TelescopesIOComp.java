@@ -76,5 +76,15 @@ public class TelescopesIOComp implements TelescopesIO {
     public void setRightVolts(double volts) {
         rightMotor.setVoltage(volts);        
     }
+
+    @Override
+    public double getRightCurrentDraw() {
+        return rightMotor.getOutputCurrent();
+    }
+
+    @Override
+    public double getLeftCurrentDraw() {
+        return rightMotor.getOutputCurrent();
+    }
     
 }

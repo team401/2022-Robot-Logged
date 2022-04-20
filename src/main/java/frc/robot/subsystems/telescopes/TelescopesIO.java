@@ -41,4 +41,7 @@ public interface TelescopesIO {
 
     void setLeftVolts(double volts);
     void setRightVolts(double volts);
+
+    double getLeftCurrentDraw();
+    double getRightCurrentDraw();
 }

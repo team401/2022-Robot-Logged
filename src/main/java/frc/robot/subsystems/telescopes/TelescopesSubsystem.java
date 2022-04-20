@@ -73,7 +73,7 @@ public class TelescopesSubsystem extends SubsystemBase {
         if (!leftHomed || !rightHomed) {
             if (DriverStation.isEnabled()) {
                 // Left
-                if (Math.abs(ioInputs.leftVelocityRadPerS) < ClimberConstants.telescopeHomingThresholdRadPerS) {
+                if (io.getLeftCurrentDraw() > 30){//Math.abs(ioInputs.leftVelocityRadPerS) < ClimberConstants.telescopeHomingThresholdRadPerS) {
                     leftHomeTimer.start();
                 }
                 else {
@@ -90,7 +90,7 @@ public class TelescopesSubsystem extends SubsystemBase {
                     io.setLeftVolts(ClimberConstants.telescopeHomingVolts);
                 }
                 // Right
-                if (Math.abs(ioInputs.rightVelocityRadPerS) < ClimberConstants.telescopeHomingThresholdRadPerS) {
+                if (io.getRightCurrentDraw() > 30){//Math.abs(ioInputs.rightVelocityRadPerS) < ClimberConstants.telescopeHomingThresholdRadPerS) {
                     rightHomeTimer.start();
                 }
                 else {

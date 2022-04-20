@@ -12,8 +12,6 @@ public class Shoot extends CommandBase {
 
     private final Timer timer = new Timer();
 
-    private int prevBallCount = 0;
-
     public Shoot(Tower tower, Shooter shooter) {
 
         this.shooter = shooter;
@@ -29,17 +27,10 @@ public class Shoot extends CommandBase {
         timer.reset();
         timer.start();
 
-        prevBallCount = tower.getBallCount();
-
     }
 
     @Override
     public void execute() {
-
-        if (tower.getBallCount() != prevBallCount) {
-            timer.reset();
-        }
-        prevBallCount = tower.getBallCount();
 
         if (!shooter.atGoal()) {
             timer.reset();
@@ -47,10 +38,7 @@ public class Shoot extends CommandBase {
             tower.setIndexWheelsPercent(0.0);
         }
 
-        if (timer.get() > 0.5 && tower.getBallCount() > 0) {
-            tower.setConveyorPercent(-1.0);
-        }
-        else if (timer.get() > 0.1) {
+        if (timer.get() > 0.1) {
             tower.setConveyorPercent(1.0);
             tower.setIndexWheelsPercent(1.0);
         }

@@ -187,7 +187,7 @@ public final class Constants {
         public static TunableNumber telescopeArmKd = new TunableNumber("TelescopeArm/Kd");
 
         public static final double telescopeHomingThresholdRadPerS = 10;
-        public static final double homingTimeS = 0.1;
+        public static final double homingTimeS = 0.06;
         public static final double telescopeHomingVolts = -4;
         public static final double rotationHomingVolts = -4;
 

@@ -20,8 +20,6 @@ public class Tower extends SubsystemBase {
         public static byte toByte(BallType type) { return (byte)(type == BallType.None ? 0 : type == BallType.Blue ? 1 : 2); }
     }
 
-    //private SPI spi = new SPI(Port.kMXP);
-
     private final TowerIO io;
     private final TowerIOInputs ioInputs = new TowerIOInputs();
 
@@ -59,7 +57,7 @@ public class Tower extends SubsystemBase {
         currentBottomSensorState = getBottomSensorColor() != BallType.None;
 
         // Intaking
-        if (lastWheelPercent < 0 && prevBottomSensorState && !currentBottomSensorState) {
+        if (lastWheelPercent > 0 && prevBottomSensorState && !currentBottomSensorState) {
             if (ballCount == 0)
                 topBall = getBottomSensorColor();
             else
@@ -68,7 +66,7 @@ public class Tower extends SubsystemBase {
         }
 
         // Reverse Intaking
-        if (lastWheelPercent > 0 && prevBottomSensorState && !currentBottomSensorState) {
+        if (lastWheelPercent < 0 && prevBottomSensorState && !currentBottomSensorState) {
             if (ballCount == 1)
                 topBall = BallType.None;
             else if (ballCount == 2)
@@ -105,6 +103,7 @@ public class Tower extends SubsystemBase {
         Logger.getInstance().recordOutput("Tower/TopBall", BallType.toByte(topBall));
         Logger.getInstance().recordOutput("Tower/BottomBall", BallType.toByte(bottomBall));
         Logger.getInstance().recordOutput("Tower/BallCount", (byte)ballCount);
+        Logger.getInstance().recordOutput("Tower/CurrentBall", BallType.toByte(getBottomSensorColor()));
 
         prevTopSensorState = currentTopSensorState;
         prevBottomSensorState = currentBottomSensorState;
@@ -112,9 +111,11 @@ public class Tower extends SubsystemBase {
     }
     
     private BallType getBottomSensorColor() {
-        if (ioInputs.detectedColor.red > 110)
+        double redBlueRatio = (double)ioInputs.detectedColor.red/ioInputs.detectedColor.blue;
+        Logger.getInstance().recordOutput("Tower/Ratio", (double)ioInputs.detectedColor.red/ioInputs.detectedColor.blue);
+        if (redBlueRatio > 0.6)
             return BallType.Red;
-        if (ioInputs.detectedColor.green > 35)
+        if (redBlueRatio < 0.4)
             return BallType.Blue;
         return BallType.None;
     }

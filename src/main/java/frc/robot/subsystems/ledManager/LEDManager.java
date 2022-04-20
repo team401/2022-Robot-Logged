@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotState;
-import frc.robot.Constants.DIOChannels;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.tower.Tower;
 import frc.robot.subsystems.tower.Tower.BallType;
@@ -30,7 +29,7 @@ public class LEDManager extends SubsystemBase {
 
     public LEDManager() {
 
-        led = new AddressableLED(DIOChannels.ledPort);
+        led = new AddressableLED(9);
         buffer = new AddressableLEDBuffer(ledCountPerSide*2);
 
         led.setLength(buffer.getLength());
@@ -44,14 +43,28 @@ public class LEDManager extends SubsystemBase {
 
         // Blank buffers
         for (int i = 0; i < buffer.getLength(); i++)
-            buffer.setRGB(i, 50, 0, 0);
+            buffer.setRGB(i, 0, 0, 0);
+        //buffer.setRGB(0, 100, 0, 0);
         
         /*if (DriverStation.isEnabled())
             updateStrips();
         else
             rainbow();*/
 
-        rainbow();
+        //if (!DriverStation.isEnabled())
+        if (DriverStation.isEnabled()) {
+            if (Shooter.atGoalStatic()) {
+                for (int i = 0; i < buffer.getLength(); i++)
+                    buffer.setRGB(i, 50, 50, 50);
+            }
+            else {
+                for (int i = 0; i < buffer.getLength(); i++)
+                    buffer.setRGB(i, 0, 0, 0);
+            }
+        }
+        else {
+            rainbow();;
+        }
         
         led.setData(buffer);
 

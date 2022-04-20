@@ -163,11 +163,11 @@ public class RobotContainer {
                 new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, fourBallLeftPath, Paths.FourBallLeft));
 
         //autoChooser.setDefaultOption("-Five Ball Right-", 
-                //new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, fiveBallRightPath, Paths.FiveBallRight));
-        //autoChooser.setDefaultOption("-Troll Left-", 
-                //new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, vision, trollLeftPath, Paths.TrollLeft));
-        autoChooser.setDefaultOption("-Two Ball-", 
-                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, twoBallPath, Paths.TwoBall));
+        //      new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, fiveBallRightPath, Paths.FiveBallRight));
+        autoChooser.setDefaultOption("-Troll Left-", 
+                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, trollLeftPath, Paths.TrollLeft));
+        //autoChooser.setDefaultOption("-Two Ball-", 
+                //new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, twoBallPath, Paths.TwoBall));
 
         // Send path options to driver station
         SmartDashboard.putData("Auto Mode", autoChooser);
@@ -301,6 +301,10 @@ public class RobotContainer {
         new JoystickButton(leftStick, 6)
                 .whenPressed(new InstantCommand(() -> telescopes.setGoalOverride(true))
                 .andThen(new InstantCommand(() -> telescopes.setGoalOverride(false))));
+
+        // Reset Balls
+        new JoystickButton(leftStick, 5)
+                .whenPressed(new InstantCommand(() -> tower.resetBalls()));
 
     }
 
