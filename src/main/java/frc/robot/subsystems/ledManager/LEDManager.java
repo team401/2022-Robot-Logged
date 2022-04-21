@@ -44,27 +44,11 @@ public class LEDManager extends SubsystemBase {
         // Blank buffers
         for (int i = 0; i < buffer.getLength(); i++)
             buffer.setRGB(i, 0, 0, 0);
-        //buffer.setRGB(0, 100, 0, 0);
         
-        /*if (DriverStation.isEnabled())
+        if (DriverStation.isEnabled())
             updateStrips();
         else
-            rainbow();*/
-
-        //if (!DriverStation.isEnabled())
-        if (DriverStation.isEnabled()) {
-            if (Shooter.atGoalStatic()) {
-                for (int i = 0; i < buffer.getLength(); i++)
-                    buffer.setRGB(i, 50, 50, 50);
-            }
-            else {
-                for (int i = 0; i < buffer.getLength(); i++)
-                    buffer.setRGB(i, 0, 0, 0);
-            }
-        }
-        else {
-            rainbow();;
-        }
+            rainbow();
         
         led.setData(buffer);
 
@@ -109,7 +93,7 @@ public class LEDManager extends SubsystemBase {
         boolean readyToShoot = Math.abs(Vision.getTX()) < 1 && Shooter.atGoalStatic();
         int alliance = DriverStation.getAlliance() == Alliance.Blue ? 1 : 2;
 
-        Color color = Color.kBlack;
+        /*Color color = Color.kBlack;
 
         if (readyToShoot) 
             color = Color.kWhite;
@@ -123,7 +107,12 @@ public class LEDManager extends SubsystemBase {
             color = new Color((int)(Math.random()*256), (int)(Math.random()*256), (int)(Math.random()*256));
 
         for (int i = offset; i < offset+3; i++)
-            buffer.setLED(i, color);
+            buffer.setLED(i, color);*/
+
+        if (readyToShoot) {
+            for (int i = offset; i < offset+3; i++)
+                buffer.setRGB(i, 50, 50, 50);
+        }
 
     }
 
