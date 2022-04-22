@@ -111,11 +111,9 @@ public class Tower extends SubsystemBase {
     }
     
     private BallType getBottomSensorColor() {
-        double redBlueRatio = (double)ioInputs.detectedColor.red/ioInputs.detectedColor.blue;
-        Logger.getInstance().recordOutput("Tower/Ratio", (double)ioInputs.detectedColor.red/ioInputs.detectedColor.blue);
-        if (redBlueRatio > 0.6)
+        if (ioInputs.bottomSensor && ioInputs.detectedColor.red > 10)
             return BallType.Red;
-        if (redBlueRatio < 0.4)
+        if (ioInputs.bottomSensor)
             return BallType.Blue;
         return BallType.None;
     }

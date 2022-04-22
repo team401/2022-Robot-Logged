@@ -85,6 +85,10 @@ public class RobotState {
                         vehicleVelocity.omegaRadiansPerSecond * angularLookaheadTime));
     }
 
+    public ChassisSpeeds getVehicleVelocity() {
+        return vehicleVelocity;
+    }
+
     public Pose2d getFieldToTurret(double timestamp) {
         return getFieldToVehicle(timestamp).transformBy(GeomUtil.poseToTransform(Constants.TurretConstants.vehicleToTurretFixed)).transformBy(GeomUtil.poseToTransform(turretFixedToTurret.get(timestamp).orElseThrow()));
     }

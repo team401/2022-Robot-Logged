@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotState;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.tower.Tower;
-import frc.robot.subsystems.tower.Tower.BallType;
+//import frc.robot.subsystems.tower.Tower.BallType;
 import frc.robot.subsystems.vision.Vision;
 
 public class LEDManager extends SubsystemBase {
@@ -59,22 +59,33 @@ public class LEDManager extends SubsystemBase {
         double deg = RobotState.getInstance().getLatestFieldToVehicle().getRotation().getDegrees();
 
         if (deg > 67.5 || deg < -112.5) // Left front
-            updateStrip(buffer, ledArmCount);
+            updateStrip(buffer, ledArmCount+ledCountPerSide);
 		if (deg > 22.5 || deg < -157.5) // Left mid front
-            updateStrip(buffer, ledArmCount+3);
+            updateStrip(buffer, ledArmCount+ledCountPerSide+3);
 		if (deg > -22.5 && deg < 157.5) // Left mid back
-            updateStrip(buffer, ledArmCount+6);
+            updateStrip(buffer, ledArmCount+ledCountPerSide+6);
 		if (deg > -67.5 && deg < 112.5) // Left back
-            updateStrip(buffer, ledArmCount+9);
+            updateStrip(buffer, ledArmCount+ledCountPerSide+9);
         
 		if (deg > 112.5 || deg < -67.5) // Right front
-            updateStrip(buffer, ledArmCount+ledCountPerSide);
+            updateStrip(buffer, ledArmCount);
 		if (deg > 157.5 || deg < -22.5) // Right mid front
-            updateStrip(buffer, ledArmCount+ledCountPerSide+3);
+            updateStrip(buffer, ledArmCount+3);
 		if (deg > -157.5 && deg < 22.5) // Right mid back
-            updateStrip(buffer, ledArmCount+ledCountPerSide+6);
+            updateStrip(buffer, ledArmCount+6);
 		if (deg > -112.5 && deg < 67.5) // Right back
-            updateStrip(buffer, ledArmCount+ledCountPerSide+9);
+            updateStrip(buffer, ledArmCount+9);
+
+        if (Math.abs(Vision.getTX()) < 5 && Shooter.atGoalStatic()) {
+            if (deg < 0) {
+                for (int i = 0; i < ledArmCount; i++)
+                    buffer.setRGB(i, 50, 50, 50);
+            }
+            else {
+                for (int i = ledCountPerSide; i < ledArmCount+ledCountPerSide; i++)
+                    buffer.setRGB(i, 50, 50, 50);
+            }
+        }
 
     }
 
@@ -88,9 +99,9 @@ public class LEDManager extends SubsystemBase {
          * error - random
          */
 
-        int topBall = BallType.toByte(Tower.getTopBall());
-        int bottomBall = BallType.toByte(Tower.getBottomBall());
-        boolean readyToShoot = Math.abs(Vision.getTX()) < 1 && Shooter.atGoalStatic();
+        //int topBall = BallType.toByte(Tower.getTopBall());
+        //int bottomBall = BallType.toByte(Tower.getBottomBall());
+        boolean readyToShoot = Math.abs(Vision.getTX()) < 5 && Shooter.atGoalStatic();
         int alliance = DriverStation.getAlliance() == Alliance.Blue ? 1 : 2;
 
         /*Color color = Color.kBlack;

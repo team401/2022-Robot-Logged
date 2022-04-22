@@ -31,6 +31,8 @@ public class Shooter extends SubsystemBase {
 
     private static boolean atGoal = false;
 
+    private static double shooterGoal = 0;
+
     public Shooter(ShooterIO io) {
         this.io = io;
     }
@@ -108,6 +110,7 @@ public class Shooter extends SubsystemBase {
         this.hoodGoalRad = MathUtil.clamp(this.hoodGoalRad, ShooterConstants.hoodMinRad, ShooterConstants.hoodMaxRad);
         this.flywheelGoalRadPerS = flywheelGoalRadPerS;
         if (flywheelGoalRadPerS != 0) this.flywheelGoalRadPerS += Units.rotationsPerMinuteToRadiansPerSecond(rpmOffset);
+        shooterGoal = flywheelGoalRadPerS;
     }
 
     public void stopShooter() {
@@ -150,8 +153,10 @@ public class Shooter extends SubsystemBase {
         io.setHoodVoltage(volts);
     }
 
+    
+
     public static boolean atGoalStatic() {
-        return atGoal;
+        return atGoal && shooterGoal != 0;
     }
     
 }

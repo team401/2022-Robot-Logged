@@ -78,13 +78,14 @@ public class TelescopesIOComp implements TelescopesIO {
     }
 
     @Override
+    public double getLeftCurrentDraw() {
+        return leftMotor.getOutputCurrent();
+    }
+    
+    @Override
     public double getRightCurrentDraw() {
         return rightMotor.getOutputCurrent();
     }
 
-    @Override
-    public double getLeftCurrentDraw() {
-        return rightMotor.getOutputCurrent();
-    }
     
 }

@@ -23,7 +23,7 @@ public class RotationArms extends SubsystemBase {
     private final RotationArmsIOInputs ioInputs = new RotationArmsIOInputs();
 
     // Speed and acceleration for regular moves
-    private final TrapezoidProfile.Constraints normalConstraints = new TrapezoidProfile.Constraints(2 * Math.PI / 2, 10);
+    private final TrapezoidProfile.Constraints normalConstraints = new TrapezoidProfile.Constraints(2 * Math.PI, 20);
     // Speed and acceleration for slower climb moves
     private final TrapezoidProfile.Constraints climbConstraints = new TrapezoidProfile.Constraints(1 * Math.PI , 5);
 

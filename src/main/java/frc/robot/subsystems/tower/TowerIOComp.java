@@ -15,6 +15,8 @@ public class TowerIOComp implements TowerIO {
     private final CANSparkMax indexMotor;
 
     private final DigitalInput topBanner;
+    private final DigitalInput bottomBanner;
+
 
     // PicoColorSensor initialization needs to be here
     private final PicoColorSensor colorSensor = new PicoColorSensor();
@@ -23,6 +25,7 @@ public class TowerIOComp implements TowerIO {
         conveyorMotor = new CANSparkMax(CANDevices.conveyorMotorID, MotorType.kBrushed);
         indexMotor = new CANSparkMax(CANDevices.indexMotorID, MotorType.kBrushed);
         topBanner = new DigitalInput(DIOChannels.topBannerPort);
+        bottomBanner = new DigitalInput(DIOChannels.bottomBannerPort);
 
         conveyorMotor.setIdleMode(IdleMode.kBrake);
         indexMotor.setIdleMode(IdleMode.kBrake);
@@ -43,6 +46,7 @@ public class TowerIOComp implements TowerIO {
     @Override
     public void updateInputs(TowerIOInputs inputs) {
         inputs.topSensor = !topBanner.get();
+        inputs.bottomSensor = !bottomBanner.get();
         inputs.conveyorCurrent = conveyorMotor.getOutputCurrent();
         inputs.indexCurrent = indexMotor.getOutputCurrent();
         inputs.detectedColor = colorSensor.getRawColor0();

@@ -35,6 +35,8 @@ public class TelescopesSubsystem extends SubsystemBase {
 
     private double goalPositionRad = ClimberConstants.telescopeDefaultPositionRad;
 
+    private boolean raised = true;
+
     private final ProfiledPIDController leftController = new ProfiledPIDController(
             ClimberConstants.telescopeArmKp.get(), 0, ClimberConstants.telescopeArmKd.get(),
             new TrapezoidProfile.Constraints(ClimberConstants.telescopeCruiseVelocity, ClimberConstants.telescopeAcceleration));
@@ -49,8 +51,11 @@ public class TelescopesSubsystem extends SubsystemBase {
         leftController.setGoal(ClimberConstants.telescopeHomePositionRad);
         rightController.setGoal(ClimberConstants.telescopeHomePositionRad);
 
-        leftController.setTolerance(Units.degreesToRadians(300.0));
-        rightController.setTolerance(Units.degreesToRadians(300.0));
+        leftController.setTolerance(5);
+        rightController.setTolerance(5);
+
+        leftHomeTimer.start();
+        rightHomeTimer.start();
     }
 
     @Override
@@ -73,11 +78,7 @@ public class TelescopesSubsystem extends SubsystemBase {
         if (!leftHomed || !rightHomed) {
             if (DriverStation.isEnabled()) {
                 // Left
-                if (io.getLeftCurrentDraw() > 30){//Math.abs(ioInputs.leftVelocityRadPerS) < ClimberConstants.telescopeHomingThresholdRadPerS) {
-                    leftHomeTimer.start();
-                }
-                else {
-                    leftHomeTimer.stop();
+                if (Math.abs(ioInputs.leftVelocityRadPerS) > ClimberConstants.telescopeHomingThresholdRadPerS) {//io.getLeftCurrentDraw() < 30){//
                     leftHomeTimer.reset();
                 }
                 if (leftHomeTimer.hasElapsed(ClimberConstants.homingTimeS)) {
@@ -90,11 +91,7 @@ public class TelescopesSubsystem extends SubsystemBase {
                     io.setLeftVolts(ClimberConstants.telescopeHomingVolts);
                 }
                 // Right
-                if (io.getRightCurrentDraw() > 30){//Math.abs(ioInputs.rightVelocityRadPerS) < ClimberConstants.telescopeHomingThresholdRadPerS) {
-                    rightHomeTimer.start();
-                }
-                else {
-                    rightHomeTimer.stop();
+                if (Math.abs(ioInputs.rightVelocityRadPerS) > ClimberConstants.telescopeHomingThresholdRadPerS) {//io.getRightCurrentDraw() < 30){
                     rightHomeTimer.reset();
                 }
                 if (rightHomeTimer.hasElapsed(ClimberConstants.homingTimeS)) {
@@ -160,7 +157,8 @@ public class TelescopesSubsystem extends SubsystemBase {
     }
 
     public boolean atGoal() {
-        return (leftController.atGoal() && rightController.atGoal()) || atGoalOverride;
+        return ((leftController.atGoal() && rightController.atGoal()) || atGoalOverride) 
+            && ioInputs.leftPositionRad < 2000 && ioInputs.rightPositionRad < 2000;
     }
 
     public boolean passedRotationSafePosition() {
@@ -188,6 +186,14 @@ public class TelescopesSubsystem extends SubsystemBase {
 
     public void setGoalOverride(boolean override) {
         atGoalOverride = override;
+    }
+
+    public void toggleRaised() {
+        raised = !raised;
+        if (raised)
+            setDesiredPosition(540);
+        else
+            setDesiredPosition(ClimberConstants.telescopeHomePositionRad);
     }
 
     // Commands

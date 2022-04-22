@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.button.*;
 
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.CANDevices;
+import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.ClimbSequence;
 import frc.robot.commands.autonomous.AutoRoutines;
@@ -27,6 +28,7 @@ import frc.robot.commands.drive.DriveWithJoysticks;
 import frc.robot.commands.intake.Intake;
 import frc.robot.commands.shooter.PrepareToShoot;
 import frc.robot.commands.shooter.Shoot;
+import frc.robot.commands.shooter.ShootWhenReady;
 import frc.robot.commands.turret.Tracking;
 import frc.robot.subsystems.drive.*;
 import frc.robot.subsystems.intake.IntakeWheelsIOComp;
@@ -162,10 +164,10 @@ public class RobotContainer {
         autoChooser.addOption("Four Ball Left", 
                 new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, fourBallLeftPath, Paths.FourBallLeft));
 
-        //autoChooser.setDefaultOption("-Five Ball Right-", 
-        //      new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, fiveBallRightPath, Paths.FiveBallRight));
-        autoChooser.setDefaultOption("-Troll Left-", 
-                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, trollLeftPath, Paths.TrollLeft));
+        autoChooser.setDefaultOption("-Five Ball Right-", 
+              new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, fiveBallRightPath, Paths.FiveBallRight));
+        //autoChooser.setDefaultOption("-Troll Left-", 
+                //new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, trollLeftPath, Paths.TrollLeft));
         //autoChooser.setDefaultOption("-Two Ball-", 
                 //new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, twoBallPath, Paths.TwoBall));
 
@@ -215,7 +217,6 @@ public class RobotContainer {
                         .alongWith(new InstantCommand(() -> intakeWheels.setPercent(0))
                         .alongWith(new InstantCommand(() -> tower.setConveyorPercent(0))
                         .alongWith(new InstantCommand(() -> tower.setIndexWheelsPercent(0))))));
-
         
         /*SHOOTING BUTTONS*/ 
         
@@ -233,7 +234,6 @@ public class RobotContainer {
         new JoystickButton(leftStick, 4)
                 .whenPressed(new InstantCommand(() -> shooter.incrementRPMOffset(10)));
 
-
         /*OTHERS*/
 
         // Reset Gyro
@@ -244,11 +244,14 @@ public class RobotContainer {
         new JoystickButton(gamepad, Button.kA.value)
                 .whenPressed(new InstantCommand(() -> turret.setZeroOverride(true)))
                 .whenReleased(new InstantCommand(() -> turret.setZeroOverride(false)));
-
-        // Home
+                
+        // Rotation Home
         new Trigger(() -> (gamepad.getLeftTriggerAxis() > 0.3))
-                .whenActive(new InstantCommand(() -> rotationArms.home(), rotationArms)
-                                .alongWith(new InstantCommand(() -> telescopes.home(), telescopes)));
+                .whenActive(new InstantCommand(() -> rotationArms.home(), rotationArms));
+
+        // Telescope Home
+        new Trigger(() -> (gamepad.getRightTriggerAxis() > 0.3))
+                .whenActive(new InstantCommand(() -> telescopes.home(), telescopes));
         
         // Kill Turret
         new JoystickButton(leftStick, 9)
@@ -264,7 +267,7 @@ public class RobotContainer {
                         .alongWith(new InstantCommand(() -> rotationArms.stop(), rotationArms)));
 
         // Robot Relative Drive
-        new JoystickButton(rightStick, Joystick.ButtonType.kTrigger.value)
+        new JoystickButton(leftStick, Joystick.ButtonType.kTrigger.value)
                 .whenHeld(new DriveWithJoysticks(
                         drive,
                         () -> -leftStick.getRawAxis(1),
@@ -306,6 +309,8 @@ public class RobotContainer {
         new JoystickButton(leftStick, 5)
                 .whenPressed(new InstantCommand(() -> tower.resetBalls()));
 
+
+        
     }
 
     public Command getAutonomousCommand() {

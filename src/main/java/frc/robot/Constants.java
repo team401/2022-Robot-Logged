@@ -61,11 +61,10 @@ public final class Constants {
     public static final class DIOChannels {
 
         public static final int topBannerPort = 1;
+        public static final int bottomBannerPort = 6;
 
         public static final int leftRotationArmEncoder = 2;
         public static final int rightRotationArmEncoder = 3;
-
-        public static final int ledPort = 5;
 
         public static final int turretEncoderPulse = 7;
         public static final int turretEncoderA = 8;
@@ -150,21 +149,20 @@ public final class Constants {
 
         public static final double stowPositionRad = rotationMin;
         public static final double climbGrabPositionRad = Units.degreesToRadians(2);
-        public static final double intakePositionRad = Units.degreesToRadians(20);
+        public static final double intakePositionRad = Units.degreesToRadians(25);
         public static final double climbSwingPositionRad = Units.degreesToRadians(30);
         public static final double rotationLatchRad = Units.degreesToRadians(17);
 
         public static final double telescopeMaxPositionRad = 1230;
         public static final double telescopeDefaultPositionRad = 100;
         public static final double telescopeHomePositionRad = 60;
-        public static final double telescopePullPositionRad = 60;
+        public static final double telescopePullPositionRad = 0;
         public static final double telescopePopAboveRungRad = 250;
         public static final double telescopeLatchRad = 1200;
         public static final double telescopeRotationSafePositionRad = 600;
         public static final double telescopeSwingPositionRad = 700; 
 
         // Multipliers applied to encoders to account for inconsistent spooling
-        // multiplier backwards change pls
         public static final double leftTelescopeMultiplier = 1.00;
         public static final double rightTelescopeMultiplier = 1.00;
 
@@ -186,8 +184,8 @@ public final class Constants {
         public static TunableNumber telescopeArmKp = new TunableNumber("TelescopeArm/Kp");
         public static TunableNumber telescopeArmKd = new TunableNumber("TelescopeArm/Kd");
 
-        public static final double telescopeHomingThresholdRadPerS = 10;
-        public static final double homingTimeS = 0.06;
+        public static final double telescopeHomingThresholdRadPerS = 50;
+        public static final double homingTimeS = 0.2;
         public static final double telescopeHomingVolts = -4;
         public static final double rotationHomingVolts = -4;
 
@@ -309,8 +307,8 @@ public final class Constants {
 
         static {
             floorToCameraAngleDeg.setDefault(51.0);
-            targetingLookaheadS.setDefault(0.7);
-            targetingAngularLookaheadS.setDefault(0.15);
+            targetingLookaheadS.setDefault(0);//0.7
+            targetingAngularLookaheadS.setDefault(0);//0.15
         }
 
         // Vision target
