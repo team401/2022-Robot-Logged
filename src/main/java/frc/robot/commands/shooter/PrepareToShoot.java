@@ -3,6 +3,7 @@ package frc.robot.commands.shooter;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.RobotState;
@@ -33,14 +34,14 @@ public class PrepareToShoot extends CommandBase {
             shooter.setSetpoint(0.35, Units.rotationsPerMinuteToRadiansPerSecond(1000));
         }
         else {*/
-            RobotState.AimingParameters params = RobotState.getInstance().getAimingParameters();
+            /*RobotState.AimingParameters params = RobotState.getInstance().getAimingParameters();
             double hoodAngle = Constants.ShooterConstants.hoodLookup.getInterpolated(new InterpolatingDouble(params.getDistanceM())).value;
             double shotSpeed = Units.rotationsPerMinuteToRadiansPerSecond(Constants.ShooterConstants.flywheelLookup.getInterpolated(new InterpolatingDouble(params.getDistanceM())).value);
 
             shooter.setSetpoint(hoodAngle, shotSpeed);
         //}
-
-        //shooter.setSetpoint(ShooterConstants.hoodDesired.get(), Units.rotationsPerMinuteToRadiansPerSecond(ShooterConstants.flywheelDesired.get()));
+        */
+        shooter.setSetpoint(SmartDashboard.getNumber("Hood Desired", 0.27), Units.rotationsPerMinuteToRadiansPerSecond(SmartDashboard.getNumber("Shooter Desired", 0)));
         
     }
 

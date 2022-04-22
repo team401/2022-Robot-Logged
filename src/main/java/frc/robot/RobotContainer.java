@@ -28,7 +28,6 @@ import frc.robot.commands.drive.DriveWithJoysticks;
 import frc.robot.commands.intake.Intake;
 import frc.robot.commands.shooter.PrepareToShoot;
 import frc.robot.commands.shooter.Shoot;
-import frc.robot.commands.shooter.ShootWhenReady;
 import frc.robot.commands.turret.Tracking;
 import frc.robot.subsystems.drive.*;
 import frc.robot.subsystems.intake.IntakeWheelsIOComp;
@@ -117,12 +116,8 @@ public class RobotContainer {
 
         configureButtonBindings();
 
-        /*
-        TODO:
-        Shooting reverse indexing (hopefully done)
-        Intake photon vision (in progress)
-        Auto balling (hopefully done)
-        */
+        SmartDashboard.putNumber("Shooter Desired", 0);
+        SmartDashboard.putNumber("Hood Desired", 0);
     }
 
     private void configureAutoPaths() {
@@ -191,6 +186,7 @@ public class RobotContainer {
         
         // Climb Sequence
         new JoystickButton(gamepad, Button.kX.value)
+                .whenPressed(new InstantCommand(() -> ledManager.setClimb()))
                 .whenHeld(new ClimbSequence(telescopes, rotationArms, gamepad));
 
         /*INTAKE BUTTONS*/ 

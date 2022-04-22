@@ -46,6 +46,8 @@ public class RotationArms extends SubsystemBase {
     private double rightLastPositionRad = 0;
 
     private Timer homeTimer = new Timer();
+    private Timer homeOverrideTimer = new Timer();
+    private boolean homeOverrideTimerStarted = false;
 
     private boolean atGoalOverride = false;
 
@@ -54,6 +56,10 @@ public class RotationArms extends SubsystemBase {
 
         leftController.setTolerance(ClimberConstants.rotationPositionToleranceRad);
         rightController.setTolerance(ClimberConstants.rotationPositionToleranceRad);
+
+        homeOverrideTimer.reset();
+        homeOverrideTimer.stop();
+
     }
 
     @Override
@@ -106,6 +112,11 @@ public class RotationArms extends SubsystemBase {
 
         if (!homed) {
             if (DriverStation.isEnabled()) {
+                /*if (!homeOverrideTimerStarted) {
+                    homeOverrideTimer.reset();
+                    homeOverrideTimer.start();
+                    homeOverrideTimerStarted = true;
+                }*/
                 if (Math.abs(leftVelocityRadPerS) < ClimberConstants.rotationHomingThresholdRadPerS
                         && Math.abs(rightVelocityRadPerS) < ClimberConstants.rotationHomingThresholdRadPerS) {
                     homeTimer.start();
@@ -116,9 +127,6 @@ public class RotationArms extends SubsystemBase {
 
                 if (homeTimer.hasElapsed(ClimberConstants.homingTimeS)) {
                     homed = true;
-
-                    SmartDashboard.putNumber("currentLeftPosition", ioInputs.leftPositionRad);
-                    SmartDashboard.putNumber("currentRightPosition", ioInputs.rightPositionRad);
 
                     io.resetEncoder();
                     io.setLeftVolts(0);
@@ -131,6 +139,22 @@ public class RotationArms extends SubsystemBase {
                     io.setLeftVolts(ClimberConstants.rotationHomingVolts);
                     io.setRightVolts(ClimberConstants.rotationHomingVolts);
                 }
+
+                /*if (homeOverrideTimer.get() > 0.1) {
+                    homed = true;
+
+                    io.resetEncoder();
+                    io.setLeftVolts(0);
+                    io.setRightVolts(0);
+                   
+                    leftController.reset(ioInputs.leftPositionRad);
+                    rightController.reset(ioInputs.rightPositionRad);
+
+                    homeOverrideTimer.reset();
+                    homeOverrideTimer.stop();
+
+                }*/
+
             }
         } else {
             if (!killed) {

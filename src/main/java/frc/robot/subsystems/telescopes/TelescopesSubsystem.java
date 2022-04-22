@@ -37,6 +37,8 @@ public class TelescopesSubsystem extends SubsystemBase {
 
     private boolean raised = true;
 
+    private boolean override = false;
+
     private final ProfiledPIDController leftController = new ProfiledPIDController(
             ClimberConstants.telescopeArmKp.get(), 0, ClimberConstants.telescopeArmKd.get(),
             new TrapezoidProfile.Constraints(ClimberConstants.telescopeCruiseVelocity, ClimberConstants.telescopeAcceleration));
@@ -109,11 +111,13 @@ public class TelescopesSubsystem extends SubsystemBase {
         } else {
             double leftOutput = leftController.calculate(ioInputs.leftPositionRad * ClimberConstants.leftTelescopeMultiplier, goalPositionRad);
             leftOutput -= leftOutput < 0 ? 0.7 : 0;
-            io.setLeftVolts(leftOutput);
+            if (!override)
+                io.setLeftVolts(leftOutput);
 
             double rightOutput = rightController.calculate(ioInputs.rightPositionRad * ClimberConstants.rightTelescopeMultiplier, goalPositionRad);
             rightOutput -= rightOutput < 0 ? 0.7 : 0;
-            io.setRightVolts(rightOutput);
+            if (!override)
+                io.setRightVolts(rightOutput);
 
             Logger.getInstance().recordOutput("Telescopes/LeftOutput", leftOutput);
             Logger.getInstance().recordOutput("Telescopes/RightOutput", rightOutput);
@@ -127,6 +131,18 @@ public class TelescopesSubsystem extends SubsystemBase {
         Logger.getInstance().recordOutput("Telescopes/RightDeg", Units.radiansToDegrees(ioInputs.rightPositionRad * ClimberConstants.rightTelescopeMultiplier));
     
         SmartDashboard.putBoolean("Telescopes At Goal", atGoal());
+    }
+
+    public double getLeftVelocityRadPerS() {
+
+        return ioInputs.leftVelocityRadPerS;
+
+    }
+
+    public double getRightVelocityRadPerS() {
+
+        return ioInputs.rightVelocityRadPerS;
+
     }
 
     public void resetEncoders() {
@@ -166,8 +182,11 @@ public class TelescopesSubsystem extends SubsystemBase {
                 ioInputs.leftPositionRad <= ClimberConstants.telescopeRotationSafePositionRad;
     }
 
-    public void setVoltage(double volts) {
+    public void setLeftVolts(double volts) {
         io.setLeftVolts(volts);
+    }
+
+    public void setRightVolts(double volts) {
         io.setRightVolts(volts);
     }
 
@@ -194,6 +213,10 @@ public class TelescopesSubsystem extends SubsystemBase {
             setDesiredPosition(540);
         else
             setDesiredPosition(ClimberConstants.telescopeHomePositionRad);
+    }
+
+    public void setOverride(boolean o) {
+        override = o;
     }
 
     // Commands

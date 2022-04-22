@@ -3,6 +3,7 @@ package frc.robot.subsystems.ledManager;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
@@ -27,6 +28,8 @@ public class LEDManager extends SubsystemBase {
 
     private int rainbowFirstPixelHue = 0;
 
+    private boolean climbing = false;
+
     public LEDManager() {
 
         led = new AddressableLED(9);
@@ -36,6 +39,9 @@ public class LEDManager extends SubsystemBase {
         led.setData(buffer);
 
         led.start();
+
+        climbLeds = new boolean[ledArmCount];
+
     }
 
     @Override
@@ -44,9 +50,12 @@ public class LEDManager extends SubsystemBase {
         // Blank buffers
         for (int i = 0; i < buffer.getLength(); i++)
             buffer.setRGB(i, 0, 0, 0);
-        
+
         if (DriverStation.isEnabled())
-            updateStrips();
+            if (!climbing)
+                updateStrips();
+            else
+                climb();
         else
             rainbow();
         
@@ -141,8 +150,52 @@ public class LEDManager extends SubsystemBase {
         }
     }
 
+    private final int climbCycleCount = 2;
+    private final int maxDelay = 30;
+    private final int minDelay = 10;
+    private final int maxLength = 6;
+    private final int minLength = 1;
+
+    private final boolean[] climbLeds;
+
+    private int cycleSpawn = minDelay;
+    private int cycleUpdate = climbCycleCount;
+
+    private void climb() {
+
+        // Spawn
+        cycleSpawn--;
+        if (cycleSpawn == 0) {
+            int length = (int)(Math.random()*(maxLength-minLength)+minLength);
+            cycleSpawn = (int)(Math.random()*(maxDelay-minDelay)+minDelay) + (int)(length*2);
+            for (int i = 0; i < length && i < climbLeds.length; i++)
+                climbLeds[i] = true;
+        }
+
+        // Update
+        cycleUpdate--;
+        if (cycleUpdate == 0) {
+            cycleUpdate = climbCycleCount;
+            for (int i = climbLeds.length-2; i > 0; i--)
+                climbLeds[i] = climbLeds[i-1];
+            climbLeds[0] = false;
+        }
+
+        // Buffer
+        Color color = DriverStation.getAlliance() == Alliance.Red ? new Color(50, 0, 0) : new Color(0, 0, 50);
+        for (int i = 0; i < ledArmCount; i++) {
+            buffer.setLED(i, climbLeds[i] ? color : Color.kBlack);
+            buffer.setLED(i+ledCountPerSide, climbLeds[i] ? color : Color.kBlack);
+        }
+
+    }
+
     public static void setError(boolean e) {
         error = e;
+    }
+
+    public void setClimb() {
+        climbing = true;
     }
     
 }
