@@ -34,14 +34,14 @@ public class PrepareToShoot extends CommandBase {
             shooter.setSetpoint(0.35, Units.rotationsPerMinuteToRadiansPerSecond(1000));
         }
         else {*/
-            /*RobotState.AimingParameters params = RobotState.getInstance().getAimingParameters();
+            RobotState.AimingParameters params = RobotState.getInstance().getAimingParameters();
             double hoodAngle = Constants.ShooterConstants.hoodLookup.getInterpolated(new InterpolatingDouble(params.getDistanceM())).value;
             double shotSpeed = Units.rotationsPerMinuteToRadiansPerSecond(Constants.ShooterConstants.flywheelLookup.getInterpolated(new InterpolatingDouble(params.getDistanceM())).value);
 
             shooter.setSetpoint(hoodAngle, shotSpeed);
         //}
-        */
-        shooter.setSetpoint(SmartDashboard.getNumber("Hood Desired", 0.27), Units.rotationsPerMinuteToRadiansPerSecond(SmartDashboard.getNumber("Shooter Desired", 0)));
+        
+        //shooter.setSetpoint(SmartDashboard.getNumber("Hood Desired", 0.27), Units.rotationsPerMinuteToRadiansPerSecond(SmartDashboard.getNumber("Shooter Desired", 0)));
         
     }
 

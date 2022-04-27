@@ -40,10 +40,10 @@ public class Climb extends CommandBase {
             rightHomeTimer.reset();
         }
         if (leftHomeTimer.hasElapsed(ClimberConstants.homingTimeS)) {
-            telescopes.setLeftVolts(-8);
+            telescopes.setLeftVolts(-10);
         }
         if (rightHomeTimer.hasElapsed(ClimberConstants.homingTimeS)) {
-            telescopes.setRightPercent(-8);
+            telescopes.setRightPercent(-10);
         }
 
     }
@@ -55,6 +55,6 @@ public class Climb extends CommandBase {
 
     @Override
     public void end(boolean isInterrupted) {
-        telescopes.setOverride(false);
+        telescopes.setDesiredPosition(0);
     }
 }

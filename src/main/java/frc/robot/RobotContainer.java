@@ -8,6 +8,7 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
@@ -159,10 +160,10 @@ public class RobotContainer {
         autoChooser.addOption("Four Ball Left", 
                 new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, fourBallLeftPath, Paths.FourBallLeft));
 
-        autoChooser.setDefaultOption("-Five Ball Right-", 
-              new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, fiveBallRightPath, Paths.FiveBallRight));
-        //autoChooser.setDefaultOption("-Troll Left-", 
-                //new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, trollLeftPath, Paths.TrollLeft));
+        //autoChooser.setDefaultOption("-Five Ball Right-", 
+              //new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, fiveBallRightPath, Paths.FiveBallRight));
+        autoChooser.setDefaultOption("-Troll Left-", 
+                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, trollLeftPath, Paths.TrollLeft));
         //autoChooser.setDefaultOption("-Two Ball-", 
                 //new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, twoBallPath, Paths.TwoBall));
 
@@ -302,8 +303,10 @@ public class RobotContainer {
                 .andThen(new InstantCommand(() -> telescopes.setGoalOverride(false))));
 
         // Reset Balls
-        new JoystickButton(leftStick, 5)
-                .whenPressed(new InstantCommand(() -> tower.resetBalls()));
+        /*new JoystickButton(leftStick, 5)
+                .whenPressed(new InstantCommand(() -> shooter.setSetpoint(0.27, Units.rotationsPerMinuteToRadiansPerSecond(1000))))
+                .whenReleased(new InstantCommand(() -> shooter.stopShooter()));
+                //.whenPressed(new InstantCommand(() -> tower.resetBalls()));*/
 
 
         

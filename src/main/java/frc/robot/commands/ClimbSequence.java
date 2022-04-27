@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -23,6 +24,7 @@ public class ClimbSequence extends SequentialCommandGroup {
             rotationArms.moveToClimbGrab(),
             rotationArms.waitForMove(),
             // Telescopes up a bit to clear them off the high bar
+            new InstantCommand(() -> telescopes.setOverride(false)),
             telescopes.moveToPop(),
             telescopes.waitForMove(),
 
@@ -51,6 +53,7 @@ public class ClimbSequence extends SequentialCommandGroup {
             rotationArms.moveToClimbGrab(),
             rotationArms.waitForMove(),
             // Telescopes up a bit to clear them off the high bar
+            new InstantCommand(() -> telescopes.setOverride(false)),
             telescopes.moveToPop(),
             telescopes.waitForMove(),
 
