@@ -51,11 +51,16 @@ public class LEDManager extends SubsystemBase {
         for (int i = 0; i < buffer.getLength(); i++)
             buffer.setRGB(i, 0, 0, 0);
 
-        if (DriverStation.isEnabled())
+        /*if (DriverStation.isEnabled())
             if (!climbing)
                 updateStrips();
             else
                 climb();
+        else
+            rainbow();*/
+
+        if (climbing && DriverStation.isEnabled())
+            climb();
         else
             rainbow();
         
@@ -194,8 +199,8 @@ public class LEDManager extends SubsystemBase {
         error = e;
     }
 
-    public void setClimb() {
-        climbing = true;
+    public void setClimb(boolean v) {
+        climbing = v;
     }
     
 }

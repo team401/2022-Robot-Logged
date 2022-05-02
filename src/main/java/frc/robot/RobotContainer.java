@@ -187,8 +187,9 @@ public class RobotContainer {
         
         // Climb Sequence
         new JoystickButton(gamepad, Button.kX.value)
-                .whenPressed(new InstantCommand(() -> ledManager.setClimb()))
-                .whenHeld(new ClimbSequence(telescopes, rotationArms, gamepad));
+                .whenPressed(new InstantCommand(() -> ledManager.setClimb(true)))
+                .whenHeld(new ClimbSequence(telescopes, rotationArms, gamepad))
+                .whenReleased(new InstantCommand(() -> ledManager.setClimb(false)));
 
         /*INTAKE BUTTONS*/ 
 
