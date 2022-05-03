@@ -1,5 +1,7 @@
 package frc.robot.commands.shooter;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -15,12 +17,12 @@ import frc.robot.util.Interpolation.InterpolatingDouble;
 public class PrepareToShoot extends CommandBase {
 
     private final Shooter shooter;
-    private final Tower tower;
+    private final DoubleSupplier percent;
 
-    public PrepareToShoot(Shooter shooter, Tower tower) {
+    public PrepareToShoot(Shooter shooter, DoubleSupplier supplier) {
 
         this.shooter = shooter;
-        this.tower = tower;
+        this.percent = supplier;
 
         addRequirements(shooter);
 
@@ -29,20 +31,9 @@ public class PrepareToShoot extends CommandBase {
     @Override
     public void execute() {
 
-        /*if ((DriverStation.getAlliance() == Alliance.Blue && tower.getTopBall() == BallType.Red) ||
-            (DriverStation.getAlliance() == Alliance.Red && tower.getTopBall() == BallType.Blue)) {
-            shooter.setSetpoint(0.35, Units.rotationsPerMinuteToRadiansPerSecond(1000));
-        }
-        else {*/
-            RobotState.AimingParameters params = RobotState.getInstance().getAimingParameters();
-            double hoodAngle = Constants.ShooterConstants.hoodLookup.getInterpolated(new InterpolatingDouble(params.getDistanceM())).value;
-            double shotSpeed = Units.rotationsPerMinuteToRadiansPerSecond(Constants.ShooterConstants.flywheelLookup.getInterpolated(new InterpolatingDouble(params.getDistanceM())).value);
-
-            shooter.setSetpoint(hoodAngle, shotSpeed);
-        //}
-        
-        //shooter.setSetpoint(SmartDashboard.getNumber("Hood Desired", 0.27), Units.rotationsPerMinuteToRadiansPerSecond(SmartDashboard.getNumber("Shooter Desired", 0)));
-        
+        double desiredRPM = percent.getAsDouble() > 0.05 ? percent.getAsDouble() * 2000 : 0;
+        shooter.setSetpoint(ShooterConstants.hoodMaxRad, Units.rotationsPerMinuteToRadiansPerSecond(desiredRPM));
+      
     }
 
     @Override

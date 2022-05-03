@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.SPI.Port;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.tower.TowerIO.TowerIOInputs;
-import frc.robot.subsystems.vision.Vision;
 import frc.robot.util.PicoColorSensor.RawColor;
 import frc.robot.RobotState;
 

@@ -12,7 +12,6 @@ import frc.robot.RobotState;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.tower.Tower;
 //import frc.robot.subsystems.tower.Tower.BallType;
-import frc.robot.subsystems.vision.Vision;
 
 public class LEDManager extends SubsystemBase {
 
@@ -47,22 +46,7 @@ public class LEDManager extends SubsystemBase {
     @Override
     public void periodic() {
 
-        // Blank buffers
-        for (int i = 0; i < buffer.getLength(); i++)
-            buffer.setRGB(i, 0, 0, 0);
-
-        /*if (DriverStation.isEnabled())
-            if (!climbing)
-                updateStrips();
-            else
-                climb();
-        else
-            rainbow();*/
-
-        if (climbing && DriverStation.isEnabled())
-            climb();
-        else
-            rainbow();
+        rainbow();
         
         led.setData(buffer);
 
@@ -90,7 +74,7 @@ public class LEDManager extends SubsystemBase {
 		if (deg > -112.5 && deg < 67.5) // Right back
             updateStrip(buffer, ledArmCount+9);
 
-        if (Math.abs(Vision.getTX()) < 5 && Shooter.atGoalStatic()) {
+        if (Shooter.atGoalStatic()) {
             if (deg < 0) {
                 for (int i = 0; i < ledArmCount; i++)
                     buffer.setRGB(i, 50, 50, 50);
@@ -115,7 +99,7 @@ public class LEDManager extends SubsystemBase {
 
         //int topBall = BallType.toByte(Tower.getTopBall());
         //int bottomBall = BallType.toByte(Tower.getBottomBall());
-        boolean readyToShoot = Math.abs(Vision.getTX()) < 5 && Shooter.atGoalStatic();
+        boolean readyToShoot = Shooter.atGoalStatic();
         int alliance = DriverStation.getAlliance() == Alliance.Blue ? 1 : 2;
 
         /*Color color = Color.kBlack;

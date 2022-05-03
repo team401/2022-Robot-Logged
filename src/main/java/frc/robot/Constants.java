@@ -75,8 +75,8 @@ public final class Constants {
     public static final class DriveConstants {
         public static final double driveWheelGearReduction = 6.75;
         public static final double rotationWheelGearReduction = 150.0 / 7.0;
-        public static final double maxSpeedMPerS = Units.feetToMeters(15.0);
-        public static final double maxAngularSpeedRadPerS = 2 * Math.PI;
+        public static final double maxSpeedMPerS = Units.feetToMeters(7.0);
+        public static final double maxAngularSpeedRadPerS = Math.PI;
 
         public static final double wheelRadiusM = Units.inchesToMeters(3.9028) / 2.0;
 
