@@ -95,13 +95,6 @@ public class Turret extends SubsystemBase {
         
         if (Math.abs(turretRotation) > TurretConstants.turretLimitUpper + Math.PI/2 && setupCycleCount > TurretConstants.setupCycleCount && DriverStation.isEnabled())
             killed = true;
-
-        if (io.getCurrent() < 40 || !DriverStation.isEnabled()) {
-            overdrawTimer.reset();
-            overdrawTimer.start();
-        }
-        if (overdrawTimer.get() > 0.2)
-            killed = true;
         
         //PID control - equivalent of our old setdesiredpositionclosedloop methods continuously
         double output = positionController.calculate(turretRotation, zeroOverride ? 0 : goalPosition.getRadians());

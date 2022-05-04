@@ -97,7 +97,7 @@ public class RobotContainer {
         // set default commands
         drive.setDefaultCommand(driveWithJoysticks);
         turret.setDefaultCommand(new ManualControl(turret, () -> gamepad.getRightX(), () -> gamepad.getRightY()));
-        //shooter.setDefaultCommand(new PrepareToShoot(shooter, () -> gamepad.getRightTriggerAxis()));
+        shooter.setDefaultCommand(new PrepareToShoot(shooter, () -> gamepad.getRightTriggerAxis()));
 
         configureButtonBindings();
 

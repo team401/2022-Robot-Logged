@@ -32,16 +32,17 @@ public class ManualControl extends CommandBase {
 
         
         double filteredX = xFilter.calculate(xSupplier.getAsDouble());
-        double filteredY = yFilter.calculate(ySupplier.getAsDouble());
-        double angle = filteredX != 0 ? -Math.atan(1 / filteredX): 0;
+        double filteredY = -yFilter.calculate(ySupplier.getAsDouble());
+        filteredY = filteredY < 0 ? 0 : filteredY;
+        double angle = filteredX != 0 ? Math.atan(filteredY / filteredX) : 0;
+        angle += Math.PI / 2;
 
-        SmartDashboard.putNumber("X", filteredX);
-        SmartDashboard.putNumber("Y", filteredY);
-        SmartDashboard.putNumber("Angle", angle);
+        if (angle > Math.PI/2)
+            angle = -(Math.PI - angle);
 
-        if (Math.sqrt(filteredX*filteredX + filteredY*filteredY) > 0.95)
+        if (Math.sqrt(filteredX*filteredX + filteredY*filteredY) > 0.75 && filteredY != 0)
             turret.setPositionGoal(new Rotation2d(angle));
-
+        
     }
     
 }
