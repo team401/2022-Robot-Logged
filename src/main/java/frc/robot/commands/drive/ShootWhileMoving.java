@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.drive.Drive;
 
-public class DriveWithJoysticks extends CommandBase {
+public class ShootWhileMoving extends CommandBase {
   private final Drive drive;
   private final DoubleSupplier xPercent;
   private final DoubleSupplier yPercent;
@@ -28,7 +28,7 @@ public class DriveWithJoysticks extends CommandBase {
   private final AxisProcessor omegaProcessor = new AxisProcessor(true);
 
   /** Creates a new DriveWithJoysticks. */
-  public DriveWithJoysticks(Drive drive, DoubleSupplier xPercent, DoubleSupplier yPercent, DoubleSupplier omegaPercent, boolean fieldRelative) {
+  public ShootWhileMoving(Drive drive, DoubleSupplier xPercent, DoubleSupplier yPercent, DoubleSupplier omegaPercent, boolean fieldRelative) {
     this.drive = drive;
     this.xPercent = xPercent;
     this.yPercent = yPercent;
@@ -44,13 +44,14 @@ public class DriveWithJoysticks extends CommandBase {
     xProcessor.reset(xPercent.getAsDouble());
     yProcessor.reset(yPercent.getAsDouble());
     omegaProcessor.reset(omegaPercent.getAsDouble());
+    RobotState.getInstance().setLookAhead(true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double xMPerS = xProcessor.processJoystickInputs(xPercent.getAsDouble()) * DriveConstants.maxSpeedMPerS;
-    double yMPerS = yProcessor.processJoystickInputs(yPercent.getAsDouble()) * DriveConstants.maxSpeedMPerS;
+    double xMPerS = xProcessor.processJoystickInputs(xPercent.getAsDouble()) * DriveConstants.maxSpeedWhileShootingMPerS;
+    double yMPerS = yProcessor.processJoystickInputs(yPercent.getAsDouble()) * DriveConstants.maxSpeedWhileShootingMPerS;
     double omegaRadPerS = omegaProcessor.processJoystickInputs(omegaPercent.getAsDouble()) * DriveConstants.maxAngularSpeedRadPerS;
 
     Logger.getInstance().recordOutput("DriveWithJoysticks/SpeedMPerS", new double[]{xMPerS, yMPerS});
@@ -66,7 +67,9 @@ public class DriveWithJoysticks extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    RobotState.getInstance().setLookAhead(false);
+  }
 
   // Returns true when the command should end.
   @Override

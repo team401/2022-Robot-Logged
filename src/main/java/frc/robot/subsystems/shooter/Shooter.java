@@ -5,6 +5,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.RobotState;
 import frc.robot.Constants.ShooterConstants;
 
 import org.littletonrobotics.junction.Logger;
@@ -27,7 +28,7 @@ public class Shooter extends SubsystemBase {
     private final double flywheelToleranceRadPerS = Units.rotationsPerMinuteToRadiansPerSecond(150);
     private final double hoodToleranceRad = Units.rotationsToRadians(0.25);
 
-    private double rpmOffset = 150;
+    private double rpmOffset = 0;//150;
 
     private static boolean atGoal = false;
 
@@ -91,6 +92,8 @@ public class Shooter extends SubsystemBase {
         }
 
         atGoal = atGoal();
+
+        SmartDashboard.putNumber("Distance", RobotState.getInstance().getAimingParameters().getDistanceM());
 
     }
 

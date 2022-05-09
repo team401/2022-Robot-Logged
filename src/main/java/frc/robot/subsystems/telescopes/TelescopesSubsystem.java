@@ -37,7 +37,8 @@ public class TelescopesSubsystem extends SubsystemBase {
 
     private boolean raised = true;
 
-    private boolean override = false;
+    private boolean override = true;//false
+    // TODO CHANGE TO FALSE WHEN FIXED TELESCOPES
 
     private final ProfiledPIDController leftController = new ProfiledPIDController(
             ClimberConstants.telescopeArmKp.get(), 0, ClimberConstants.telescopeArmKd.get(),

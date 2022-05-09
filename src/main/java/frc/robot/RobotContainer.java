@@ -25,9 +25,11 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.ClimbSequence;
 import frc.robot.commands.autonomous.AutoRoutines;
 import frc.robot.commands.autonomous.AutoRoutines.Paths;
-import frc.robot.commands.drive.DriveWithJoysticks;
 import frc.robot.commands.intake.Intake;
+import frc.robot.commands.drive.DriveWithJoysticks;
+import frc.robot.commands.drive.ShootWhileMoving;
 import frc.robot.commands.shooter.PrepareToShoot;
+import frc.robot.commands.shooter.Ramping;
 import frc.robot.commands.shooter.Shoot;
 import frc.robot.commands.turret.Tracking;
 import frc.robot.subsystems.drive.*;
@@ -112,6 +114,7 @@ public class RobotContainer {
         // set default commands
         drive.setDefaultCommand(driveWithJoysticks);
         turret.setDefaultCommand(new Tracking(vision, turret));
+        //shooter.setDefaultCommand(new Ramping(shooter));
 
         configureAutoPaths();
 
@@ -272,6 +275,16 @@ public class RobotContainer {
                         () -> -leftStick.getRawAxis(0),
                         () -> -rightStick.getRawAxis(0),
                         false
+                ));
+
+        // Robot Relative Drive
+        new JoystickButton(rightStick, Joystick.ButtonType.kTrigger.value)
+                .whenHeld(new ShootWhileMoving(
+                        drive,
+                        () -> -leftStick.getRawAxis(1),
+                        () -> -leftStick.getRawAxis(0),
+                        () -> -rightStick.getRawAxis(0),
+                        true
                 ));
 
         // Rotation Arm Overrides

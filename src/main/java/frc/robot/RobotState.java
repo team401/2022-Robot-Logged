@@ -28,6 +28,8 @@ public class RobotState {
 
     private Translation2d latestMeasuredFieldToTarget = Constants.FieldConstants.hubCenter;
 
+    private boolean lookAhead = false;
+
     private RobotState() {
         bootToVehicle.insert(0.0, new Pose2d());
         turretFixedToTurret.insert(0.0, new Pose2d());
@@ -124,13 +126,22 @@ public class RobotState {
 
     public Rotation2d getVehicleToGoal() {
 
-        Pose2d fieldToPredictedVehicle = getPredictedFieldToVehicle(Constants.VisionConstants.targetingLookaheadS.get(), Constants.VisionConstants.targetingAngularLookaheadS.get());
+        Pose2d fieldToPredictedVehicle = null;
+        if (lookAhead)
+            fieldToPredictedVehicle = getPredictedFieldToVehicle(Constants.VisionConstants.targetingLookaheadS.get(), Constants.VisionConstants.targetingAngularLookaheadS.get());
+        else
+            fieldToPredictedVehicle = getPredictedFieldToVehicle(0, 0);
+
 
         Translation2d vehicleToTargetTranslation = GeomUtil.poseInverse(fieldToPredictedVehicle)
             .transformBy(GeomUtil.transformFromTranslation(latestMeasuredFieldToTarget)).getTranslation();
 
         return GeomUtil.direction(vehicleToTargetTranslation);
 
+    }
+
+    public void setLookAhead(boolean b) {
+        lookAhead = b;
     }
 
     public final class AimingParameters {
