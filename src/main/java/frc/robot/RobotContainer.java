@@ -183,10 +183,22 @@ public class RobotContainer {
         /*CLIMBING BUTTONS*/ 
 
         // Telescope Up/Down
-        new POVButton(gamepad, 0)
+        /*new POVButton(gamepad, 0)
                 .whileHeld(new InstantCommand(() -> telescopes.jogUp()));
         new POVButton(gamepad, 180)
-                .whileHeld(new InstantCommand(() -> telescopes.jogDown()));
+                .whileHeld(new InstantCommand(() -> telescopes.jogDown()));*/
+
+        /*new POVButton(gamepad, 0)
+                .whenPressed(new InstantCommand(() -> telescopes.setRightVolts(4))
+                        .alongWith(new InstantCommand(() -> telescopes.setLeftVolts(4))))
+                .whenReleased(new InstantCommand(() -> telescopes.setRightVolts(0))
+                        .alongWith(new InstantCommand(() -> telescopes.setLeftVolts(0))));
+        
+        new POVButton(gamepad, 180)
+                .whenPressed(new InstantCommand(() -> telescopes.setRightVolts(-4))
+                        .alongWith(new InstantCommand(() -> telescopes.setLeftVolts(-4))))
+                .whenReleased(new InstantCommand(() -> telescopes.setRightVolts(0))
+                        .alongWith(new InstantCommand(() -> telescopes.setLeftVolts(0))));*/
         
         // Climb Sequence
         new JoystickButton(gamepad, Button.kX.value)

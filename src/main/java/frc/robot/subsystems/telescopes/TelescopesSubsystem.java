@@ -26,8 +26,8 @@ public class TelescopesSubsystem extends SubsystemBase {
     private final double dt = 0.02;
 
     //private boolean homed = false;
-    private boolean leftHomed = false;
-    private boolean rightHomed = false;
+    private boolean leftHomed = true;
+    private boolean rightHomed = true;
     private final Timer leftHomeTimer = new Timer();
     private final Timer rightHomeTimer = new Timer();
 
@@ -66,6 +66,7 @@ public class TelescopesSubsystem extends SubsystemBase {
         io.updateInputs(ioInputs);
         Logger.getInstance().processInputs("Telescopes", ioInputs);
 
+        /*
         if (DriverStation.isDisabled()) {
             leftController.reset(ioInputs.leftPositionRad);
             rightController.reset(ioInputs.rightPositionRad);
@@ -132,6 +133,8 @@ public class TelescopesSubsystem extends SubsystemBase {
         Logger.getInstance().recordOutput("Telescopes/RightDeg", Units.radiansToDegrees(ioInputs.rightPositionRad * ClimberConstants.rightTelescopeMultiplier));
     
         SmartDashboard.putBoolean("Telescopes At Goal", atGoal());
+        */
+        
     }
 
     public double getLeftVelocityRadPerS() {
