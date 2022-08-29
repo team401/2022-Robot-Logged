@@ -29,7 +29,6 @@ import frc.robot.commands.intake.Intake;
 import frc.robot.commands.drive.DriveWithJoysticks;
 import frc.robot.commands.drive.ShootWhileMoving;
 import frc.robot.commands.shooter.PrepareToShoot;
-import frc.robot.commands.shooter.Ramping;
 import frc.robot.commands.shooter.Shoot;
 import frc.robot.commands.turret.Tracking;
 import frc.robot.subsystems.drive.*;

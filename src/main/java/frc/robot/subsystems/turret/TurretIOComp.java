@@ -15,12 +15,13 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
 import frc.robot.Constants.TurretConstants;
+import frc.robot.Constants;
 import frc.robot.Constants.CANDevices;
 import frc.robot.Constants.DIOChannels;
 
 public class TurretIOComp implements TurretIO {
 
-    private final TalonFX turretMotor = new TalonFX(CANDevices.turretMotorID);
+    private final TalonFX turretMotor = new TalonFX(CANDevices.turretMotorID, Constants.canivoreName);
     //private final CANCoder turretEncoder = new CANCoder(CANDevices.turretEncoderID);
 
     private final DutyCycleEncoder turretAbsEncoder = new DutyCycleEncoder(DIOChannels.turretEncoderPulse);

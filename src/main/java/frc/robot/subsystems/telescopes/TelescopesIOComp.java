@@ -1,16 +1,11 @@
 package frc.robot.subsystems.telescopes;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-//import com.revrobotics.SparkMaxRelativeEncoder.Type;
-import com.revrobotics.SparkMaxAlternateEncoder;
-import com.revrobotics.SparkMaxAlternateEncoder.Type;
 
 import frc.robot.Constants.CANDevices;
-import frc.robot.Constants.ClimberConstants;
 
 import org.littletonrobotics.junction.Logger;
 

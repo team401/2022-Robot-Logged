@@ -20,6 +20,8 @@ public final class Constants {
 
     public static final double trackWidth = Units.inchesToMeters(19.75);
     public static final double wheelBase = Units.inchesToMeters(19.75);
+    
+    public static final String canivoreName = "Canivore";
 
     public static final class CANDevices {
         public static final int frontLeftDriveMotorID = 0;
@@ -56,6 +58,7 @@ public final class Constants {
         public static final int indexMotorID = 24; 
 
         public static final int pigeonIMU = 20;
+
     }
 
     public static final class DIOChannels {

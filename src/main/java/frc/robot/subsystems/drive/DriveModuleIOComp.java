@@ -9,6 +9,7 @@ import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoderStatusFrame;
 
 import edu.wpi.first.math.util.Units;
+import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 
 public class DriveModuleIOComp implements DriveModuleIO {
@@ -43,9 +44,9 @@ public class DriveModuleIOComp implements DriveModuleIO {
         double measuredOffsetsRadians
         ) {
 
-        driveMotor = new TalonFX(driveMotorID);
-        rotationMotor = new TalonFX(rotationMotorID);
-        rotationEncoder = new CANCoder(cancoderID);
+        driveMotor = new TalonFX(driveMotorID, Constants.canivoreName);
+        rotationMotor = new TalonFX(rotationMotorID, Constants.canivoreName);
+        rotationEncoder = new CANCoder(cancoderID, Constants.canivoreName);
         
 
         driveMotor.configFactoryDefault(1000);
