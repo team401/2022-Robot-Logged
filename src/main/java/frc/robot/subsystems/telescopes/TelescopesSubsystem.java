@@ -1,16 +1,11 @@
 package frc.robot.subsystems.telescopes;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Twist2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.util.GeomUtil;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -25,9 +20,8 @@ public class TelescopesSubsystem extends SubsystemBase {
 
     private final double dt = 0.02;
 
-    //private boolean homed = false;
-    private boolean leftHomed = true;
-    private boolean rightHomed = true;
+    private boolean leftHomed = false;
+    private boolean rightHomed = false;
     private final Timer leftHomeTimer = new Timer();
     private final Timer rightHomeTimer = new Timer();
 
@@ -35,10 +29,7 @@ public class TelescopesSubsystem extends SubsystemBase {
 
     private double goalPositionRad = ClimberConstants.telescopeDefaultPositionRad;
 
-    private boolean raised = true;
-
-    private boolean override = true;//false
-    // TODO CHANGE TO FALSE WHEN FIXED TELESCOPES
+    private boolean override = false;
 
     private final ProfiledPIDController leftController = new ProfiledPIDController(
             ClimberConstants.telescopeArmKp.get(), 0, ClimberConstants.telescopeArmKd.get(),
@@ -65,6 +56,78 @@ public class TelescopesSubsystem extends SubsystemBase {
     public void periodic() {
         io.updateInputs(ioInputs);
         Logger.getInstance().processInputs("Telescopes", ioInputs);
+
+        double leftOutput = 0;
+        double rightOutput = 0;
+
+        // PID Changes
+        if (ClimberConstants.telescopeArmKp.hasChanged() || ClimberConstants.telescopeArmKd.hasChanged()) {
+            leftController.setPID(ClimberConstants.telescopeArmKp.get(), 0, ClimberConstants.telescopeArmKd.get());
+            rightController.setPID(ClimberConstants.telescopeArmKp.get(), 0, ClimberConstants.telescopeArmKd.get());
+        }
+
+        if (DriverStation.isEnabled()){
+            // Left
+            if (!leftHomed) {
+                if (Math.abs(ioInputs.leftVelocityRadPerS) < ClimberConstants.telescopeHomingThresholdRadPerS) {
+                    leftHomeTimer.reset();
+                }
+                else if (leftHomeTimer.hasElapsed(ClimberConstants.homingTimeS)) {
+                    leftHomed = true;
+                    io.resetLeftEncoder();
+                    leftController.reset(ioInputs.leftPositionRad);//WHEN BROKEN: * ClimberConstants.leftTelescopeMultiplier
+                }
+                else {
+                    leftOutput = ClimberConstants.telescopeHomingVolts;
+                }
+            }
+            else {
+                double output = leftController.calculate(ioInputs.leftPositionRad * ClimberConstants.leftTelescopeMultiplier, goalPositionRad);
+                output -= output < 0 ? 0.7 : 0; // feed forward
+                leftOutput = override ? leftOutput : output;
+            }
+
+            // Right
+            if (!rightHomed) {
+                if (Math.abs(ioInputs.rightVelocityRadPerS) < ClimberConstants.telescopeHomingThresholdRadPerS) {
+                    rightHomeTimer.reset();
+                }
+                else if (rightHomeTimer.hasElapsed(ClimberConstants.homingTimeS)) {
+                    rightHomed = true;
+                    io.resetLeftEncoder();
+                    rightController.reset(ioInputs.rightPositionRad);//WHEN BROKEN: * ClimberConstants.rightTelescopeMultiplier
+                }
+                else {
+                    rightOutput = ClimberConstants.telescopeHomingVolts;
+                }
+            }
+            else {
+                double output = rightController.calculate(ioInputs.rightPositionRad * ClimberConstants.rightTelescopeMultiplier, goalPositionRad);
+                output -= output < 0 ? 0.7 : 0; // feed forward
+                rightOutput = override ? rightOutput : output;
+            }
+        }
+        else {
+            leftController.reset(ioInputs.leftPositionRad);
+            rightController.reset(ioInputs.rightPositionRad);
+        }
+
+        io.setLeftVolts(leftOutput);
+        io.setRightVolts(rightOutput);
+
+        Logger.getInstance().recordOutput("Telescopes/LeftHomed", leftHomed);
+        Logger.getInstance().recordOutput("Telescopes/RightHomed", rightHomed);
+        Logger.getInstance().recordOutput("Telescopes/AtGoalOverride", atGoalOverride);
+        Logger.getInstance().recordOutput("Telescopes/GoalPositionRad", goalPositionRad);
+        Logger.getInstance().recordOutput("Telescopes/Override", override);
+        Logger.getInstance().recordOutput("Telescopes/LeftOutput", leftOutput);
+        Logger.getInstance().recordOutput("Telescopes/RightOutput", rightOutput);
+        Logger.getInstance().recordOutput("Telescopes/LeftSetpointRad", leftController.getSetpoint().position);
+        Logger.getInstance().recordOutput("Telescopes/RightSetpointRad", rightController.getSetpoint().position);
+        Logger.getInstance().recordOutput("Telescopes/LeftRad", ioInputs.leftPositionRad * ClimberConstants.leftTelescopeMultiplier);
+        Logger.getInstance().recordOutput("Telescopes/RightRad", ioInputs.rightPositionRad * ClimberConstants.rightTelescopeMultiplier);
+        Logger.getInstance().recordOutput("Telescopes/AtGoal", atGoal());
+        SmartDashboard.putBoolean("Telescopes At Goal", atGoal());
 
         /*
         if (DriverStation.isDisabled()) {
@@ -209,14 +272,6 @@ public class TelescopesSubsystem extends SubsystemBase {
 
     public void setGoalOverride(boolean override) {
         atGoalOverride = override;
-    }
-
-    public void toggleRaised() {
-        raised = !raised;
-        if (raised)
-            setDesiredPosition(540);
-        else
-            setDesiredPosition(ClimberConstants.telescopeHomePositionRad);
     }
 
     public void setOverride(boolean o) {

@@ -8,7 +8,6 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
@@ -20,7 +19,6 @@ import edu.wpi.first.wpilibj2.command.button.*;
 
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.CANDevices;
-import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.ClimbSequence;
 import frc.robot.commands.autonomous.AutoRoutines;
@@ -113,7 +111,6 @@ public class RobotContainer {
         // set default commands
         drive.setDefaultCommand(driveWithJoysticks);
         turret.setDefaultCommand(new Tracking(vision, turret));
-        //shooter.setDefaultCommand(new Ramping(shooter));
 
         configureAutoPaths();
 
@@ -175,6 +172,14 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
+
+        /*
+        TODO:
+        Get accurate color sensor readings (Tower)
+        Test Climbing (last time left didnt work)
+        Test Shooting
+        Test Intentionally missing depending on ball
+        */
 
         // photonvision.local:5800 
         // intake cam http://wpilibpi.local:1181/stream.mjpg
@@ -326,14 +331,6 @@ public class RobotContainer {
         new JoystickButton(leftStick, 6)
                 .whenPressed(new InstantCommand(() -> telescopes.setGoalOverride(true))
                 .andThen(new InstantCommand(() -> telescopes.setGoalOverride(false))));
-
-        // Reset Balls
-        /*new JoystickButton(leftStick, 5)
-                .whenPressed(new InstantCommand(() -> shooter.setSetpoint(0.27, Units.rotationsPerMinuteToRadiansPerSecond(1000))))
-                .whenReleased(new InstantCommand(() -> shooter.stopShooter()));
-                //.whenPressed(new InstantCommand(() -> tower.resetBalls()));*/
-
-
         
     }
 
