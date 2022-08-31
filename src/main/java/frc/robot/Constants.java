@@ -230,6 +230,8 @@ public final class Constants {
         public static final TunableNumber flywheelDesired = new TunableNumber("Shooter/FlywheelDesired");
         public static final TunableNumber hoodDesired = new TunableNumber("Shooter/HoodDesired");
 
+        public static final double intentionalMissRPM = 1000;
+
 
         static {
             hoodKp.setDefault(0.7);

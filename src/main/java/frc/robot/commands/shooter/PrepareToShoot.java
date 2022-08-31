@@ -33,7 +33,10 @@ public class PrepareToShoot extends CommandBase {
         double hoodAngle = Constants.ShooterConstants.hoodLookup.getInterpolated(new InterpolatingDouble(params.getDistanceM())).value;
         double shotSpeed = Units.rotationsPerMinuteToRadiansPerSecond(Constants.ShooterConstants.flywheelLookup.getInterpolated(new InterpolatingDouble(params.getDistanceM())).value);
 
-        shooter.setSetpoint(hoodAngle, shotSpeed);
+        if (RobotState.getInstance().hasCorrectBall())
+            shooter.setSetpoint(hoodAngle, shotSpeed);
+        else
+            shooter.setSetpoint(hoodAngle, Units.rotationsPerMinuteToRadiansPerSecond(Constants.ShooterConstants.intentionalMissRPM));
         
         //shooter.setSetpoint(SmartDashboard.getNumber("Hood Desired", 0.27), Units.rotationsPerMinuteToRadiansPerSecond(SmartDashboard.getNumber("Shooter Desired", 0)));
         

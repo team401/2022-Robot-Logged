@@ -17,8 +17,7 @@ public class TowerIOComp implements TowerIO {
     private final DigitalInput topBanner;
     private final DigitalInput bottomBanner;
 
-
-    // PicoColorSensor initialization needs to be here
+    // Pico Color Sensor initialization needs to be up here
     private final PicoColorSensor colorSensor = new PicoColorSensor();
 
     public TowerIOComp() {

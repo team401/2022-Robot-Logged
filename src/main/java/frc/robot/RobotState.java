@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.*;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.util.GeomUtil;
 import frc.robot.util.PoseHistory;
@@ -29,6 +30,9 @@ public class RobotState {
     private Translation2d latestMeasuredFieldToTarget = Constants.FieldConstants.hubCenter;
 
     private boolean lookAhead = false;
+
+    // 0 = none, 1 = red, 2 = blue
+    private int currentBall = 0;
 
     private RobotState() {
         bootToVehicle.insert(0.0, new Pose2d());
@@ -142,6 +146,16 @@ public class RobotState {
 
     public void setLookAhead(boolean b) {
         lookAhead = b;
+    }
+
+    public void setCurrentBall(int ball) {
+        currentBall = ball;
+    }
+
+    public boolean hasCorrectBall() {
+        return (currentBall == 0) ||
+               (currentBall == 1 && DriverStation.getAlliance() == DriverStation.Alliance.Red) ||
+               (currentBall == 2 && DriverStation.getAlliance() == DriverStation.Alliance.Blue);
     }
 
     public final class AimingParameters {
