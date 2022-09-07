@@ -5,29 +5,24 @@ import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 public interface TelescopesIO {
     public static class TelescopesIOInputs implements LoggableInputs {
-        public double leftPositionRad;
-        public double rightPositionRad;
-        public double leftVelocityRadPerS;
-        public double rightVelocityRadPerS;
+
+        public double leftPositionM;
+        public double rightPositionM;
         public double leftCurrent;
         public double rightCurrent;
 
         @Override
         public void toLog(LogTable table) {
-            table.put("LeftPositionRad", leftPositionRad);
-            table.put("RightPositionRad", rightPositionRad);
-            table.put("LeftVelocityRadPerS", leftVelocityRadPerS);
-            table.put("RightVelocityRadPerS", rightVelocityRadPerS);
+            table.put("LeftPositionM", leftPositionM);
+            table.put("RightPositionM", rightPositionM);
             table.put("LeftCurrent", leftCurrent);
             table.put("RightCurrent", rightCurrent);
         }
 
         @Override
         public void fromLog(LogTable table) {
-            leftPositionRad = table.getDouble("LeftPositionRad", leftPositionRad);
-            rightPositionRad = table.getDouble("RightPositionRad", rightPositionRad);
-            leftVelocityRadPerS = table.getDouble("LeftVelocityRadPerS", leftVelocityRadPerS);
-            rightVelocityRadPerS = table.getDouble("RightVelocityRadPerS", rightVelocityRadPerS);
+            leftPositionM = table.getDouble("LeftPositionM", leftPositionM);
+            rightPositionM = table.getDouble("RightPositionM", rightPositionM);
             leftCurrent = table.getDouble("LeftCurrent", leftCurrent);
             rightCurrent = table.getDouble("RightCurrent", rightCurrent);
         }
@@ -36,12 +31,12 @@ public interface TelescopesIO {
 
     void updateInputs(TelescopesIOInputs inputs);
 
-    void resetLeftEncoder();
-    void resetRightEncoder();
-
     void setLeftVolts(double volts);
     void setRightVolts(double volts);
 
     double getLeftCurrentDraw();
     double getRightCurrentDraw();
+
+    boolean isLeftLidarOnline();
+    boolean isRightLidarOnline();
 }

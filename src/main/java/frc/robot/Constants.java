@@ -59,6 +59,9 @@ public final class Constants {
 
         public static final int pigeonIMU = 20;
 
+        public static final int lidarLeft = 21;
+        public static final int lidarRight = 22;
+
     }
 
     public static final class DIOChannels {
@@ -157,28 +160,26 @@ public final class Constants {
         public static final double climbSwingPositionRad = Units.degreesToRadians(30);
         public static final double rotationLatchRad = Units.degreesToRadians(17);
 
-        public static final double telescopeMaxPositionRad = 1230;
-        public static final double telescopeDefaultPositionRad = 100;
-        public static final double telescopeHomePositionRad = 60;
-        public static final double telescopePullPositionRad = 0;
-        public static final double telescopePopAboveRungRad = 250;
-        public static final double telescopeLatchRad = 1200;
-        public static final double telescopeRotationSafePositionRad = 600;
-        public static final double telescopeSwingPositionRad = 700; 
-
-        // Multipliers applied to encoders to account for inconsistent spooling
-        public static final double leftTelescopeMultiplier = 1.00;
-        public static final double rightTelescopeMultiplier = 1.00;
-
-
-        public static final double telescopeCruiseVelocity = 800;
-        public static final double telescopeAcceleration = telescopeCruiseVelocity * 4;
-
         // measured offsets
         public static final double leftRotationOffset = 0.246;
         public static final double rightRotationOffset = 0.243;
 
         public static final double maxHeightMeters = 0.971;
+
+        // New Telescope Constants
+        public static final double telescopeOffsetM = 0.13;
+
+        public static final double telescopeMaxPositionM = 0.971;
+        public static final double telescopeDefaultPositionM = 0.08;
+        public static final double telescopeHomePositionM = 0.05;
+        public static final double telescopePullPositionM = 0;
+        public static final double telescopePopAboveRungM = 0.2;
+        public static final double telescopeLatchM = 0.95;
+        public static final double telescopeRotationSafePositionM = 0.47;
+        public static final double telescopeSwingPositionM = 0.55;
+        
+        public static final double telescopeCruiseVelocityM = 0.5;
+        public static final double telescopeAccelerationM = telescopeCruiseVelocityM * 4;
 
         public static final double climberSequencePauseSeconds = 2;
 

@@ -23,8 +23,8 @@ public class ShooterIOComp implements ShooterIO {
     private final SparkMaxPIDController hoodController;
     
     public ShooterIOComp() {
-        leftShooterMotor = new TalonFX(CANDevices.leftShooterMotorID, Constants.canivoreName);
-        rightShooterMotor = new TalonFX(CANDevices.rightShooterMotorID, Constants.canivoreName);
+        leftShooterMotor = new TalonFX(CANDevices.leftShooterMotorID);
+        rightShooterMotor = new TalonFX(CANDevices.rightShooterMotorID);
 
         hoodMotor = new CANSparkMax(CANDevices.hoodMotorID, MotorType.kBrushless);
 

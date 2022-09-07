@@ -173,24 +173,16 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
 
-        /*
-        TODO:
-        Get accurate color sensor readings (Tower)
-        Test Climbing (last time left didnt work)
-        Test Shooting
-        Test Intentionally missing depending on ball
-        */
-
         // photonvision.local:5800 
         // intake cam http://wpilibpi.local:1181/stream.mjpg
 
         /*CLIMBING BUTTONS*/ 
 
         // Telescope Up/Down
-        /*new POVButton(gamepad, 0)
+        new POVButton(gamepad, 0)
                 .whileHeld(new InstantCommand(() -> telescopes.jogUp()));
         new POVButton(gamepad, 180)
-                .whileHeld(new InstantCommand(() -> telescopes.jogDown()));*/
+                .whileHeld(new InstantCommand(() -> telescopes.jogDown()));
 
         /*new POVButton(gamepad, 0)
                 .whenPressed(new InstantCommand(() -> telescopes.setRightVolts(4))
@@ -265,10 +257,6 @@ public class RobotContainer {
         // Rotation Home
         new Trigger(() -> (gamepad.getLeftTriggerAxis() > 0.3))
                 .whenActive(new InstantCommand(() -> rotationArms.home(), rotationArms));
-
-        // Telescope Home
-        new Trigger(() -> (gamepad.getRightTriggerAxis() > 0.3))
-                .whenActive(new InstantCommand(() -> telescopes.home(), telescopes));
         
         // Kill Turret
         new JoystickButton(leftStick, 9)

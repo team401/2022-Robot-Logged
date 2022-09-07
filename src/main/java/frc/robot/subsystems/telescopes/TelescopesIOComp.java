@@ -5,30 +5,28 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import frc.robot.Constants;
 import frc.robot.Constants.CANDevices;
 
 import org.littletonrobotics.junction.Logger;
+
+import com.playingwithfusion.TimeOfFlight;
 
 public class TelescopesIOComp implements TelescopesIO {
 
     private final CANSparkMax leftMotor;
     private final CANSparkMax rightMotor;
 
-    private final RelativeEncoder leftEncoder;
-    private final RelativeEncoder rightEncoder;
+    private final TimeOfFlight leftLidar;
+    private final TimeOfFlight rightLidar;
 
     public TelescopesIOComp() {
+        // Motors
         leftMotor = new CANSparkMax(CANDevices.leftTelescopingMotorID, MotorType.kBrushless);
         rightMotor = new CANSparkMax(CANDevices.rightTelescopingMotorID, MotorType.kBrushless);
-
+        
         leftMotor.setInverted(true);
         rightMotor.setInverted(true);
-
-        leftEncoder = leftMotor.getEncoder();
-        rightEncoder = rightMotor.getEncoder();
-
-        //leftEncoder.setPositionConversionFactor(1 / 5 * 42);
-        //leftEncoder.setPositionConversionFactor(factor);
 
         leftMotor.setSmartCurrentLimit(80);
         rightMotor.setSmartCurrentLimit(80);
@@ -36,30 +34,25 @@ public class TelescopesIOComp implements TelescopesIO {
         leftMotor.setIdleMode(IdleMode.kBrake);
         rightMotor.setIdleMode(IdleMode.kBrake);
 
-        //leftMotor.burnFlash();
-        //rightMotor.burnFlash();
+        // Time of Flight sensors
+        leftLidar = new TimeOfFlight(CANDevices.lidarLeft);
+        rightLidar = new TimeOfFlight(CANDevices.lidarRight);
+        
+        leftLidar.setRangingMode(TimeOfFlight.RangingMode.Short, 24);
+        rightLidar.setRangingMode(TimeOfFlight.RangingMode.Short, 24);
 
     }
 
     @Override
     public void updateInputs(TelescopesIOInputs inputs) {
-        inputs.leftPositionRad = leftEncoder.getPosition() * 2.0 * Math.PI;
-        inputs.rightPositionRad = rightEncoder.getPosition() * 2.0 * Math.PI;
-        inputs.leftVelocityRadPerS = leftEncoder.getVelocity() * 2.0 * Math.PI / 60.0;
-        inputs.rightVelocityRadPerS = rightEncoder.getVelocity() * 2.0 * Math.PI / 60.0;
+
+        // TODO: there is no sensor on the left telescope so just make it the right position and hope
+        // when this is fixed also remember to change isLeftLidarOnline()
+        inputs.leftPositionM = rightLidar.getRange() - Constants.ClimberConstants.telescopeOffsetM;
+        inputs.rightPositionM = rightLidar.getRange() - Constants.ClimberConstants.telescopeOffsetM;
         inputs.leftCurrent = leftMotor.getOutputCurrent();
         inputs.rightCurrent = rightMotor.getOutputCurrent();
         Logger.getInstance().recordOutput("Telescopes/CurrentDraw", leftMotor.getOutputCurrent());
-    }
-
-    @Override
-    public void resetLeftEncoder() {
-        leftEncoder.setPosition(0);      
-    }
-
-    @Override
-    public void resetRightEncoder() {
-        rightEncoder.setPosition(0);        
     }
 
     @Override
@@ -80,6 +73,17 @@ public class TelescopesIOComp implements TelescopesIO {
     @Override
     public double getRightCurrentDraw() {
         return rightMotor.getOutputCurrent();
+    }
+
+    @Override
+    public boolean isLeftLidarOnline() {
+        // TODO: change to leftLidar after we get the second TimeOfFlight sensor
+        return rightLidar.isRangeValid();
+    }
+
+    @Override
+    public boolean isRightLidarOnline() {
+        return rightLidar.isRangeValid();
     }
 
     
