@@ -40,7 +40,7 @@ public class Tower extends SubsystemBase {
         // Intake/Reverse Intake
         if (color != 0 && prevColorDetected == 0)
         {
-            if (prevConveyorPercent > 0) // Intake
+            if (prevConveyorPercent >= 0) // Intake
             {
                 ballTop = ballBottom;
                 ballBottom = color;
@@ -71,7 +71,7 @@ public class Tower extends SubsystemBase {
 
     public void setConveyorPercent(double percent) {
         io.setConveyorPercent(percent);
-        prevConveyorPercent = percent;
+        prevConveyorPercent = percent != 0 ? percent : prevConveyorPercent;
     }
 
     public void setIndexWheelsPercent(double percent) {
@@ -90,7 +90,7 @@ public class Tower extends SubsystemBase {
     public int getDetectedColor() {
         RawColor color = ioInputs.detectedColor;
         // TODO BALL LOGIC
-        return 0;
+        return color.green > 35 ? 2 : color.red > 40 ? 1 : 0;
     }
     
 }
