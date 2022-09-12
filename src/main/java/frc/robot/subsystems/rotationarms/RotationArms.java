@@ -85,8 +85,8 @@ public class RotationArms extends SubsystemBase {
         leftLastPositionRad = ioInputs.leftPositionRad;
         rightLastPositionRad = ioInputs.rightPositionRad;
 
-        SmartDashboard.putNumber("leftVelocity", leftVelocityRadPerS);
-        SmartDashboard.putNumber("rightVelocity", rightVelocityRadPerS);
+        //SmartDashboard.putNumber("leftVelocity", leftVelocityRadPerS);
+        //SmartDashboard.putNumber("rightVelocity", rightVelocityRadPerS);
 
         io.updateInputs(ioInputs);
         Logger.getInstance().processInputs("RotationArms", ioInputs);
@@ -183,9 +183,13 @@ public class RotationArms extends SubsystemBase {
         Logger.getInstance().recordOutput("RotationArms/LeftAngleModDeg", Units.radiansToDegrees(leftMod));
         Logger.getInstance().recordOutput("RotationArms/RightAngleModDeg", Units.radiansToDegrees(rightMod));
 
-
         Logger.getInstance().recordOutput("RotationArms/LeftSetpointDeg", Units.radiansToDegrees(leftController.getSetpoint().position));
         Logger.getInstance().recordOutput("RotationArms/RightSetpointDeg", Units.radiansToDegrees(rightController.getSetpoint().position));
+
+        Logger.getInstance().recordOutput("RotationArms/LeftVelocityDegS", Units.radiansToDegrees(leftVelocityRadPerS));
+        Logger.getInstance().recordOutput("RotationArms/RightVelocityDegS", Units.radiansToDegrees(rightVelocityRadPerS));
+
+        Logger.getInstance().recordOutput("RotationArms/AtGoal", atGoal());
     
         SmartDashboard.putBoolean("Rotation At Goal", atGoal());
     }
@@ -250,13 +254,11 @@ public class RotationArms extends SubsystemBase {
 
     public void overrideLeftPercent(double percent) {
         setLeftPercent(percent);
-        SmartDashboard.putNumber("Left Percent", percent);
         leftOverride = true;
     }
 
     public void overrideRightPercent(double percent) {
         setRightPercent(percent);
-        SmartDashboard.putNumber("Right Percent", percent);
         rightOverride = true;
     }
 

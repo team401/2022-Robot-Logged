@@ -83,7 +83,7 @@ public class Turret extends SubsystemBase {
         Logger.getInstance().recordOutput("Turret/VelocityFFDegPerSec", Units.radiansToDegrees(velocityGoal));
         Logger.getInstance().recordOutput("Turret/Killed", killed);
         Logger.getInstance().recordOutput("Turret/Current Draw", io.getCurrent());
-        SmartDashboard.putNumber("Turret Rotation", turretRotation);
+        //SmartDashboard.putNumber("Turret Rotation", turretRotation);
 
         if (inputs.absolutePositionRad != lastUpdateValue) {
             lastUpdateTimeMS = System.currentTimeMillis();

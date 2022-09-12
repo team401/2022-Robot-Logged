@@ -116,8 +116,8 @@ public class RobotContainer {
 
         configureButtonBindings();
 
-        SmartDashboard.putNumber("Shooter Desired", 0);
-        SmartDashboard.putNumber("Hood Desired", 0);
+        //SmartDashboard.putNumber("Shooter Desired", 0);
+        //SmartDashboard.putNumber("Hood Desired", 0);
     }
 
     private void configureAutoPaths() {

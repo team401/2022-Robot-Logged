@@ -93,6 +93,8 @@ public class Shooter extends SubsystemBase {
 
         atGoal = atGoal();
 
+        Logger.getInstance().recordOutput("Shooter/DistanceToTarget", RobotState.getInstance().getAimingParameters().getDistanceM());
+
         SmartDashboard.putNumber("Distance", RobotState.getInstance().getAimingParameters().getDistanceM());
 
     }
