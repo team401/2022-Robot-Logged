@@ -2,6 +2,7 @@ package frc.robot.subsystems.tower;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.tower.TowerIO.TowerIOInputs;
 import frc.robot.util.PicoColorSensor.RawColor;
@@ -12,17 +13,17 @@ public class Tower extends SubsystemBase {
     private final TowerIO io;
     private final TowerIOInputs ioInputs = new TowerIOInputs();
 
-    private double prevConveyorPercent = 0;
-
+    
     private int ballTop = 0;
     private int ballBottom = 0;
-
+    
     private boolean prevTopBannerState = false;
-    private boolean prevBottomBannerState = false;
     private int prevColorDetected = 0;
-
+    
+    private double prevConveyorPercent = 0;
+    
     public Tower(TowerIO io) {
-
+        
         this.io = io;
 
     }
@@ -34,13 +35,12 @@ public class Tower extends SubsystemBase {
         Logger.getInstance().processInputs("Tower", ioInputs);
 
         boolean topBannerState = getTopSensor();
-        boolean bottomBannerState = getBottomSensor();
         int color = getDetectedColor();
 
         // Intake/Reverse Intake
         if (color != 0 && prevColorDetected == 0)
         {
-            if (prevConveyorPercent >= 0) // Intake
+            if (prevConveyorPercent > 0) // Intake
             {
                 ballTop = ballBottom;
                 ballBottom = color;
@@ -59,7 +59,6 @@ public class Tower extends SubsystemBase {
         }
 
         prevTopBannerState = topBannerState;
-        prevBottomBannerState = bottomBannerState;
         prevColorDetected = color;
 
         RobotState.getInstance().setCurrentBall(ballTop);
@@ -71,7 +70,7 @@ public class Tower extends SubsystemBase {
 
     public void setConveyorPercent(double percent) {
         io.setConveyorPercent(percent);
-        prevConveyorPercent = percent != 0 ? percent : prevConveyorPercent;
+        prevConveyorPercent = percent;
     }
 
     public void setIndexWheelsPercent(double percent) {
@@ -86,11 +85,14 @@ public class Tower extends SubsystemBase {
         return ioInputs.bottomSensor;
     }
 
+    // TODO: If this ever gets reliable remember to uncomment changes in PrepareToShoot.java
     // 0 = none, 1 = red, 2 = blue
     public int getDetectedColor() {
         RawColor color = ioInputs.detectedColor;
-        // TODO BALL LOGIC
-        return color.green > 35 ? 2 : color.red > 40 ? 1 : 0;
+        if (DriverStation.getAlliance() == DriverStation.Alliance.Red)
+            return color.red > 40 ? 1 : color.green > 35 ? 2 : 0;
+        else
+            return color.green > 35 ? 2 : color.red > 40 ? 1 : 0;
     }
     
 }

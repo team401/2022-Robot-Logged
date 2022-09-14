@@ -40,8 +40,8 @@ public class TelescopesSubsystem extends SubsystemBase {
         leftController.setGoal(ClimberConstants.telescopeHomePositionM);
         rightController.setGoal(ClimberConstants.telescopeHomePositionM);
 
-        leftController.setTolerance(5);
-        rightController.setTolerance(5);
+        leftController.setTolerance(ClimberConstants.telescopeGoalToleranceM);
+        rightController.setTolerance(ClimberConstants.telescopeGoalToleranceM);
     }
 
     @Override
@@ -74,16 +74,16 @@ public class TelescopesSubsystem extends SubsystemBase {
         io.setLeftVolts(leftOutput);
         io.setRightVolts(rightOutput);
 
-        Logger.getInstance().recordOutput("Telescopes/AtGoalOverride", atGoalOverride);
-        Logger.getInstance().recordOutput("Telescopes/GoalPositionM", goalPositionM);
-        Logger.getInstance().recordOutput("Telescopes/Override", override);
-        Logger.getInstance().recordOutput("Telescopes/LeftOutput", leftOutput);
-        Logger.getInstance().recordOutput("Telescopes/RightOutput", rightOutput);
-        Logger.getInstance().recordOutput("Telescopes/LeftSetpointM", leftController.getSetpoint().position);
-        Logger.getInstance().recordOutput("Telescopes/RightSetpointM", rightController.getSetpoint().position);
         Logger.getInstance().recordOutput("Telescopes/LeftM", ioInputs.leftPositionM);
         Logger.getInstance().recordOutput("Telescopes/RightM", ioInputs.rightPositionM);
+        Logger.getInstance().recordOutput("Telescopes/GoalPositionM", goalPositionM);
+        Logger.getInstance().recordOutput("Telescopes/LeftControllerSetpointM", leftController.getSetpoint().position);
+        Logger.getInstance().recordOutput("Telescopes/RightControllerSetpointM", rightController.getSetpoint().position);
         Logger.getInstance().recordOutput("Telescopes/AtGoal", atGoal());
+        Logger.getInstance().recordOutput("Telescopes/AtGoalOverride", atGoalOverride);
+        Logger.getInstance().recordOutput("Telescopes/LeftOutput", leftOutput);
+        Logger.getInstance().recordOutput("Telescopes/RightOutput", rightOutput);
+        Logger.getInstance().recordOutput("Telescopes/Override", override);
         SmartDashboard.putBoolean("Telescopes At Goal", atGoal());
 
     }
@@ -116,7 +116,7 @@ public class TelescopesSubsystem extends SubsystemBase {
 
     public boolean passedRotationSafePosition() {
         return ioInputs.leftPositionM <= ClimberConstants.telescopeRotationSafePositionM &&
-                ioInputs.leftPositionM <= ClimberConstants.telescopeRotationSafePositionM;
+                ioInputs.rightPositionM <= ClimberConstants.telescopeRotationSafePositionM;
     }
 
     public void setLeftVolts(double volts) {

@@ -178,10 +178,13 @@ public final class Constants {
         public static final double telescopeRotationSafePositionM = 0.47;
         public static final double telescopeSwingPositionM = 0.55;
         
+        public static final double telescopeGoalToleranceM = 0.02;
+        
         public static final double telescopeCruiseVelocityM = 0.5;
         public static final double telescopeAccelerationM = telescopeCruiseVelocityM * 4;
-
+        
         public static final double climberSequencePauseSeconds = 2;
+
 
         //Tunable PD Numbers
         public static TunableNumber rotationArmKp = new TunableNumber("RotationArm/Kp");

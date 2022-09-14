@@ -161,10 +161,10 @@ public class RobotContainer {
 
         //autoChooser.setDefaultOption("-Five Ball Right-", 
               //new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, fiveBallRightPath, Paths.FiveBallRight));
-        autoChooser.setDefaultOption("-Troll Left-", 
-                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, trollLeftPath, Paths.TrollLeft));
-        //autoChooser.setDefaultOption("-Two Ball-", 
-                //new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, twoBallPath, Paths.TwoBall));
+        //autoChooser.setDefaultOption("-Troll Left-", 
+                //new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, trollLeftPath, Paths.TrollLeft));
+        autoChooser.setDefaultOption("-Two Ball-", 
+                new AutoRoutines(drive, rotationArms, shooter, turret, tower, intakeWheels, intakeVision, vision, twoBallPath, Paths.TwoBall));
 
         // Send path options to driver station
         SmartDashboard.putData("Auto Mode", autoChooser);
@@ -281,7 +281,7 @@ public class RobotContainer {
                         false
                 ));
 
-        // Robot Relative Drive
+        // Shoot While Moving
         new JoystickButton(rightStick, Joystick.ButtonType.kTrigger.value)
                 .whenHeld(new ShootWhileMoving(
                         drive,
