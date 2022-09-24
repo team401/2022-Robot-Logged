@@ -317,8 +317,8 @@ public class RobotContainer {
                 .andThen(new InstantCommand(() -> rotationArms.setGoalOverride(false))));
 
         new JoystickButton(leftStick, 6)
-                .whenPressed(new InstantCommand(() -> telescopes.setGoalOverride(true))
-                .andThen(new InstantCommand(() -> telescopes.setGoalOverride(false))));
+                .whenPressed(new InstantCommand(() -> telescopes.setAtGoalOverride(true))
+                .andThen(new InstantCommand(() -> telescopes.setAtGoalOverride(false))));
         
     }
 

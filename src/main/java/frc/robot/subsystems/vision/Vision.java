@@ -57,9 +57,11 @@ public class Vision extends SubsystemBase {
     public Vision(VisionIO io) {
         this.io = io;
     }
-
+    
     @Override
     public void periodic() {
+        long m_Start = System.currentTimeMillis();
+
         io.updateInputs(inputs);
         Logger.getInstance().processInputs("Vision", inputs);
 
@@ -75,8 +77,9 @@ public class Vision extends SubsystemBase {
         // no targets
         int targetCount = ledsState ? inputs.cornerX.length / 4 : 0;
 
+        // TODO: PUT BACK IN PLACE
         // Stop if we don't have enough targets
-        if (targetCount < minTargetCount) return;
+        //if (targetCount < minTargetCount) return;
 
         List<Translation2d> cameraToTargetTranslations = new ArrayList<>();
         for (int targetIndex = 0; targetIndex < targetCount; targetIndex++) {
@@ -117,6 +120,8 @@ public class Vision extends SubsystemBase {
 
         // Inform RobotState of our observations
         RobotState.getInstance().recordVisionObservations(lastCaptureTimestamp - constantLatency, cameraToTargetTranslation);
+    
+        Logger.getInstance().recordOutput("ExecutionTime/Vision", (int)(System.currentTimeMillis() - m_Start));
     }
 
     /**

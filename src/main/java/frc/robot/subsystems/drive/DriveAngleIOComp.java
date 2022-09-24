@@ -3,11 +3,13 @@ package frc.robot.subsystems.drive;
 import com.ctre.phoenix.sensors.Pigeon2;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants;
 import frc.robot.Constants.CANDevices;
 
 public class DriveAngleIOComp implements DriveAngleIO {
 
-    private final Pigeon2 pigeon = new Pigeon2(CANDevices.pigeonIMU);
+    private final Pigeon2 pigeon = new Pigeon2(CANDevices.pigeonIMU, Constants.canivoreName);
 
     private double degOffset = 0;
 

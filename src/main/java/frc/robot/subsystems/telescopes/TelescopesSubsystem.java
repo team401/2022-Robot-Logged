@@ -18,21 +18,28 @@ public class TelescopesSubsystem extends SubsystemBase {
     private final TelescopesIO io;
     private final TelescopesIOInputs ioInputs = new TelescopesIOInputs();
 
-    private final double dt = 0.02;
-
-    private boolean atGoalOverride = false;
-
-    private double goalPositionM = ClimberConstants.telescopeDefaultPositionM;
-
-    private boolean override = false;
-
     private final ProfiledPIDController leftController = new ProfiledPIDController(
-            ClimberConstants.telescopeArmKp.get(), 0, ClimberConstants.telescopeArmKd.get(),
-            new TrapezoidProfile.Constraints(ClimberConstants.telescopeCruiseVelocityM, ClimberConstants.telescopeAccelerationM));
+        ClimberConstants.telescopeArmKp, 0, ClimberConstants.telescopeArmKd,
+        new TrapezoidProfile.Constraints(ClimberConstants.telescopeCruiseVelocityM, ClimberConstants.telescopeAccelerationM)
+    );
 
     private final ProfiledPIDController rightController = new ProfiledPIDController(
-            ClimberConstants.telescopeArmKp.get(), 0, ClimberConstants.telescopeArmKd.get(),
-            new TrapezoidProfile.Constraints(ClimberConstants.telescopeCruiseVelocityM, ClimberConstants.telescopeAccelerationM));
+        ClimberConstants.telescopeArmKp, 0, ClimberConstants.telescopeArmKd,
+        new TrapezoidProfile.Constraints(ClimberConstants.telescopeCruiseVelocityM, ClimberConstants.telescopeAccelerationM)
+    );
+
+    private final double deltaTime = 0.02; // 20ms between each cycle
+
+    private double desiredPositionM = 0; // position the telescopes attempt to reach in periodic
+
+    private boolean motorOverride = false; // true = periodic doesn't set motor voltage/percent
+    private boolean atGoalOverride = false; // true = atGoal() always returns true
+
+    private boolean leftHomed = false;
+    private boolean rightHomed = false;
+
+    private final Timer leftHomeTimer = new Timer();
+    private final Timer rightHomeTimer = new Timer();
 
     public TelescopesSubsystem(TelescopesIO io) {
         this.io = io;
@@ -42,50 +49,108 @@ public class TelescopesSubsystem extends SubsystemBase {
 
         leftController.setTolerance(ClimberConstants.telescopeGoalToleranceM);
         rightController.setTolerance(ClimberConstants.telescopeGoalToleranceM);
-    }
 
+        leftHomeTimer.start();
+        rightHomeTimer.start();
+    }
+    
     @Override
     public void periodic() {
-        io.updateInputs(ioInputs);
-        Logger.getInstance().processInputs("Telescopes", ioInputs);
+        long m_Start = System.currentTimeMillis();
 
-        double leftOutput = 0;
-        double rightOutput = 0;
-
-        // PID Changes
-        if (ClimberConstants.telescopeArmKp.hasChanged() || ClimberConstants.telescopeArmKd.hasChanged()) {
-            leftController.setPID(ClimberConstants.telescopeArmKp.get(), 0, ClimberConstants.telescopeArmKd.get());
-            rightController.setPID(ClimberConstants.telescopeArmKp.get(), 0, ClimberConstants.telescopeArmKd.get());
+        if (!DriverStation.isEnabled()) {
+            if (io.isLeftLidarValid())
+                leftController.reset(ioInputs.leftLidarPositionM);
+            else
+                leftController.reset(ioInputs.leftEncoderPositionM);
+            if (io.isRightLidarValid())
+                rightController.reset(ioInputs.rightLidarPositionM);
+            else
+                rightController.reset(ioInputs.rightEncoderPositionM);
+            
+            leftHomeTimer.reset();
+            rightHomeTimer.reset();
         }
 
-        if (DriverStation.isEnabled()){
-            if (io.isLeftLidarOnline()) {
-                double output = leftController.calculate(ioInputs.leftPositionM, goalPositionM);
-                output -= output < 0 ? 0.7 : 0;
-                leftOutput = override ? leftOutput : output;
+        if (DriverStation.isEnabled() && !motorOverride) {
+            // Left
+            if (io.isLeftLidarValid()) {
+                double output = leftController.calculate(ioInputs.leftLidarPositionM, desiredPositionM);
+                output -= output < 0 ? 0.7 : 0; // FF
+                io.setLeftVolts(output);
+
+                leftHomed = true;
+                if (Math.abs(ioInputs.leftLidarPositionM - ioInputs.leftEncoderPositionM) > ClimberConstants.telescopeGoalToleranceM)
+                    io.setLeftEncoder(ioInputs.leftLidarPositionM);
             }
-            if (io.isRightLidarOnline()) {
-                double output = rightController.calculate(ioInputs.rightPositionM, goalPositionM);
-                output -= output < 0 ? 0.7 : 0;
-                rightOutput = override ? rightOutput : output;
+            else {
+                if (leftHomed) {
+                    double output = leftController.calculate(ioInputs.leftEncoderPositionM, desiredPositionM);
+                    output -= output < 0 ? 0.7 : 0; // FF
+                    io.setLeftVolts(output);
+                }
+                else {
+                    if (Math.abs(ioInputs.leftVelocityMPerS) > ClimberConstants.telescopeHomingThresholdMPerS) {
+                        leftHomeTimer.reset();
+                    }
+                    else if (leftHomeTimer.hasElapsed(ClimberConstants.homingTimeS)){
+                        leftHomed = true;
+                        io.setLeftEncoder(ioInputs.leftEncoderPositionM);
+                        io.setLeftVolts(0);
+                        leftController.reset(ioInputs.leftEncoderPositionM);
+                    }
+                    else {
+                        io.setLeftVolts(ClimberConstants.telescopeHomingVolts);
+                    }
+                }
+            }
+
+            // Right
+            if (io.isRightLidarValid()) {
+                double output = rightController.calculate(ioInputs.rightLidarPositionM, desiredPositionM);
+                output -= output < 0 ? 0.7 : 0; // FF
+                io.setRightVolts(output);
+
+                rightHomed = true;
+                if (Math.abs(ioInputs.rightLidarPositionM - ioInputs.rightEncoderPositionM) > ClimberConstants.telescopeGoalToleranceM)
+                    io.setRightEncoder(ioInputs.rightLidarPositionM);
+            }
+            else {
+                if (rightHomed) {
+                    double output = rightController.calculate(ioInputs.rightEncoderPositionM, desiredPositionM);
+                    output -= output < 0 ? 0.7 : 0; // FF
+                    io.setRightVolts(output);
+                }
+                else {
+                    if (Math.abs(ioInputs.rightVelocityMPerS) > ClimberConstants.telescopeHomingThresholdMPerS) {
+                        rightHomeTimer.reset();
+                    }
+                    else if (rightHomeTimer.hasElapsed(ClimberConstants.homingTimeS)){
+                        rightHomed = true;
+                        io.setRightEncoder(ioInputs.rightEncoderPositionM);
+                        io.setRightVolts(0);
+                        rightController.reset(ioInputs.rightEncoderPositionM);
+                    }
+                    else {
+                        io.setRightVolts(ClimberConstants.telescopeHomingVolts);
+                    }
+                }
             }
         }
 
-        io.setLeftVolts(leftOutput);
-        io.setRightVolts(rightOutput);
-
-        Logger.getInstance().recordOutput("Telescopes/LeftM", ioInputs.leftPositionM);
-        Logger.getInstance().recordOutput("Telescopes/RightM", ioInputs.rightPositionM);
-        Logger.getInstance().recordOutput("Telescopes/GoalPositionM", goalPositionM);
+        Logger.getInstance().recordOutput("Telescopes/LeftLidarM", ioInputs.leftLidarPositionM);
+        Logger.getInstance().recordOutput("Telescopes/RightLidarM", ioInputs.rightLidarPositionM);
+        Logger.getInstance().recordOutput("Telescopes/LeftEncoderM", ioInputs.leftEncoderPositionM);
+        Logger.getInstance().recordOutput("Telescopes/RightEncoderM", ioInputs.rightEncoderPositionM);
+        Logger.getInstance().recordOutput("Telescopes/DesiredPositionM", desiredPositionM);
         Logger.getInstance().recordOutput("Telescopes/LeftControllerSetpointM", leftController.getSetpoint().position);
         Logger.getInstance().recordOutput("Telescopes/RightControllerSetpointM", rightController.getSetpoint().position);
         Logger.getInstance().recordOutput("Telescopes/AtGoal", atGoal());
         Logger.getInstance().recordOutput("Telescopes/AtGoalOverride", atGoalOverride);
-        Logger.getInstance().recordOutput("Telescopes/LeftOutput", leftOutput);
-        Logger.getInstance().recordOutput("Telescopes/RightOutput", rightOutput);
-        Logger.getInstance().recordOutput("Telescopes/Override", override);
+        Logger.getInstance().recordOutput("Telescopes/MotorOverride", motorOverride);
         SmartDashboard.putBoolean("Telescopes At Goal", atGoal());
 
+        Logger.getInstance().recordOutput("ExecutionTime/Telescopes", (int)(System.currentTimeMillis() - m_Start));
     }
 
     public void setLeftPercent(double percent) {
@@ -97,26 +162,30 @@ public class TelescopesSubsystem extends SubsystemBase {
     }
 
     public void setDesiredPosition(double positionM) {
-        goalPositionM = positionM;
+        desiredPositionM = positionM;
     }
 
     public void jogUp() {
-        goalPositionM += dt * ClimberConstants.telescopeCruiseVelocityM;
-        if (goalPositionM > ClimberConstants.telescopeMaxPositionM) goalPositionM = ClimberConstants.telescopeMaxPositionM;
+        desiredPositionM += deltaTime * ClimberConstants.telescopeCruiseVelocityM;
+        if (desiredPositionM > ClimberConstants.telescopeMaxPositionM)
+            desiredPositionM = ClimberConstants.telescopeMaxPositionM;
     }
 
     public void jogDown() {
-        goalPositionM -= dt * ClimberConstants.telescopeCruiseVelocityM;
-        if (goalPositionM < ClimberConstants.telescopeHomePositionM) goalPositionM = ClimberConstants.telescopeHomePositionM;
+        desiredPositionM -= deltaTime * ClimberConstants.telescopeCruiseVelocityM;
+        if (desiredPositionM < ClimberConstants.telescopeHomePositionM)
+            desiredPositionM = ClimberConstants.telescopeHomePositionM;
     }
 
     public boolean atGoal() {
-        return (leftController.atGoal() && rightController.atGoal()) || atGoalOverride;
+        return atGoalOverride || (leftController.atGoal() && rightController.atGoal());
     }
 
     public boolean passedRotationSafePosition() {
-        return ioInputs.leftPositionM <= ClimberConstants.telescopeRotationSafePositionM &&
-                ioInputs.rightPositionM <= ClimberConstants.telescopeRotationSafePositionM;
+        double leftPositionM = io.isLeftLidarValid() ? ioInputs.leftLidarPositionM : ioInputs.leftEncoderPositionM;
+        double rightPositionM = io.isRightLidarValid() ? ioInputs.rightLidarPositionM : ioInputs.rightEncoderPositionM;
+        return leftPositionM <= ClimberConstants.telescopeRotationSafePositionM &&
+                rightPositionM <= ClimberConstants.telescopeRotationSafePositionM;
     }
 
     public void setLeftVolts(double volts) {
@@ -128,15 +197,17 @@ public class TelescopesSubsystem extends SubsystemBase {
     }
 
     public void stop() {
-        setDesiredPosition(ioInputs.rightPositionM);
+        setDesiredPosition(io.isLeftLidarValid() ? ioInputs.leftLidarPositionM : ioInputs.leftEncoderPositionM);
     }
 
-    public void setGoalOverride(boolean override) {
+    public void setMotorOverride(boolean override) {
+        motorOverride = override;
+        setLeftVolts(0);
+        setRightVolts(0);
+    }
+
+    public void setAtGoalOverride(boolean override) {
         atGoalOverride = override;
-    }
-
-    public void setOverride(boolean o) {
-        override = o;
     }
 
     // Commands
@@ -147,5 +218,4 @@ public class TelescopesSubsystem extends SubsystemBase {
     public final Command moveToLatch() { return new InstantCommand(() -> setDesiredPosition(ClimberConstants.telescopeLatchM), this); }
     public final Command moveToPull() { return new InstantCommand(() -> setDesiredPosition(ClimberConstants.telescopePullPositionM), this); }
     public final Command moveToSwing() {return new InstantCommand(() -> setDesiredPosition(ClimberConstants.telescopeSwingPositionM), this); }
-
 }

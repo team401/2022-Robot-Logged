@@ -24,22 +24,23 @@ public class Shooter extends SubsystemBase {
     private boolean hoodEnable = false;
     private boolean flywheelEnable = false;
     private final Timer homeTimer = new Timer();
-
+    
     private final double flywheelToleranceRadPerS = Units.rotationsPerMinuteToRadiansPerSecond(150);
     private final double hoodToleranceRad = Units.rotationsToRadians(0.25);
-
+    
     private double rpmOffset = 150;
-
+    
     private static boolean atGoal = false;
-
+    
     private static double shooterGoal = 0;
-
+    
     public Shooter(ShooterIO io) {
         this.io = io;
     }
 
     @Override
     public void periodic() {
+        long m_Start = System.currentTimeMillis();
         io.updateInputs(ioInputs);
         Logger.getInstance().processInputs("Shooter", ioInputs);
 
@@ -96,6 +97,8 @@ public class Shooter extends SubsystemBase {
         Logger.getInstance().recordOutput("Shooter/DistanceToTarget", RobotState.getInstance().getAimingParameters().getDistanceM());
 
         SmartDashboard.putNumber("Distance", RobotState.getInstance().getAimingParameters().getDistanceM());
+
+        Logger.getInstance().recordOutput("ExecutionTime/Shooter", (int)(System.currentTimeMillis() - m_Start));
 
     }
 

@@ -24,6 +24,7 @@ public final class Constants {
     public static final String canivoreName = "Canivore";
 
     public static final class CANDevices {
+        
         public static final int frontLeftDriveMotorID = 0;
         public static final int frontLeftRotationMotorID = 1;
 
@@ -53,14 +54,16 @@ public final class Constants {
         public static final int hoodMotorID = 19;
         public static final int turretEncoderID = 30;
 
+        public static final int pigeonIMU = 20;
+
+        public static final int leftLidar = 21;
+        public static final int rightLidar = 22;
+
         public static final int intakeMotorID = 22;
         public static final int conveyorMotorID = 23;
         public static final int indexMotorID = 24; 
 
-        public static final int pigeonIMU = 20;
 
-        public static final int lidarLeft = 21;
-        public static final int lidarRight = 22;
 
     }
 
@@ -125,8 +128,8 @@ public final class Constants {
         
 
         static {
-            // Tuned on 3/8/22
-            rotationKp.setDefault(8.0);
+            // Tuned on 9/19/22
+            rotationKp.setDefault(4.7);
             rotationKd.setDefault(0.1);
 
             driveKp.setDefault(0.2);
@@ -167,6 +170,8 @@ public final class Constants {
         public static final double maxHeightMeters = 0.971;
 
         // New Telescope Constants
+        public static final double telescopeConversionFactor = 1 / 201.61; // rotations to meters
+
         public static final double telescopeOffsetM = 0.13;
 
         public static final double telescopeMaxPositionM = 0.971;
@@ -189,10 +194,10 @@ public final class Constants {
         //Tunable PD Numbers
         public static TunableNumber rotationArmKp = new TunableNumber("RotationArm/Kp");
         public static TunableNumber rotationArmKd = new TunableNumber("RotationArm/Kd");
-        public static TunableNumber telescopeArmKp = new TunableNumber("TelescopeArm/Kp");
-        public static TunableNumber telescopeArmKd = new TunableNumber("TelescopeArm/Kd");
+        public static double telescopeArmKp = 0.4;
+        public static double telescopeArmKd = 0.0;
 
-        public static final double telescopeHomingThresholdRadPerS = 50;
+        public static final double telescopeHomingThresholdMPerS = 0.05;
         public static final double homingTimeS = 0.2;
         public static final double telescopeHomingVolts = -4;
         public static final double rotationHomingVolts = -4;
@@ -202,8 +207,6 @@ public final class Constants {
         static {
             rotationArmKp.setDefault(25.0);
             rotationArmKd.setDefault(0.5);
-            telescopeArmKp.setDefault(0.4);
-            telescopeArmKd.setDefault(0.0);
         }
 
     }

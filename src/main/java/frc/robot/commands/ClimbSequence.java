@@ -26,7 +26,7 @@ public class ClimbSequence extends SequentialCommandGroup {
             rotationArms.moveToClimbGrab(),
             rotationArms.waitForMove(),
             // Telescopes up a bit to clear them off the high bar
-            new InstantCommand(() -> telescopes.setOverride(false)),
+            new InstantCommand(() -> telescopes.setMotorOverride(false)),
             telescopes.moveToPop(),
             telescopes.waitForMove(),
 
@@ -56,7 +56,7 @@ public class ClimbSequence extends SequentialCommandGroup {
             rotationArms.moveToClimbGrab(),
             rotationArms.waitForMove(),
             // Telescopes up a bit to clear them off the high bar
-            new InstantCommand(() -> telescopes.setOverride(false)),
+            new InstantCommand(() -> telescopes.setMotorOverride(false)),
             telescopes.moveToPop(),
             telescopes.waitForMove(),
 

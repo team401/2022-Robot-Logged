@@ -25,11 +25,12 @@ public class Tower extends SubsystemBase {
     public Tower(TowerIO io) {
         
         this.io = io;
-
+        
     }
-
+    
     @Override
     public void periodic() {
+        long m_Start = System.currentTimeMillis();
 
         io.updateInputs(ioInputs);
         Logger.getInstance().processInputs("Tower", ioInputs);
@@ -65,6 +66,8 @@ public class Tower extends SubsystemBase {
 
         Logger.getInstance().recordOutput("Tower/BallTop", ballTop);
         Logger.getInstance().recordOutput("Tower/BallBottom", ballBottom);
+
+        Logger.getInstance().recordOutput("ExecutionTime/Tower", (int)(System.currentTimeMillis() - m_Start));
 
     }
 

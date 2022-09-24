@@ -33,19 +33,21 @@ public class Turret extends SubsystemBase {
     private boolean zeroOverride = false;
 
     private final Timer overdrawTimer = new Timer();
-
+    
     public Turret(TurretIO io) {
         this.io = io;
         
         io.resetEncoder();
-
+        
         positionController.setTolerance(Units.degreesToRadians(3));
-
+        
         lastUpdateTimeMS = System.currentTimeMillis();
     }
-
+    
     @Override
     public void periodic() {
+        long m_Start = System.currentTimeMillis();
+
         io.updateInputs(inputs);
         Logger.getInstance().processInputs("Turret", inputs);
         
@@ -109,6 +111,8 @@ public class Turret extends SubsystemBase {
             io.setVoltage(0);
 
         RobotState.getInstance().recordTurretObservations(new Rotation2d(turretRotation), inputs.velocityRadPerS);
+        
+        Logger.getInstance().recordOutput("ExecutionTime/Turret", (int)(System.currentTimeMillis() - m_Start));
     }
 
     public void setVoltage(double volts) {

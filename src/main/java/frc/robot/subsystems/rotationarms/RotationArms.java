@@ -35,6 +35,14 @@ public class RotationArms extends SubsystemBase {
         ClimberConstants.rotationArmKp.get(), 0, ClimberConstants.rotationArmKd.get(),
         normalConstraints);
 
+    private final ProfiledPIDController leftClimbController = new ProfiledPIDController(
+        ClimberConstants.rotationArmKp.get(), 0, ClimberConstants.rotationArmKd.get(), 
+        climbConstraints);
+
+    private final ProfiledPIDController rightClimbController = new ProfiledPIDController(
+        ClimberConstants.rotationArmKp.get(), 0, ClimberConstants.rotationArmKd.get(),
+        climbConstraints);
+
     private boolean killed = false;
     private boolean homed = false;
     private boolean hasReset = false;
@@ -56,15 +64,19 @@ public class RotationArms extends SubsystemBase {
 
         leftController.setTolerance(ClimberConstants.rotationPositionToleranceRad);
         rightController.setTolerance(ClimberConstants.rotationPositionToleranceRad);
-
+        
+        leftController.setConstraints(normalConstraints);
+        rightController.setConstraints(normalConstraints);
+        
         homeOverrideTimer.reset();
         homeOverrideTimer.stop();
-
+        
     }
 
     @Override
     public void periodic() {
-
+        
+        long m_Start = System.currentTimeMillis();
 
         /*
         If the change in position between when home started and home finished (before resetting) is greater than (pi/2?) rad,
@@ -94,6 +106,9 @@ public class RotationArms extends SubsystemBase {
         if (ClimberConstants.rotationArmKp.hasChanged() || ClimberConstants.rotationArmKd.hasChanged()) {
             leftController.setPID(ClimberConstants.rotationArmKp.get(), 0, ClimberConstants.rotationArmKd.get());
             rightController.setPID(ClimberConstants.rotationArmKp.get(), 0, ClimberConstants.rotationArmKd.get());
+            leftClimbController.setPID(ClimberConstants.rotationArmKp.get(), 0, ClimberConstants.rotationArmKd.get());
+            rightClimbController.setPID(ClimberConstants.rotationArmKp.get(), 0, ClimberConstants.rotationArmKd.get());
+        
         }
 
         // Positions with modulus to be between -pi, pi.  It is important to use these in the controllers
@@ -192,6 +207,8 @@ public class RotationArms extends SubsystemBase {
         Logger.getInstance().recordOutput("RotationArms/AtGoal", atGoal());
     
         SmartDashboard.putBoolean("Rotation At Goal", atGoal());
+
+        Logger.getInstance().recordOutput("ExecutionTime/RotationArms", (int)(System.currentTimeMillis() - m_Start));
     }
 
     public void setLeftPercent(double percent) {
@@ -210,8 +227,8 @@ public class RotationArms extends SubsystemBase {
     }
 
     public void setDesiredPositionSlow(double positionRad) {
-        leftController.setConstraints(climbConstraints);
-        rightController.setConstraints(climbConstraints);
+        //leftController.setConstraints(climbConstraints);
+        //rightController.setConstraints(climbConstraints);
         leftController.setGoal(positionRad);
         rightController.setGoal(positionRad);
     }

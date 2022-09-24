@@ -53,19 +53,20 @@ public class Drive extends SubsystemBase {
       rotationPIDs[i].enableContinuousInput(-Math.PI, Math.PI);
       goalModuleStates[i] = new SwerveModuleState();
     }
-
+    
     this.moduleIOs = moduleIOs;
     this.angleIO = angleIO;
-
+    
     for (DriveModuleIO module : moduleIOs) {
       module.zeroEncoders();
     }
 
     angleIO.resetHeading();
   }
-
+  
   @Override
   public void periodic() {
+    long m_Start = System.currentTimeMillis();
     // Display match time for driver
     SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
 
@@ -90,6 +91,7 @@ public class Drive extends SubsystemBase {
 
 
     // Check if our gain tunables have changed, and if they have, update accordingly
+
     if (DriveConstants.rotationKp.hasChanged() || DriveConstants.rotationKd.hasChanged()) {
       for (PIDController c : rotationPIDs) {
         c.setP(DriveConstants.rotationKp.get());
@@ -125,12 +127,17 @@ public class Drive extends SubsystemBase {
       // Set module rotation
       Logger.getInstance().recordOutput("Drive" + i + "/RotationSetpointRad", rotationSetpointRadians);
       double rotationVoltage = rotationPIDs[i].calculate(rotationSetpointRadians, moduleRotation.getRadians());
+      Logger.getInstance().recordOutput("Drive" + i + "/RotationVoltage", rotationVoltage);
       Logger.getInstance().recordOutput("Drive" + i + "/RotationErrorDegrees",
           Units.radiansToDegrees(rotationPIDs[i].getPositionError()));
       moduleIOs[i].setRotationVoltage(rotationVoltage);
     }
 
     Logger.getInstance().recordOutput("Drive/AverageRadPerS", getAverageSpeedRadPerS());
+
+    SmartDashboard.putNumber("DriveTime", (int)(System.currentTimeMillis() - m_Start));
+
+    Logger.getInstance().recordOutput("ExecutionTime/Drive", (int)(System.currentTimeMillis() - m_Start));
   }
 
   /**

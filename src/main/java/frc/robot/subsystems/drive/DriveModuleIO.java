@@ -14,7 +14,7 @@ public interface DriveModuleIO {
         public void toLog(LogTable table) {
             table.put("DriveVelocityRadPerS", driveVelocityRadPerS);
             table.put("DrivePositionRad", drivePositionRad);
-            table.put("RotationPositionRad", rotationPositionRad);
+            table.put("RotationPositionRad", rotationPositionRad%(Math.PI * 2) - Math.PI);
             
         }
 
@@ -23,7 +23,6 @@ public interface DriveModuleIO {
             driveVelocityRadPerS = table.getDouble("DriveVelocityRadPerS", driveVelocityRadPerS);
             drivePositionRad = table.getDouble("DrivePositionRad", drivePositionRad);
             rotationPositionRad = table.getDouble("RotationPositionRad", rotationPositionRad);
-            
         }
 
     }
